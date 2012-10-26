@@ -1,0 +1,306 @@
+\documentclass[10pt, conference, compsocconf]{IEEEtran}
+
+\title{Crossing Origins by Crossing Formats}
+
+\begin{document}
+
+\author{\IEEEauthorblockN{Jonas Magazinius}
+\IEEEauthorblockA{Department of Computer Science\\
+Chalmers University of Technology\\
+Gothenburg, Sweden\\
+jonas.magazinius@chalmers.se}
+\and
+\IEEEauthorblockN{Billy Rios}
+\IEEEauthorblockA{dept. name of organization\\
+name of organization, acronyms acceptable\\
+City, United States of America\\
+Email: name@xyz.com}
+\and
+\IEEEauthorblockN{Andrei Sabelfeld}
+\IEEEauthorblockA{Department of Computer Science\\
+Chalmers University of Technology\\
+Gothenburg, Sweden\\
+andrei@chalmers.se}
+}
+
+\maketitle
+
+
+
+\begin{abstract}
+
+\end{abstract}
+
+
+
+\begin{IEEEkeywords}
+Web Security; Polyglot; Cross-domain;
+
+\end{IEEEkeywords}
+
+
+
+
+
+
+
+
+
+\section{Introduction}
+\label{sec:intro}
+
+
+\subsection{Polyglots}
+
+What and how?
+
+Why PDF format?
+
+
+
+\subsection{Exploiting polyglots}
+
+A polyglot can be used for exploitation if there is a difference between how 
+content is interpreted at the time of verification compared to time of use. 
+It is possible to create such a polyglot by mixing content, that is benign when verified, with content, that is 
+malicious when executed. The verification process will see the benign content 
+and allow it, but subsequently the malicious content is executed.
+
+In literature we find Content repurposing, content smuggling, chameleon, gifar
+
+
+
+\subsection{Syntax injection attacks}
+
+Injection attacks have gone from classical to sophisticated.
+
+New breed of attacks.
+
+
+
+\subsection{Polyglot upload attacks}
+
+Server side verfication
+
+Examples
+
+
+
+\subsection{Crossing origins by crossing formats}
+
+Describe how the attacks lead to Same-Origin Policy bypass.
+
+
+\subsubsection{Syntax injection scenario}
+
+Description of attack technique
+
+Attack building blocks
+
+
+\subsubsection{Polyglot upload scenario}
+
+Description of attack technique
+
+Building blocks
+
+
+
+
+
+
+
+
+
+\section{Vulnerabilities}
+
+
+\subsection{Concept}
+
+
+
+\subsubsection{The object-tag}
+
+The object-tag allows the developer to specify which format 
+the embedded should be interpreted as. 
+
+\subsubsection{Syntax injection}
+
+the minimal malformed structure that is required for Adobe 
+Reader to consider it a PDF. 
+
+[anything] \%PDF- [anything] \
+[ anything ] [space] trailer [space] << [any name value pair] 
+/Root [space ] <<[any name value pair] /Pages [space]<< [any name value pair] >> [any name value pair] >> [any name value pair] >>
+
+This means the required tokens that we need to be able to 
+inject are: \%PDF-, trailer, <<, >> and /.
+The \%PDF and trailer token is usually no problem. From what 
+I have seen, sometimes PDF is turned to lower case which 
+prevents the attacks. Quite naturally, unless the site is 
+vulnerable to traditional XSS, the << and >> tokens are usually 
+converted to \&lt; or some other encoding. The exception is in 
+a JavaScript string context. In this context only </script> 
+pose a threat, in case the < is not encoded this is usually 
+prevented by escaping the slash:
+
+var s = 'user string<\\/script>';
+
+This is bad from a PDF syntax point of view, because \\/Root is 
+not valid. But </script> is only valid when the < is directly 
+followed by /. So we can create a PoC which is not vulnerable to 
+traditional XSS, where the injection is  in a string and only </ 
+is escaped, which will be vulnerable to PDF injection.
+
+
+\subsubsection{Polyglot upload}
+
+
+
+\subsubsection{Cross-origin communication}
+
+For communication with the containing page, one can either use 
+hostContainer.postMessage(info) or app.launchURL('\#'+info). The 
+latter has the advantage that it works in Firefox which seems 
+to not handle the postMessage very well.
+
+
+\subsection{Instances}
+
+How this problem presents itself in various instances of browsers and readers.
+
+
+\subsubsection{Browsers}
+
+Vulnerable: Firefox, Safari, Opera, Chrome
+
+Not vulnerable: Internet Explorer
+
+
+\subsubsection{Readers}
+
+Vulnerable: Adobe Reader
+
+Not vulnerable: Chrome PDF-viewer
+
+Not tested: Apple Preview
+
+
+
+
+
+
+
+
+
+
+\section{Evaluation}
+
+
+\subsection{Bypassing content filters}
+
+
+\subsubsection{Server-side upload filters}
+
+Filter can verify that the benign file format is indeed benign 
+without ever noticing the malicious file format hidden within.
+
+
+\subsubsection{Cross-site scripting filters}
+
+This effectively bypasses any cross-site scripting filters such as 
+NoScript or filters built into browsers. Since the Reader plugin 
+handles the response, the broser never gets to see the content
+
+
+\subsubsection{Context sensitive filters}
+
+Clever filters that adapt their filtering to the context in which 
+the user content is included. Basically filters that allow input 
+that do not form harmful HTML. 
+
+
+\subsection{Alexa top 100}
+
+Alexa top 100 results
+
+%Baidu.com (allows <>, but escapes /)
+%LinkedIn (allows <>, but escapes /)
+%Soso (allows <>, but escapes /)
+%Youku (vulnerable to traditional XSS)
+%Soku (vulnerable to traditional XSS)
+%alibaba.com (allows <>, but escapes /)
+%about.com (vulnerable to traditional XSS, http://linux.about.com/sitesearch.htm?q=XSS&SUName=--%3E%3Cimg+src=x+onerror=alert%281%29%3E)
+%sogou.com (potential target http://www.sogou.com/web?query=%25PDF+%3C%3C+%2F+%3E%3E&_asf=www.sogou.com&_ast=1349689275&w=01019900&p=40040100&sut=11010&sst0=1349689274528)
+
+
+
+
+
+
+
+
+
+
+
+\section{Prevention}
+
+
+\subsection{Server-side mitigation}
+
+
+\subsubsection{Syntax injection}
+
+In the case of PDF; always encode tokens related to the PDF 
+syntax. Generally, hard to ensure that tokens for all potential 
+file formats are properly encoded without breaking anything.
+
+
+\subsubsection{Polyglot upload}
+
+Sever content from a sandbox domain.
+
+
+\subsection{Browser}
+
+Prevent object-tag type attribute to override content type 
+provided by server. 
+
+
+\subsection{Reader}
+
+Stricter parsing of PDF files.
+
+Not render content served with incorrect content type.
+
+
+
+
+
+
+
+
+
+\section{Related work}
+
+
+
+
+
+
+
+
+\section{Conclusions}
+
+
+
+
+
+
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{literature}
+
+
+\end{document}
