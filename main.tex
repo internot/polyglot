@@ -6,38 +6,59 @@
 
 \begin{document}
 
-\author{\IEEEauthorblockN{Jonas Magazinius}
-\IEEEauthorblockA{Department of Computer Science\\
-Chalmers University of Technology\\
-Gothenburg, Sweden\\
-jonas.magazinius@chalmers.se}
-\and
-\IEEEauthorblockN{Billy Rios}
-\IEEEauthorblockA{dept. name of organization\\
-name of organization, acronyms acceptable\\
-City, United States of America\\
-Email: name@xyz.com}
-\and
-\IEEEauthorblockN{Andrei Sabelfeld}
-\IEEEauthorblockA{Department of Computer Science\\
-Chalmers University of Technology\\
-Gothenburg, Sweden\\
-andrei@chalmers.se}
-}
+
+% \author{\IEEEauthorblockN{Jonas Magazinius}
+% \IEEEauthorblockA{Department of Computer Science\\
+% Chalmers University of Technology\\
+% Gothenburg, Sweden\\
+% jonas.magazinius@chalmers.se}
+% \and
+% \IEEEauthorblockN{Billy Rios}
+% \IEEEauthorblockA{dept. name of organization\\
+% name of organization, acronyms acceptable\\
+% City, United States of America\\
+% Email: name@xyz.com}
+% \and
+% \IEEEauthorblockN{Andrei Sabelfeld}
+% \IEEEauthorblockA{Department of Computer Science\\
+% Chalmers University of Technology\\
+% Gothenburg, Sweden\\
+% andrei@chalmers.se}
+% }
 
 \maketitle
 
 
 
 \begin{abstract}
-
+  In a heterogeneous system like the web, information is exchanged
+  between components in versatile formats. A new breed of attacks is
+  on the rise that exploit the mismatch between the expected and
+  provided content. \emph{Injection attacks} are becoming increasingly
+  more sophisticated by operating across multiple
+  languages. \emph{Content repurposing} attacks supply malicious
+  payload that appears formatted as benign content.
+%
+  This paper focuses on the root cause of a large class of attacks:
+  \emph{polyglots}. A polyglot is a program that is valid in multiple
+  programming languages. Polyglots allow multiple interpretation of
+  the content, providing a new space of attack vectors. We
+  characterize of what constitutes a dangerous format in the web
+  setting and identify particularly dangerous formats, with PDF as the
+  prime example. We demonstrate that polyglot-based attacks on the web
+  open up for insecure communication across Internet origins. We
+  perform a systematic study of PDF-based injection and content
+  repurposing attacks. We evaluate the current practice in
+  client/server content filtering and PDF readers for polyglot-based
+  attacks, and report on vulnerabilities in the top 100 Alexa web sites.
+  Our recommendations for protective measures on server side, in 
+  browsers, and in PDF readers show how to mitigate the attacks.
 \end{abstract}
 
 
 
 \begin{IEEEkeywords}
-Web Security; Polyglot; Cross-domain;
-
+Web Security; Polyglot; Injection; Cross-domain.
 \end{IEEEkeywords}
 
 
@@ -175,9 +196,10 @@ The secret is: <?=$_SESSION["secret"]?>
 Your guess: </body></html>;x=<html><body>!
 The secret is: 521352342
 </body></html>
-\end{lstlisting}$
-
-
+\end{lstlisting}
+\if 0
+$
+\fi
 
 This attack has been suggested as a way to bypass Content Security Policy. As E4X is only supported in the SpiderMonkey JavaScript engine, used in Firefox, this limits the exploitability of this scenario.
 While this is an unlikely scenario using JavaScript as the injected format, section \ref{sec:vuln} will show how this can be achieved in practice.
