@@ -1,5 +1,7 @@
 \documentclass[10pt, conference, compsocconf]{IEEEtran}
 
+\usepackage{listings}
+
 \title{Crossing Origins by Crossing Formats}
 
 \begin{document}
@@ -72,19 +74,52 @@ next level.
 %3 pages
 \section{Crossing origins by crossing formats}
 
-Describe how the attacks lead to Same-Origin Policy bypass.
+% Describe how the attacks lead to Same-Origin Policy bypass.
+
+In this section we generalize the problem and describe 
+how it can be abused to circumvent the same-origin policy.
+
 
 \subsection{Polyglots}
 
-What and how?
+% What and how?
 
-Why PDF format?
+A polyglot is defined as ``A person who knows several languages.'', 
+and the term is widely used in various fields of science. In computer 
+science, a polyglot is a program that is valid in multiple programming 
+languages. In this paper we use a broader definition of a programming language, 
+not limited to code meant for compilation to machine code or scripting 
+languages, but extended to any format that requires interpretation 
+before rendering.
 
-\subsection{Exploiting polyglots}
+A polyglot is composed from various constructs that are either 
+common between languages; or constructs that are language specific, but carrying 
+different meaning in each language. To maintain validity across languages, 
+one must ensure that language specific constructs are not interpreted by 
+other languages. This is often accomplished by hiding the parts of the 
+code specific to one language, in parts interpreted as comments or text 
+of another.
 
-A polyglot can be used for exploitation if there is a difference between how 
-content is interpreted at the time of verification compared to time of use. 
-It is possible to create such a polyglot by mixing content, that is benign when verified, with content, that is 
+Certain languages are particularly suitable for creating polyglots. 
+These languages either have a lot of constructs in common with other 
+languages, such as \emph{C}, or are defined such that the parser 
+ignores that which it cannot interpret, such as \emph{HTML}. The 
+latter allows for ample opportunity to hide any code specific to 
+another language, as long as there is no overlap with the syntax 
+of the first language.
+
+
+\subsection{Malicious polyglots}
+
+A polyglot can be used for malicious purposes if there is a difference 
+between the expected execution environment and the actual environment 
+it is executed in.
+In the situation where 
+
+at the time of verification compared to time of use
+
+It is possible to create such a polyglot by mixing content, that is benign 
+when verified, with content, that is 
 malicious when executed. The verification process will see the benign content 
 and allow it, but subsequently the malicious content is executed.
 
@@ -92,27 +127,88 @@ In literature we find Content repurposing, content smuggling, chameleon, gifar
 
 \subsection{Syntax injection}
 
-Description of attack technique
+% Description of attack technique
 
-Attack building blocks
+In a cross-site scripting attack, HTML syntax is injected into a 
+preexisting HTML document via vulnerable user supplied parameters. Similarly, 
+a syntax injection attack consists of injecting foreign syntax into 
+preexisting content of a different format, thereby creating a polyglot.
+The polyglot content can then be interpreted as either format; the benign 
+original format, or the malicious user-supplied format. 
 
-Scenarios
+% Attack building blocks
 
-\subsection{Polyglot upload}
+For this attack to be successful certain requirements needs to be 
+fulfilled. 
+\begin{itemize}
+	\item The original content must include parameters under the control of the 
+				user.
+	\item The user-supplied content must circumvent any validation or filtering.
+	\item There must exist a way of coercing the resulting polyglot to be 
+				interpreted as the malicious format.
+	\item The malicious format must have capabilities that are restricted or 
+				missing in the benign format.
+\end{itemize}
 
-Description of attack technique
+% Scenarios
 
-Building blocks
+Much like a cross-site scripting attack, we consider a scenario where a website serves documents which are based upon user-supplied content. 
 
-Scenarios
+The same-origin policy is intended to prevent a document from one origin from accessing the content of a document of another origin. At the same time it allows a script-tag in one document to include JavaScript of another origin and execute it in the context of that document. If an attacker is able to inject an HTML-document with JavaScript syntax in such a way that it became valid JavaScript, the attacker could include the document across origins via a script-tag and extract its content, thereby circumventing the same-origin policy.
+
+Consider the php-program in listing \ref{lst:php-sample}. Apart from being vulnerable to traditional cross-site scripting, it is vulnerable
+
+By requesting the site with parameter $guess=</body></html>;x=<html><body>$, the resulting document, listing \ref{lst:html-js}, is both malformed but valid HTML and valid JavaScript in browsers that support E4X. An attacker can now include the page as a script in the attackers page and extract the secret from variable x.
+
+\begin{lstlisting}[label=lst:php-sample,caption=Vulnerable PHP-program,captionpos=b]
+<?php
+session_start();
+$_SESSION["secret"] = rand();
+?>
+<html><body>
+Your guess: <?=$_GET["guess"]?>!
+The secret is: <?=$_SESSION["secret"]?>
+</body></html>
+\end{lstlisting}
+\begin{lstlisting}[label=lst:html-js,caption=Vulnerable PHP-program,captionpos=b]
+<html><body>
+Your guess: </body></html>;x=<html><body>!
+The secret is: 521352342
+</body></html>
+\end{lstlisting}$
+
+
+
+This attack has been suggested as a way to bypass Content Security Policy. As E4X is only supported in the SpiderMonkey JavaScript engine, used in Firefox, this limits the exploitability of this scenario.
+While this is an unlikely scenario using JavaScript as the injected format, section \ref{sec:vuln} will show how this can be achieved in practice.
+
+\subsection{Content repurposing}
+
+% Description of attack technique
+A content repurposing attack attacks a service that accepts and serves user supplied files. The files are verified to be of a certain benign file type, e.g. an image, before being served to the end user. By submitting a polyglot to such a service, an attacker can trick the service into serving malicious content under the origin of the service. The service can verify the
+
+% Building blocks
+For this attack to be successful certain requirements needs to be 
+fulfilled. 
+
+\begin{itemize}
+	\item The service must accept and serve user-supplied files.
+	\item The service must verify the user-supplied polyglot as the benign 
+				format.
+	\item There must exist a way of coercing the polyglot to be 
+				interpreted as the malicious format.
+\end{itemize}
+
+% Scenarios
 
 %3 pages
 \section{Vulnerabilities}
-
+\label{sec:vuln}
 
 \subsection{Concept}
 
 
+Why PDF format?
 
 \subsubsection{The object-tag}
 
@@ -126,7 +222,8 @@ Reader to consider it a PDF.
 
 [anything] \%PDF- [anything] \
 [ anything ] [space] trailer [space] << [any name value pair] 
-/Root [space ] <<[any name value pair] /Pages [space]<< [any name value pair] >> [any name value pair] >> [any name value pair] >>
+/Root [space] <<[any name value pair] /Pages [space]<< [any name value pair] 
+>> [any name value pair] >> [any name value pair] >>
 
 This means the required tokens that we need to be able to 
 inject are: \%PDF-, trailer, <<, >> and /.
@@ -204,8 +301,8 @@ without ever noticing the malicious file format hidden within.
 \subsubsection{Cross-site scripting filters}
 
 This effectively bypasses any cross-site scripting filters such as 
-NoScript or filters built into browsers. Since the Reader plugin 
-handles the response, the broser never gets to see the content
+NoScript or filters built into browsers. Since the Reader plug-in 
+handles the response, the browser never gets to see the content
 
 
 \subsubsection{Context sensitive filters}
@@ -253,7 +350,7 @@ file formats are properly encoded without breaking anything.
 
 \subsubsection{Polyglot upload}
 
-Sever content from a sandbox domain.
+Serve content from a sandbox domain.
 
 
 \subsection{Browser}
