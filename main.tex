@@ -84,7 +84,7 @@ New breed of attacks.
 
 \subsection{Content repurposing attacks}
 
-Server side verfication
+Server side verification
 
 Examples
 
@@ -108,13 +108,15 @@ how it can be abused to circumvent the same-origin policy.
 A polyglot is defined as ``A person who knows several languages.'', 
 and the term is widely used in various fields of science. In computer 
 science, a polyglot is a program that is valid in multiple programming 
-languages. In this paper we use a broader definition of a programming language, 
+languages. In this paper we use a broader definition of a programming 
+language, 
 not limited to code meant for compilation to machine code or scripting 
 languages, but extended to any format that requires interpretation 
 before rendering.
 
 A polyglot is composed from various constructs that are either 
-common between languages; or constructs that are language specific, but carrying 
+common between languages; or constructs that are language specific, but 
+carrying 
 different meaning in each language. To maintain validity across languages, 
 one must ensure that language specific constructs are not interpreted by 
 other languages. This is often accomplished by hiding the parts of the 
@@ -134,7 +136,7 @@ of the first language.
 
 A polyglot can be used for malicious purposes if there is a difference 
 between the expected execution environment and the actual environment 
-it is executed in.
+it is executed in. If the content is verified to be benign in 
 In the situation where 
 
 at the time of verification compared to time of use
@@ -159,11 +161,24 @@ original format, or the malicious user-supplied format.
 
 % Attack building blocks
 
+
+The target in this scenario is a user of the vulnerable website. The polyglot 
+is served in the benign format on the vulnerable server. However, the attack 
+is initiated from a page belonging to the attacker. While the user is logged 
+in to the service that the vulnerable website provides, the user 
+unsuspectingly visits the attackers malicious website. The page embeds the 
+polyglot content, but coerces it to be interpreted as the malicious format. 
+The attacker can now exploit the vulnerability, either by making requests to 
+the vulnerable website in the context of the user; or by extracting 
+information about the user that is stored on the vulnerable website.
+
+In situations like these, the same-origin policy is intended to prevent a document from one origin from accessing the content of a document of another origin. However, depending on the capabilities of the malicious format used in the attack, it may be possible to circumvent the same-origin policy.
+
 For this attack to be successful certain requirements needs to be 
 fulfilled. 
 \begin{itemize}
-	\item The original content must include parameters under the control of the 
-				user.
+	\item The original content must embed external information under the control 
+				of the attacker.
 	\item The user-supplied content must circumvent any validation or filtering.
 	\item There must exist a way of coercing the resulting polyglot to be 
 				interpreted as the malicious format.
@@ -173,50 +188,86 @@ fulfilled.
 
 % Scenarios
 
-Much like a cross-site scripting attack, we consider a scenario where a website serves documents which are based upon user-supplied content. 
+%Much like a cross-site scripting attack, we consider a scenario where a 
+%website serves documents which are based upon user-supplied information. 
 
-The same-origin policy is intended to prevent a document from one origin from accessing the content of a document of another origin. At the same time it allows a script-tag in one document to include JavaScript of another origin and execute it in the context of that document. If an attacker is able to inject an HTML-document with JavaScript syntax in such a way that it became valid JavaScript, the attacker could include the document across origins via a script-tag and extract its content, thereby circumventing the same-origin policy.
+%The same-origin policy is intended to prevent a document from one origin from 
+%accessing the content of a document of another origin. 
+As an example the same-origin policy allows a script-tag in one document to 
+include JavaScript of another origin and execute it in the context of that 
+document. If an attacker is able to inject an HTML document with JavaScript 
+syntax in such a way that it became valid JavaScript, the attacker could 
+include the document across origins via a script-tag and extract its content, 
+thereby circumventing the same-origin policy.
 
-Consider the php-program in listing \ref{lst:php-sample}. Apart from being vulnerable to traditional cross-site scripting, it is vulnerable
+%Consider the php-program in listing \ref{lst:php-sample}. Apart from being 
+%vulnerable to traditional cross-site scripting, it is vulnerable
 
-By requesting the site with parameter $guess=</body></html>;x=<html><body>$, the resulting document, listing \ref{lst:html-js}, is both malformed but valid HTML and valid JavaScript in browsers that support E4X. An attacker can now include the page as a script in the attackers page and extract the secret from variable x.
+%By requesting the site with parameter $guess=</body></html>;x=<html><body>$, 
+%the resulting document, 
+The document in listing \ref{lst:html-js}, is both malformed but valid HTML 
+and valid JavaScript in browsers that support E4X. The document can be 
+included as a script in another document and the secret can be extracted from 
+variable x. This implies that if an attacker is able to inject HTML syntax 
+into a document, such that the result is two balanced E4X trees, then 
+information can be extracted across origins.
 
-\begin{lstlisting}[label=lst:php-sample,caption=Vulnerable PHP-program,captionpos=b]
-<?php
-session_start();
-$_SESSION["secret"] = rand();
-?>
+\begin{lstlisting}[label=lst:html-js, caption=HTML / E4X Polyglot]
 <html><body>
-Your guess: <?=$_GET["guess"]?>!
-The secret is: <?=$_SESSION["secret"]?>
+Hello </body></html>;x=<html><body>!
+Your secret is 'safe with me'.
 </body></html>
 \end{lstlisting}
-\begin{lstlisting}[label=lst:html-js,caption=Vulnerable PHP-program,captionpos=b]
-<html><body>
-Your guess: </body></html>;x=<html><body>!
-The secret is: 521352342
-</body></html>
-\end{lstlisting}
-\if 0
-$
-\fi
 
-This attack has been suggested as a way to bypass Content Security Policy. As E4X is only supported in the SpiderMonkey JavaScript engine, used in Firefox, this limits the exploitability of this scenario.
-While this is an unlikely scenario using JavaScript as the injected format, section \ref{sec:vuln} will show how this can be achieved in practice.
+This attack has been suggested as a potential way to bypass Content Security 
+Policy \ref{required}. 
+As E4X is only supported in the SpiderMonkey JavaScript engine, used in 
+Firefox, this limits the exploitability of this example.
+While this is an unlikely scenario using JavaScript as the injected format, 
+section \ref{sec:vuln} will show how this can be achieved in practice.
+
+
+% The below example is too long and complicated.
+
+%\begin{lstlisting}[label=lst:php-sample,caption=Vulnerable PHP-program,captionpos=b]
+%<?php
+%session_start();
+%$_SESSION["secret"] = rand();
+%?>
+%<html><body>
+%Your guess: <?=$_GET["guess"]?>!
+%The secret is: <?=$_SESSION["secret"]?>
+%</body></html>
+%\end{lstlisting}
+%\begin{lstlisting}[label=lst:html-js,caption=Vulnerable %PHP-program,captionpos=b]
+%<html><body>
+%Your guess: </body></html>;x=<html><body>!
+%The secret is: 521352342
+%</body></html>
+%\end{lstlisting}
+%\if 0
+%$
+%\fi
+
 
 \subsection{Content repurposing}
 
 % Description of attack technique
-A content repurposing attack attacks a service that accepts and serves user supplied files. The files are verified to be of a certain benign file type, e.g. an image, before being served to the end user. By submitting a polyglot to such a service, an attacker can trick the service into serving malicious content under the origin of the service. The service can verify the
+A content repurposing attack attacks a website that allows and serves user supplied files. This could be a file sharing service, an image database, or a job search service. The files are verified to be of a certain benign file type, e.g. an image, before being served to the end user. By submitting a polyglot to such a service, an attacker can trick the service into serving malicious content under the origin of the service. The service will verify the file, assuming that it is of the benign format, but once the content is served an attacker can coerce the content to be interpreted as the malicious format.
 
 % Building blocks
+
+The difference in this scenario from the previous one is in the nature of the vulnerability. Where in the previous scenario an existing document was injected to become a polyglot, this scenario targets services which allow an attacker to introduce new documents.
+As in the previous scenario, the target is a user of the vulnerable website. 
+
+
 For this attack to be successful certain requirements needs to be 
 fulfilled. 
 
 \begin{itemize}
 	\item The service must accept and serve user-supplied files.
-	\item The service must verify the user-supplied polyglot as the benign 
-				format.
+	\item The service must verify the user-supplied polyglot under the 
+				assumption that it is in the benign format.
 	\item There must exist a way of coercing the polyglot to be 
 				interpreted as the malicious format.
 \end{itemize}
@@ -227,17 +278,42 @@ fulfilled.
 \section{Vulnerabilities}
 \label{sec:vuln}
 
+In this section we give concrete examples of the attacks described in the previous section, using the PDF format as the running example. 
+
 \subsection{Concept}
 
 
-Why PDF format?
+\subsubsection{The PDF format}
+
+% Why PDF format?
+
+The PDF format is a widely used, text based format with powerful capabilities. It can be used for displaying text, rendering graphics, animation and dynamic content. It is also a container format which allows for embedding of other files and formats. This and the fact that it is designed to be robust against errors, provides us with a format that is powerful, flexible and ideal for creating malicious polyglots.
+
+%Several design choices 
+
+Furthermore the PDF format is of particular interest to us because it can execute JavaScript and send HTTP requests to the server from which the document originated.
+
+
 
 \subsubsection{The object-tag}
 
-The object-tag allows the developer to specify which format 
-the embedded should be interpreted as. 
+%The object-tag allows the developer to specify which format 
+%the embedded content should be interpreted as. 
 
-\subsubsection{Syntax injection}
+The object-tag is used to embed content in a web page, which requires a plug-in to run. The plug-in is selected based on the MIME-type of the content, but because the server delivering the content might not be able to determine its format, the object tag allows a developer to set the type-attribute to guide the browser in which plug-in to run. When the type attribute is used, the corresponding plug-in is run regardless of which MIME-type the server returns and it is up to the plug-in to respond to and handle the content it is served. 
+
+In the case of the Adobe Reader plug-in completely disregards the MIME-type supplied by the server and will attempt to interpret any content as PDF. 
+
+\subsubsection{Cross-origin communication}
+
+For communication with the containing page, one can either use 
+hostContainer.postMessage(info) or app.launchURL('\#'+info). The 
+latter has the advantage that it works in Firefox which seems 
+to not handle the postMessage very well.
+
+
+
+\subsection{Syntax injection}
 
 the minimal malformed structure that is required for Adobe 
 Reader to consider it a PDF. 
@@ -267,16 +343,8 @@ traditional XSS, where the injection is  in a string and only </
 is escaped, which will be vulnerable to PDF injection.
 
 
-\subsubsection{Polyglot upload}
+\subsection{Polyglot upload}
 
-
-
-\subsubsection{Cross-origin communication}
-
-For communication with the containing page, one can either use 
-hostContainer.postMessage(info) or app.launchURL('\#'+info). The 
-latter has the advantage that it works in Firefox which seems 
-to not handle the postMessage very well.
 
 
 \subsection{Instances}
@@ -359,16 +427,18 @@ Alexa top 100 results
 %1-2 pages
 \section{Mitigation}
 
+This section will describe our recommendations for mitigation in each of the affected components.
 
 \subsection{Server-side mitigation}
 
 
 \subsubsection{Syntax injection}
 
-In the case of PDF; always encode tokens related to the PDF 
-syntax. Generally, hard to ensure that tokens for all potential 
-file formats are properly encoded without breaking anything.
+%In the case of PDF; always encode tokens related to the PDF 
+%syntax. Generally, hard to ensure that tokens for all potential 
+%file formats are properly encoded without breaking anything.
 
+Preventing syntax injection attacks on the server-side poses severe challenges. Even server-side filtering of HTML syntax to prevent cross-side scripting attacks has proved difficult due to the many contexts in which JavaScript can be introduced. Filtering all potentially harmful tokens from all formats in which a document could be interpreted, will likely be near impossible.
 
 \subsubsection{Polyglot upload}
 
