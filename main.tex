@@ -38,7 +38,7 @@ the rise that exploit the mismatch between the expected and provided content.
 operating across multiple languages. \emph{Content repurposing} attacks supply
 malicious payload that appears formatted as benign content. 
 % 
-This paper focuseson the root cause of a large class of attacks: \emph{polyglots}. 
+This paper focuses on the root cause of a large class of attacks: \emph{polyglots}. 
 A polyglot is aprogram that is valid in multiple programming languages. Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
 We characterize of what constitutes a dangerous format in the web setting and
@@ -48,8 +48,8 @@ communication across Internet origins. We perform a systematic study of
 PDF-based injection and content repurposing attacks. We evaluate the current
 practice in client/server content filtering and PDF readers for polyglot-based
 attacks, and report on vulnerabilities in the top 100 Alexa web sites. Our
-recommendations for protective measures on server side, in browsers, and in PDF
-readers show how to mitigate the attacks.
+recommendations for protective measures on server side, in browsers, and in content
+interpreters (such as PDF readers) show how to mitigate the attacks.
 \end{abstract}
 
 
@@ -521,14 +521,39 @@ the specification, it would be a simple task to create a PDF-based polyglot.
 
 %1 page 
 \section{Conclusions}
+We have put a spotlight on a new breed of attacks that smuggle
+malicious payload formatted as benign content. We have identified
+polyglots as the root cause for this class of attacks. In a systematic
+study, we have characterized the necessary ingredients for
+polyglot-based attacks on the web and arrive at the PDF format to be
+particularly dangerous. Our empirical studies in the web setting
+confirm vulnerabilities in the current content filters both in the
+server side and in browsers, as well as in the PDF interpreters.
+These vulnerabilities open up for insecure communication across
+Internet origins and allow attacking web sites from the top 100 Alexa
+list. To mitigate the attacks, we suggest general measures against
+polyglot-based attacks.  These measures are a combination of
+protection on the server side, in browsers, and in content
+interpreters such as PDF readers.
 
-We have contacted the vendors...
+The affected vendors have been made aware of the
+vulnerabilities. These vendors include Adobe (notified instantly after
+discovering the security implications of polyglot PDFs)
+%in late 2009
+and the major browser vendors. We have also contacted the vulnerable
+web sites from the top 100 Alexa list.
 
-Mentioned that Adobe was notified long time ago.
+Future work includes identification of further formats vulnerable to
+polyglot-based attacks. Versatile media content formats such as the
+Windows Media Video format are of particular concern because of their
+potential for executing scripts. Further investigation of the PDF
+format might lead to enhanced possibilities to bypass content filters
+by alternative character sets.
 
-
-
-
+We also plan to extend the empirical study to popular services like
+HotCRP, Europass CV, and arXiv.org that allow uploading PDF
+documents. Authorization is pending for an in-depth security study of
+a major conference submission system.
 
 %1-2 pages 
 \bibliographystyle{IEEEtran}
