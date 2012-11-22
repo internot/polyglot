@@ -1,6 +1,13 @@
-\documentclass[10pt, conference, compsocconf]{IEEEtran}
+\documentclass{acm_proc_article-sp}
+%\documentclass[10pt, conference, compsocconf]{IEEEtran}
 
 \usepackage{listings}
+
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\definecolor{lightred}{rgb}{1,0.8,0.8}
+\newcommand{\todo}[1]{\colorbox{red}{\textcolor{white}{\sffamily\bfseries\scriptsize TODO}} \textcolor{red}{#1} \textcolor{red}{$\blacktriangleleft$}}
+
 
 \title{Crossing Origins by Crossing Formats}
 
@@ -53,9 +60,9 @@ interpreters (such as PDF readers) show how to mitigate the attacks.
 \end{abstract}
 
 
-\begin{IEEEkeywords}
-Web Security; Polyglot; Injection; Cross-domain.
-\end{IEEEkeywords}
+% \begin{IEEEkeywords}
+% Web Security; Polyglot; Injection; Cross-domain.
+% \end{IEEEkeywords}
 
 
 
@@ -88,13 +95,15 @@ Examples
 
 Bridge to the next section saying that we take these attacks to the next level.
 
+\todo{Define SOP}
+
 %3 pages
 \section{Crossing origins by crossing formats}
 
 % Describe how the attacks lead to Same-Origin Policy bypass.
 
 This section describes how formats can be crossed and how that can be abused 
-to cross origins by circumventing the \emph{Same-Origin Policy}. We begin by 
+to cross origins by circumventing the Same-Origin Policy. We begin by 
 generalizing the problem of crossing formats to \emph{polyglots} and then describe the  
 characteristics of a malicious polyglot. From that we derive two attack vectors and 
 show how previous work on the subject relate to these vectors.
@@ -102,8 +111,8 @@ show how previous work on the subject relate to these vectors.
 \subsection{Crossing origins}
 
 By crossing origins we mean being able to request and access content
-which is normally restricted under the Same-Origin Policy (SOP). 
-The SOP dictates that a two document can only access each others 
+which is normally restricted under the Same-Origin Policy. 
+Recall that SOP dictates that a two document can only access each others 
 content and resources if they share the same origin. Similarly this applies to communication as 
 well; a document can only directly communicate with the server from which it originated. 
 This is not to be confused with Cross-Origin Resource Sharing (CORS), which is an 
@@ -131,7 +140,7 @@ plug-in to run. As with images, the content handled by the plug-in retains its o
 but the browsers are forced to rely on the plug-ins to employ correct security 
 measures to prevent information leaks. While the containing page is restricted 
 from directly accessing the content handled by the plug-in, a number of plugins provide 
-an API for interacting with the plug-in and the data. As we will show, this can easily lead to 
+an API for interacting with the plug-in and the data. As we will show, this can lead to 
 to cross-origin information leaks.
 
 \subsection{Crossing formats}
@@ -139,7 +148,7 @@ to cross-origin information leaks.
 % What and how?
 
 A polyglot is defined as ``A person who knows several languages.'', and the term
-is widely used in various fields of science. In computer science, a polyglot is
+is widely used in various fields of science. In computer science, a \emph{polyglot} is
 a program that is valid in multiple programming languages. In this paper we use
 a broader definition of a programming language, not limited to code meant for
 compilation to machine code or scripting languages, but extended to any format
@@ -160,25 +169,25 @@ any code specific to another language, as long as there is no overlap with the
 syntax of the first language.
 
 
-\paragraph{Malicious polyglots}
+%\paragraph{Malicious polyglots}
 
 % What is a malicious polyglot? - One part benign one part malicious
 
 A malicious polyglot is composed of two formats where one is benign in nature and the other
 contains a malicious payload. 
 % Characteristics of a malicious polyglot
-The benign format would preferably be a widely accepted format with the capability 
-of hiding arbitrary data, e.g. an image with comment fields. The malicious file 
-format would ideally have strong capabilities, s
+The benign format is a widely accepted format with the capability 
+of hiding arbitrary data, e.g. an image with comment fields. The malicious 
+format has additional capabilities, such as scripting.
 % Under what circumstances can a polyglot be malicious
 This kind of polyglot can be used for malicious purposes when there is a difference between
 the expected run-time context and the actual context it is executed in. 
-In the expected context the content would be interpreted as the 
+In the expected context the content is interpreted as the 
 benign format. In the actual context, however, the content is coerced to be 
 interpreted as the malicious format containing the payload.
 
-Even if a verification process exists, it would verify that the content is valid 
-in the expected context. Due to the nature of the polyglot, the content would be 
+Even if a verification process exists, it verifies that the content is valid 
+in the expected context. Due to the nature of the polyglot, the content is 
 verified as valid and benign, but subsequently the malicious
 content is executed.
 
@@ -189,7 +198,7 @@ tags even let the developer decide which type to interpret the content as.
 To prevent abuse, the browsers employ content-type 
 sniffing for certain content-types, a practice which has historically led to 
 security issues.
-
+\todo{explain the issues and cite Barthe et al.}
 
 % Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
 
@@ -220,14 +229,14 @@ malicious user-supplied format.
 
 % Browser, plug-in/content handler, target, vulnerability, server
 
-
+\todo{diagram}
 The target in this scenario is a user of the vulnerable website. The polyglot is
 served in the benign format on the vulnerable server. While the user is logged in to
 the service that the vulnerable website provides, the user unsuspectingly visits
 the attackers malicious website. The page embeds the polyglot content, but
 coerces the browser to interpret the content as the malicious format. 
-How  on the capabilities of the malicious format, 
-The attacker can now
+The capabilities of the malicious format determine the severity of the consequences.
+The attacker can
 exploit the vulnerability, either by making requests to the vulnerable website
 in the context of the user; or by extracting information about the user that is
 stored on the vulnerable website.
@@ -260,7 +269,7 @@ As an example the
 same-origin policy allows a script-tag in one document to include JavaScript of
 another origin and execute it in the context of that document. If an attacker is
 able to inject an HTML document with JavaScript syntax in such a way that it
-became valid JavaScript, the attacker could include the document across origins
+became valid JavaScript, the attacker can include the document across origins
 via a script-tag and extract its content, thereby circumventing the same-origin
 policy.
 
@@ -269,37 +278,46 @@ policy.
 
 %By requesting the site with parameter $guess=</body></html>;x=<html><body>$,
 %the resulting document, 
-The document in listing \ref{lst:html-js}, is both
-malformed but valid HTML and valid JavaScript in browsers that support E4X. The
-document can be included as a script in another document and the secret can be
-extracted from variable x. This implies that if an attacker is able to inject
-HTML syntax into a document, such that the result is two balanced E4X trees,
-then information can be extracted across origins.
+The document in Listing \ref{lst:html-js}, is both
+malformed but valid HTML and valid JavaScript in browsers that support
+EcmaScript for XML (E4X). \todo{ref}
 
-\begin{lstlisting}[label=lst:html-js, caption=HTML / E4X Polyglot]
+The
+document can be included as a script in another document and the secret can be
+extracted from variable x. 
+This implies that if an attacker is able to inject
+HTML syntax into a document, closing all previously open tags and
+opening all subsequently closed tags,
+then information can be extracted across origins.
+The injected HTML in the listing is illustrated by highlighting.
+
+\definecolor{lightgray}{gray}{.8}
+\begin{lstlisting}[label=lst:html-js, caption=HTML / E4X Polyglot, escapechar=*]
 <html><body>
-Hello </body></html>;x=<html><body>!
+Hello *\colorbox{lightgray}{$<$/body$><$/html$>$;x=$<$html$><$body$>$}*!
 Your secret is 'safe with me'.
 </body></html>
 \end{lstlisting}
 
 This attack has been suggested as a potential way to bypass Content Security
 Policy~\cite{Heyes:CSP}. As E4X is only supported in the SpiderMonkey JavaScript
-engine, used in Firefox, this limits the exploitability of this example. While
-this is an unlikely scenario using JavaScript as the injected format, section
-\ref{sec:vuln} will show how this can be achieved in practice.
+engine, used in Firefox, this limits the exploitability of this example. However,
+this is an unlikely scenario to use JavaScript as the injected format
+because HTML characters are typically escaped by content
+filters. 
+Instead,
+Section
+\ref{sec:vuln} will show practical attacks based on other formats.
 
-
-
-
+\todo{Mention and explain known attack instances}
 
 \subsection{Content repurposing}
-
+\todo{diagram}
 % Description of attack technique 
 A content repurposing attack targets the users of a website
-that allows and serves user supplied files. This could be a file sharing
-service, an image database, or a job search service. The service would only 
-accept a limited set of file-types, and the files are verified to
+that allows and serves user supplied files. Examples are a file sharing
+service, an image database, or a job search service. Such a service 
+accepts a limited set of file-types, and the files are verified to
 be of one of these types, e.g. an image, before being served to the end
 user. By submitting a polyglot to such a service, an attacker can trick the
 service into serving malicious content under the origin of the service. The
@@ -328,9 +346,11 @@ For this attack to be successful, certain requirements needs to be fulfilled.
 \end{itemize}
 
 % Scenarios
+\todo{Mention and explain known attack instances}
+
 
 %3 pages 
-\section{Vulnerabilities}
+\section{Vulnerabilities and attacks}
 \label{sec:vuln}
 
 In this section we give concrete examples of the attacks described in the
@@ -526,7 +546,7 @@ Preventing syntax injection attacks on the server-side poses severe challenges.
 Even server-side filtering of HTML syntax to prevent cross-side scripting
 attacks has proved difficult due to the many contexts in which JavaScript can be 
 introduced. Filtering all potentially harmful tokens from all formats in which a 
-document could be interpreted, will likely be near impossible.
+document may be interpreted is hardly possible.
 
 To prevent PDF syntax injection attack, the task is simpler. As mentioned in Section~\ref{sec:vuln}, there is a limited 
 set of characters that are essential to create valid PDF syntax, namely \emph{'$<$', '$>$', and '/'}. Filtering 
@@ -551,23 +571,23 @@ Traditionally, browser vendors have allowed the browser to override the
 MIME-type provided by the server for compatibility reasons. This is a compromise 
 to deal with the situation that the server is confused as to what kind of content it is serving. This compromise 
 has repeatedly shown to lead to security issues. The affected browser vendors 
-could help mitigate this problem by limiting the ways content can be coerced to be 
+can help mitigate this problem by limiting the ways content can be coerced to be 
 interpreted as a particular format.
 
-In the case of PDF-based polyglots, the browser could intervene when there is a 
+In the case of PDF-based polyglots, the browser can intervene when there is a 
 mismatch between the content-type provided by the server and the type attribute 
-of the object tag. By acknowledging that there could be a potential security issue in 
+of the object tag. By acknowledging that there can be a potential security issue in 
 interpreting the supplied content in the requested format and alerting the user to this
-threat, the vulnerability could be mitigated.
+threat, the vulnerability can be mitigated.
 
-One could argue that the browser is as confused as the originating server as to the 
+One may argue that the browser is as confused as the originating server as to the 
 actual format of the content, and that the issue would be best resolved by the 
 corresponding plug-in.
 
 \subsection{Interpreter}
 
 As a general rule of thumb, the interpreter at the very least alert the user if the served 
-content-type differs from the expected. A preferred alternative would be to 
+content-type differs from the expected. A preferred alternative is to 
 not attempt to interpret the content at all. This holds true especially when 
 the served content-type is well known and radically different from that which 
 the interpreter is designed for.
@@ -575,10 +595,10 @@ the interpreter is designed for.
 As for the PDF file format, the underlying design decisions has led to the 
 current parsing being very relaxed, even with respect to the specification. 
 Making the parsing more strict and enforcing many of the specified requirements 
-would greatly reduce the attack surface. It is, however, not a complete 
+will reduce the attack surface. It is, however, not a complete 
 mitigation approach. Since the PDF format is a container format it is designed to 
 embed syntax from other files. Even when parsing strictly according to 
-the specification, it would be a simple task to create a PDF-based polyglot.
+the specification, it is a simple task to create a PDF-based polyglot.
 
 
 
@@ -628,8 +648,12 @@ documents. Authorization is pending for an in-depth security study of
 a major conference submission system.
 
 %1-2 pages 
-\bibliographystyle{IEEEtran}
+\bibliographystyle{plain}
 \bibliography{literature}
+
+\newpage
+\section*{Todo}
+Test page
 
 \end{document}
 
