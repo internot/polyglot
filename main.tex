@@ -39,7 +39,7 @@ operating across multiple languages. \emph{Content repurposing} attacks supply
 malicious payload that appears formatted as benign content. 
 % 
 This paper focuses on the root cause of a large class of attacks: \emph{polyglots}. 
-A polyglot is aprogram that is valid in multiple programming languages. Polyglots allow
+A polyglot is a program that is valid in multiple programming languages. Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
 We characterize of what constitutes a dangerous format in the web setting and
 identify particularly dangerous formats, with PDF as the prime example. We
@@ -99,69 +99,6 @@ generalizing the problem of crossing formats to \emph{polyglots} and then descri
 characteristics of a malicious polyglot. From that we derive two attack vectors and 
 show how previous work on the subject relate to these vectors.
 
-\subsection{Crossing formats}
-
-% What and how?
-
-A polyglot is defined as ``A person who knows several languages.'', and the term
-is widely used in various fields of science. In computer science, a polyglot is
-a program that is valid in multiple programming languages. In this paper we use
-a broader definition of a programming language, not limited to code meant for
-compilation to machine code or scripting languages, but extended to any format
-that requires interpretation before rendering.
-
-A polyglot is composed from various constructs that are either common between
-languages; or constructs that are language specific, but carrying different
-meaning in each language. To maintain validity across languages, one must ensure
-that language specific constructs are not interpreted by other languages. This
-is often accomplished by hiding the parts of the code specific to one language,
-in parts interpreted as comments or plain text of another.
-
-Certain languages are particularly suitable for creating polyglots. These
-languages either have a lot of constructs in common with other languages, such
-as \emph{C}, or are defined such that the parser ignores that which it cannot
-interpret, such as \emph{HTML}. The latter allows for ample opportunity to hide
-any code specific to another language, as long as there is no overlap with the
-syntax of the first language.
-
-
-\paragraph{Malicious polyglots}
-
-% What is a malicious polyglot? - One part benign one part malicious
-
-A malicious polyglot is composed of two formats where one is benign in nature and the other
-contains a malicious payload. 
-% Under what circumstances can a polyglot be malicious
-This kind of polyglot can be used for malicious purposes when there is a difference between
-the expected run-time context and the actual context it is executed in. 
-In the expected context the content would be interpreted as the 
-benign format. In the actual context, however, the content is coerced to be 
-interpreted as the malicious format containing the payload.
-
-Even if a verification process exists, it would verify that the content is valid 
-in the expected context. Due to the nature of the polyglot, the content would be 
-verified as valid and benign, but subsequently the malicious
-content is executed.
-
-In a web context, 
-% Characteristics of a malicious polyglot
-
-% Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
-
-% We have identified two classes of malicious polyglots; those based on syntax injection, and those based on content repurposing.
-
-If the content is verified to be benign in
-
-  In the situation where
-
-at the time of verification compared to time of use
-
-It is possible to create such a polyglot by mixing content, that is benign when
-verified, with content, that is malicious when executed. The verification
-process will see the benign content and allow it
-
-In literature we find Content repurposing, content smuggling, chameleon, gifar
-
 \subsection{Crossing origins}
 
 By crossing origins we mean being able to request and access content
@@ -196,6 +133,75 @@ measures to prevent information leaks. While the containing page is restricted
 from directly accessing the content handled by the plug-in, a number of plugins provide 
 an API for interacting with the plug-in and the data. As we will show, this can easily lead to 
 to cross-origin information leaks.
+
+\subsection{Crossing formats}
+
+% What and how?
+
+A polyglot is defined as ``A person who knows several languages.'', and the term
+is widely used in various fields of science. In computer science, a polyglot is
+a program that is valid in multiple programming languages. In this paper we use
+a broader definition of a programming language, not limited to code meant for
+compilation to machine code or scripting languages, but extended to any format
+that requires interpretation before rendering.
+
+A polyglot is composed from various constructs that are either common between
+languages; or constructs that are language specific, but carrying different
+meaning in each language. To maintain validity across languages, one must ensure
+that language specific constructs are not interpreted by other languages. This
+is often accomplished by hiding the parts of the code specific to one language,
+in parts interpreted as comments or plain text of another.
+
+Certain languages are particularly suitable for creating polyglots. These
+languages either have a lot of constructs in common with other languages, such
+as \emph{C}, or are defined such that the parser ignores that which it cannot
+interpret, such as \emph{HTML}. The latter allows for ample opportunity to hide
+any code specific to another language, as long as there is no overlap with the
+syntax of the first language.
+
+
+\paragraph{Malicious polyglots}
+
+% What is a malicious polyglot? - One part benign one part malicious
+
+A malicious polyglot is composed of two formats where one is benign in nature and the other
+contains a malicious payload. 
+% Characteristics of a malicious polyglot
+The benign format would preferably be a widely accepted format with the capability 
+of hiding arbitrary data, e.g. an image with comment fields. The malicious file 
+format would ideally have strong capabilities, s
+% Under what circumstances can a polyglot be malicious
+This kind of polyglot can be used for malicious purposes when there is a difference between
+the expected run-time context and the actual context it is executed in. 
+In the expected context the content would be interpreted as the 
+benign format. In the actual context, however, the content is coerced to be 
+interpreted as the malicious format containing the payload.
+
+Even if a verification process exists, it would verify that the content is valid 
+in the expected context. Due to the nature of the polyglot, the content would be 
+verified as valid and benign, but subsequently the malicious
+content is executed.
+
+In a web context, coercing content to be interpreted as a different type be 
+done easily. If the content is loaded using an image-tag it will be interpreted 
+as an image, if a script-tag is used it will be interpreted as a script. Some 
+tags even let the developer decide which type to interpret the content as. 
+To prevent abuse, the browsers employ content-type 
+sniffing for certain content-types, a practice which has historically led to 
+security issues.
+
+
+% Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
+
+We have identified two vectors in which malicious polyglots can be used for 
+exploitation; syntax injection, and content repurposing.
+
+
+%It is possible to create such a polyglot by mixing content, that is benign when
+%verified, with content, that is malicious when executed. The verification
+%process will see the benign content and allow it
+
+%In literature we find Content repurposing, content smuggling, chameleon, gifar
 
 
 
@@ -290,10 +296,11 @@ this is an unlikely scenario using JavaScript as the injected format, section
 \subsection{Content repurposing}
 
 % Description of attack technique 
-A content repurposing attack attacks a website
+A content repurposing attack targets the users of a website
 that allows and serves user supplied files. This could be a file sharing
-service, an image database, or a job search service. The files are verified to
-be of a certain benign file type, e.g. an image, before being served to the end
+service, an image database, or a job search service. The service would only 
+accept a limited set of file-types, and the files are verified to
+be of one of these types, e.g. an image, before being served to the end
 user. By submitting a polyglot to such a service, an attacker can trick the
 service into serving malicious content under the origin of the service. The
 service will verify the file, assuming that it is of the benign format, but once
