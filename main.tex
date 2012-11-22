@@ -93,11 +93,13 @@ Bridge to the next section saying that we take these attacks to the next level.
 
 % Describe how the attacks lead to Same-Origin Policy bypass.
 
-In this section we generalize the problem and describe how it can be abused to
-circumvent the same-origin policy.
+This section describes how formats can be crossed and how that can be abused 
+to cross origins by circumventing the \emph{Same-Origin Policy}. We begin by 
+generalizing the problem of crossing formats to \emph{polyglots} and then describe the  
+characteristics of a malicious polyglot. From that we derive two attack vectors and 
+show how previous work on the subject relate to these vectors.
 
-
-\subsection{Polyglots}
+\subsection{Crossing formats}
 
 % What and how?
 
@@ -113,7 +115,7 @@ languages; or constructs that are language specific, but carrying different
 meaning in each language. To maintain validity across languages, one must ensure
 that language specific constructs are not interpreted by other languages. This
 is often accomplished by hiding the parts of the code specific to one language,
-in parts interpreted as comments or text of another.
+in parts interpreted as comments or plain text of another.
 
 Certain languages are particularly suitable for creating polyglots. These
 languages either have a lot of constructs in common with other languages, such
@@ -123,10 +125,31 @@ any code specific to another language, as long as there is no overlap with the
 syntax of the first language.
 
 
-\subsection{Malicious polyglots}
+\paragraph{Malicious polyglots}
 
-A polyglot can be used for malicious purposes if there is a difference between
-the expected execution environment and the actual environment it is executed in.
+% What is a malicious polyglot? - One part benign one part malicious
+
+A malicious polyglot is composed of two formats where one is benign in nature and the other
+contains a malicious payload. 
+% Under what circumstances can a polyglot be malicious
+This kind of polyglot can be used for malicious purposes when there is a difference between
+the expected run-time context and the actual context it is executed in. 
+In the expected context the content would be interpreted as the 
+benign format. In the actual context, however, the content is coerced to be 
+interpreted as the malicious format containing the payload.
+
+Even if a verification process exists, it would verify that the content is valid 
+in the expected context. Due to the nature of the polyglot, the content would be 
+verified as valid and benign, but subsequently the malicious
+content is executed.
+
+In a web context, 
+% Characteristics of a malicious polyglot
+
+% Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
+
+% We have identified two classes of malicious polyglots; those based on syntax injection, and those based on content repurposing.
+
 If the content is verified to be benign in
 
   In the situation where
@@ -135,10 +158,46 @@ at the time of verification compared to time of use
 
 It is possible to create such a polyglot by mixing content, that is benign when
 verified, with content, that is malicious when executed. The verification
-process will see the benign content and allow it, but subsequently the malicious
-content is executed.
+process will see the benign content and allow it
 
 In literature we find Content repurposing, content smuggling, chameleon, gifar
+
+\subsection{Crossing origins}
+
+By crossing origins we mean being able to request and access content
+which is normally restricted under the Same-Origin Policy (SOP). 
+The SOP dictates that a two document can only access each others 
+content and resources if they share the same origin. Similarly this applies to communication as 
+well; a document can only directly communicate with the server from which it originated. 
+This is not to be confused with Cross-Origin Resource Sharing (CORS), which is an 
+intentional relaxing of the SOP.
+
+While there are exceptions to this policy, e.g. images, scripts, and style sheets 
+are allowed to be included as resources across origins, access to these resources is 
+carefully restricted to prevent information leaks. As an example, the including 
+document is prevented from accessing the image data of images loaded across 
+origins. 
+
+Not all elements are as carefully restricted from information leaks as images. 
+Scripts loaded across origins become part of the document and inherit the 
+origin of the including document, which allows the script to communicate with the 
+server from which the \emph{document} originated. Such scripts are also able to interact 
+with the document, e.g. by adding nodes, which in turn require new content to be 
+requested. Since these requests are not restricted by the SOP, this creates a side 
+channel that permits cross-origin information leakage. At the same time, the including document
+is prevented from inspecting the source of the script and can only observe the public 
+side-effects that the script produce as it is executed.
+
+Other examples of problematic elements include the object- and embed-tags. These 
+tags allow inclusion of resources that might require a 
+plug-in to run. As with images, the content handled by the plug-in retains its origin, 
+but the browsers are forced to rely on the plug-ins to employ correct security 
+measures to prevent information leaks. While the containing page is restricted 
+from directly accessing the content handled by the plug-in, a number of plugins provide 
+an API for interacting with the plug-in and the data. As we will show, this can easily lead to 
+to cross-origin information leaks.
+
+
 
 \subsection{Syntax injection}
 
@@ -157,11 +216,12 @@ malicious user-supplied format.
 
 
 The target in this scenario is a user of the vulnerable website. The polyglot is
-served in the benign format on the vulnerable server. However, the attack is
-initiated from a page belonging to the attacker. While the user is logged in to
+served in the benign format on the vulnerable server. While the user is logged in to
 the service that the vulnerable website provides, the user unsuspectingly visits
 the attackers malicious website. The page embeds the polyglot content, but
-coerces it to be interpreted as the malicious format. The attacker can now
+coerces the browser to interpret the content as the malicious format. 
+How  on the capabilities of the malicious format, 
+The attacker can now
 exploit the vulnerability, either by making requests to the vulnerable website
 in the context of the user; or by extracting information about the user that is
 stored on the vulnerable website.
@@ -277,19 +337,24 @@ previous section, using the PDF format as the running example.
 % Why PDF format?
 
 The PDF format is a widely used, text based format with powerful capabilities.
-It can be used for displaying text, rendering graphics, animation and dynamic
-content. It is also a container format which allows for embedding of other files
+It is capable of displaying text, rendering graphics, animation and dynamic
+content. It is a container format which allows for embedding of other files
 and formats. This and the fact that it is designed to be robust against errors,
 provides us with a format that is powerful, flexible and ideal for creating
 malicious polyglots.
 
-%Several design choices 
+% Several design choices 
+
+% - Error tolerant parsing
+% - Execute JavaScript
+% - Embed flash files
+% - Launch commands
 
 Furthermore the PDF format is of particular interest to us because it can
 execute JavaScript and send HTTP requests to the server from which the document
 originated.
 
-\subsubsection{Cross-origin communication}
+\subsubsection{PDF communication channels}
 
 For communication with the containing page, one can either use
 hostContainer.postMessage(info) or app.launchURL('\#'+info). The latter has the
@@ -298,12 +363,12 @@ very well.
 
 
 
-\subsubsection{The object-tag}
+\subsection{The object-tag}
 
 %The object-tag allows the developer to specify which format 
 %the embedded content should be interpreted as.
 
-The object-tag is used to embed content, which requires a plug-in
+The object-tag is used to embed content, which requires a browser plug-in
 to run, in a web page. The plug-in is selected based on the MIME-type of the content, but
 because the server delivering the content might not be able to determine its
 format, the object tag allows a developer to set the type-attribute to guide the
@@ -311,7 +376,7 @@ browser in which plug-in to run. When the type attribute is used, the
 corresponding plug-in is run regardless of which MIME-type the server returns
 and it is up to the plug-in to respond to and handle the content it is served.
 
-As it turns out, various plug-ins deal with the situation differently. The Chrome browser
+As it turns out, various browser plug-ins deal with the situation differently. The Chrome browser
 built-in PDF reader refuses to render content that was served with an inappropriate 
 MIME-type. The Java plug-in used to ignore the MIME-type, but after several 
 vulnerabilities were disclosed, this behavior was changed. 
@@ -328,7 +393,7 @@ be the same as in other browsers and the content will be interpreted as PDF.
 the minimal malformed structure that is required for Adobe Reader to consider ita PDF.
 
 \begin{lstlisting}[label=lst:minimal-pdf, caption=HTML / E4X Polyglot]
-\%PDF-\
+%PDF-
 trailer<</Root<</Pages<<>>>>>>
 \end{lstlisting}
 
