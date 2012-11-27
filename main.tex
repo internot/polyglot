@@ -99,7 +99,7 @@ Bridge to the next section saying that we take these attacks to the next level.
 
 %3 pages
 \section{Crossing origins by crossing formats}
-
+\label{sec:cross}
 % Describe how the attacks lead to Same-Origin Policy bypass.
 
 This section describes how formats can be crossed and how that can be abused 
@@ -353,26 +353,113 @@ For this attack to be successful, certain requirements needs to be fulfilled.
 \section{Vulnerabilities and attacks}
 \label{sec:vuln}
 
-In this section we give concrete examples of the attacks described in the
-previous section, using the PDF format as the running example.
+In this section we give concrete examples of the attacks described in 
+Section~\ref{sec:cross}, using the PDF format as the running example. We begin
+by detailing how the design decision made in the PDF-standard make it ideal 
+for creating malicious polyglots.
 
-\subsection{Concept}
+%\subsection{Concept}
 
 
 \subsection{The PDF format}
 
 % Why PDF format?
 
-The PDF format is a widely used, text based format with powerful capabilities.
-It is capable of displaying text, rendering graphics, animation and dynamic
-content. It is a container format which allows for embedding of other files
-and formats. This and the fact that it is designed to be robust against errors,
-provides us with a format that is powerful, flexible and ideal for creating
-malicious polyglots.
+The \emph{Portable Document Format} (PDF) is a widely used document format capable of displaying text, 
+rendering graphics, scripting, animation and other dynamic content. 
+
+\subsubsection{File structure}
+% header
+% objects
+% cross-reference
+% trailer
+
+According to the PDF specification \todo{cite specification} a PDF document consists of
+a header, several objects, a cross-reference section and a trailer. 
+
+
+\paragraph{Header}
+The header consists of the string "\%PDF-" followed by a version number. 
+According to the PDF reference implementation notes, the header can occur 
+anywhere within the first 1024 bytes of the file. The version is denoted by a 
+major and a minor version number of the form "M.m". Because the version can 
+be specified elsewhere, the version number is not required to be part of the 
+header.
+
+\paragraph{Objects}
+Objects can be direct or indirect, the difference being that indirect objects 
+has labels which are used for referring to the object from another object. Object labels 
+There are eight basic types of basic objects; booleans, integers, strings, names, 
+arrays, dictionaries, streams and the null object. For the intents and purposes 
+of this article, we will focus on the string, dictionary and stream objects.
+
+
+% dictionary objects
+% string objects
+% stream objects
+
+String objects are delimited by the "(" and ")" characters.
+
+Dictionary objects are delimited by the "<<" and ">>" tokens.
+
+Stream objects
+
+\paragraph{Cross-reference}
+The cross-reference section is a record of the location of indirect objects 
+within a file. The location is specified as the byte offset from the beginning 
+of the file. The cross-reference section is opened with the "xref" keyword,
+followed by one record for each indirect object. The cross-reference section 
+will be reconstructed if missing and can therefore be omitted.
+
+\paragraph{Trailer}
+The trailer is composed of a trailer dictionary, a pointer to the cross-reference 
+section and an end-of-file marker. The trailer dictionary is introduced by the 
+"trailer" keyword. It contains among other things a reference to the root of the 
+object tree. The "startxref" keyword is followed by the number of bytes from 
+the beginning of the file to the first cross-reference section. As with the 
+cross-reference section, it can be omitted. The string "\%\%EOF" marks the 
+end-of-file, but can be omitted.
+
+
+
+% actions?
+
+\begin{lstlisting}[label=lst:sample-pdf, caption=HTML / E4X Polyglot]
+%PDF-1.7
+1 0 obj<</Type/Catalog/Pages<<>>>>
+endobj
+2 0 obj<</Length 13>>
+stream
+Sample Author
+endstream
+endobj
+xref
+0000000000 65536 f
+0000000009 00000 n
+0000000057 00000 n
+trailer<</Root 1 0 R/Info<</Author 2 0 obj>>>>
+startxref
+127
+%%EOF
+\end{lstlisting}
+
+\subsubsection{PDF-based polyglots}
+Several design choices in the PDF specification make the format particularly 
+suitable for making polyglots. It is a container format in the sense that it allows 
+embedding of files and resources. Therefore a PDF file can, by design, contain foreign syntax that 
+could interfere with its syntax and hence the parsing is designed to be error 
+tolerant. Another motivation for this design choice is that PDF files can be 
+incrementally updated, by appending updated versions of existing objects to 
+the end of the file. In fact, 
+%and formats. This and the fact that it is designed to be robust against errors,
+%provides us with a format that is powerful, flexible and ideal for creating
+%malicious polyglots.
 
 % Several design choices 
 
 % - Error tolerant parsing
+% - Backward compatibility
+% - Container format
 % - Execute JavaScript
 % - Embed flash files
 % - Launch commands
@@ -381,10 +468,15 @@ Furthermore the PDF format is of particular interest to us because it can
 execute JavaScript and send HTTP requests to the server from which the document
 originated.
 
+\begin{lstlisting}[label=lst:minimal-pdf, caption=HTML / E4X Polyglot]
+%PDF-
+trailer<</Root<</Pages<<>>>>>>
+\end{lstlisting}
+
 \subsubsection{PDF communication channels}
 
 For communication with the containing page, one can either use
-hostContainer.postMessage(info) or app.launchURL('\#'+info). The latter has the
+hostContainer.postMessage(info) or app.launchURL('\#' + info). The latter has the
 advantage that it works in Firefox which seems to not handle the postMessage
 very well.
 
@@ -419,10 +511,7 @@ be the same as in other browsers and the content will be interpreted as PDF.
 
 the minimal malformed structure that is required for Adobe Reader to consider ita PDF.
 
-\begin{lstlisting}[label=lst:minimal-pdf, caption=HTML / E4X Polyglot]
-%PDF-
-trailer<</Root<</Pages<<>>>>>>
-\end{lstlisting}
+
 
 This means the required tokens that we need to be able to inject are: \%PDF-,
 trailer, <<, >> and /. The \%PDF and trailer token is usually no problem. From
@@ -433,7 +522,7 @@ exception is in a JavaScript string context. In this context only </script> pose
 a threat, in case the < is not encoded this is usually prevented by escaping the
 slash:
 
-var s = 'user string<\\/script>';
+var s = 'user string</script>';
 
 This is bad from a PDF syntax point of view, because \\/Root is not valid. But
 </script> is only valid when the < is directly followed by /. So we can create a
@@ -443,6 +532,17 @@ string and only </ is escaped, which will be vulnerable to PDF injection.
 
 \subsection{Content repurposing}
 
+
+
+
+
+
+
+
+
+
+%3 pages 
+\section{Evaluation}
 
 
 \subsection{Instances}
@@ -465,16 +565,6 @@ Not vulnerable: Chrome PDF-viewer
 
 Not tested: Apple Preview
 
-
-
-
-
-
-
-
-
-%3 pages 
-\section{Evaluation}
 
 \subsection{Bypassing content filters}
 
