@@ -361,133 +361,164 @@ for creating malicious polyglots.
 %\subsection{Concept}
 
 
-\subsection{The PDF format}
-
+\subsection{Portable Document Format}
+\label{sec:format}
 % Why PDF format?
 
-The \emph{Portable Document Format} (PDF) is a widely used document format capable of displaying text, 
-rendering graphics, scripting, animation and other dynamic content. 
+The \emph{Portable Document Format} (PDF) is a widely used document format 
+capable of displaying text, rendering graphics, scripting, animation and other 
+dynamic content. It is a container format in the sense that it allows 
+embedding of files and resources.
 
-\subsubsection{File structure}
+According to the PDF specification \todo{cite specification} a PDF file is composed of
+a header, several objects, a cross-reference section and a trailer. Listing~\ref{lst:sample-pdf} 
+shows a sample of how a PDF file is structured and its elements.
+
+
 % header
-% objects
-% cross-reference
-% trailer
-
-According to the PDF specification \todo{cite specification} a PDF document consists of
-a header, several objects, a cross-reference section and a trailer. 
-
-
-\paragraph{Header}
+\subsubsection{Header}
 The header consists of the string "\%PDF-" followed by a version number. 
-According to the PDF reference implementation notes, the header can occur 
-anywhere within the first 1024 bytes of the file. The version is denoted by a 
-major and a minor version number of the form "M.m". Because the version can 
+The version is denoted by a 
+major and a minor version number of the form "\emph{M.m}". Because the version can 
 be specified elsewhere, the version number is not required to be part of the 
 header.
 
-\paragraph{Objects}
+% objects
+\subsubsection{Objects}
 Objects can be direct or indirect, the difference being that indirect objects 
-has labels which are used for referring to the object from another object. Object labels 
+has labels which are used for referring to the object from another object. Object 
+labels are numbered and begin with the string "\emph{N n} obj", where "N" is the object number and "n" is the 
+revision number. Similarly object references are of the form "\emph{N n} R".
+The label is optionally ended with the keyword "endobj".
+
 There are eight basic types of basic objects; booleans, integers, strings, names, 
 arrays, dictionaries, streams and the null object. For the intents and purposes 
-of this article, we will focus on the string, dictionary and stream objects.
+of this article, we will focus on the string, dictionary, name and stream objects.
 
+% string objects
+\paragraph{String objects}
+There are two types of strings; literal and hexadecimal. Literal strings are 
+enclosed by the "(" and ")" characters. Any character can occur in a literal 
+string, even parentheses if they are balanced, e.g. a matching closing 
+parenthesis for every opened parenthesis. In hexadecimal strings 
+each character is represented by its corresponding hexadecimal value, enclosed 
+by the "$<$" and "$>$" characters.
 
 % dictionary objects
-% string objects
+\paragraph{Dictionary objects}
+Dictionary objects are a name-value map delimited by the "$<<$" and "$>>$" 
+tokens. The names are name objects and the values are objects of any type.
+% name objects
+Name objects begin with the "/" character, followed by a string of non-whitespace 
+characters. Each dictionary has a type, either specified by the "/Type" name or inferred 
+from the context in which it occurs. The type declares which kind of element the 
+dictionary is describing, e.g. a page or an annotation. Dictionaries form the structure of the document by connecting
+objects through references, e.g. relating a page to its contents. %At least one 
+%dictionary is required to build a PDF document. 
+% actions?
+A special type of dictionary describes \emph{actions}. Actions are triggered when a
+certain event occur, such as a file is opened or a page is displayed, and the action 
+dictionary specify how it should be handled. Actions can be used to, among other 
+things, go to a specific page, play a sound, execute JavaScript or launch a command.
+
 % stream objects
+\paragraph{Stream objects}
+A stream is an unlimited sequence of bytes. A stream object consists of a 
+dictionary, describing the stream, and the associated stream delimited by the 
+"stream" and "endstream" keywords. PDF supports encoding of streams, in which
+case the dictionary describe which filters are required to decode the stream. 
 
-String objects are delimited by the "(" and ")" characters.
-
-Dictionary objects are delimited by the "<<" and ">>" tokens.
-
-Stream objects
-
-\paragraph{Cross-reference}
+% cross-reference
+\subsubsection{Cross-reference}
 The cross-reference section is a record of the location of indirect objects 
 within a file. The location is specified as the byte offset from the beginning 
 of the file. The cross-reference section is opened with the "xref" keyword,
 followed by one record for each indirect object. The cross-reference section 
 will be reconstructed if missing and can therefore be omitted.
 
-\paragraph{Trailer}
+% trailer
+\subsubsection{Trailer}
 The trailer is composed of a trailer dictionary, a pointer to the cross-reference 
 section and an end-of-file marker. The trailer dictionary is introduced by the 
 "trailer" keyword. It contains among other things a reference to the root of the 
-object tree. The "startxref" keyword is followed by the number of bytes from 
+document structure. The "startxref" keyword is followed by the number of bytes from 
 the beginning of the file to the first cross-reference section. As with the 
 cross-reference section, it can be omitted. The string "\%\%EOF" marks the 
 end-of-file, but can be omitted.
 
 
-
-% actions?
-
-\begin{lstlisting}[label=lst:sample-pdf, caption=HTML / E4X Polyglot]
+\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
 %PDF-1.7
 1 0 obj<</Type/Catalog/Pages<<>>>>
 endobj
-2 0 obj<</Length 13>>
-stream
+2 0 obj<</Length 13>>stream
 Sample Author
 endstream
 endobj
 xref
+0 3
 0000000000 65536 f
 0000000009 00000 n
 0000000057 00000 n
-trailer<</Root 1 0 R/Info<</Author 2 0 obj>>>>
+trailer<</Root 1 0 R
+	/Info<</Author 2 0 R>>
+>>
 startxref
-127
+118
 %%EOF
 \end{lstlisting}
 
-\subsubsection{PDF-based polyglots}
+\subsection{PDF-based polyglots}
 Several design choices in the PDF specification make the format particularly 
-suitable for making polyglots. It is a container format in the sense that it allows 
-embedding of files and resources. Therefore a PDF file can, by design, contain foreign syntax that 
-could interfere with its syntax and hence the parsing is designed to be error 
-tolerant. Another motivation for this design choice is that PDF files can be 
-incrementally updated, by appending updated versions of existing objects to 
-the end of the file. In fact, 
+suitable for making polyglots. One such design choice is the error tolerant 
+parser. This is in part motivated it being a container format, of which the 
+implication is that a PDF file can, by design, contain foreign syntax that 
+could interfere with the syntax of the file. Another motivation is that PDF 
+files are designed to be both forward- and backward-compatible. Readers 
+implementing an older version of the specification do not recognize new 
+features and behave as if they were not present in the file. 
+%
+The implementation notes of the specification describes some exceptions to the
+requirements of the specification, such as the header can occur 
+anywhere within the first 1024 bytes of the file. This flexibility gives plenty of room for 
+combining with syntax of another format.
+%
+The specification declares many components to be required in a
+PDF file, but as can be seen in Section~\ref{sec:format}, in practice several 
+components can be omitted. The code in Listing~\ref{lst:minimal-pdf} shows the 
+minimal syntax required for a malformed, but valid PDF file.\todo{cite Julia Wolf?}
+%incrementally 
+%updated by appending updated versions of existing objects to 
+%the end of the file. In fact, 
 %and formats. This and the fact that it is designed to be robust against errors,
 %provides us with a format that is powerful, flexible and ideal for creating
 %malicious polyglots.
 
-% Several design choices 
-
-% - Error tolerant parsing
-% - Backward compatibility
-% - Container format
 % - Execute JavaScript
 % - Embed flash files
 % - Launch commands
+% - Network requests
 
-Furthermore the PDF format is of particular interest to us because it can
-execute JavaScript and send HTTP requests to the server from which the document
-originated.
+Furthermore the PDF format is of particular interest to us because of its 
+many capabilities. Some examples include executing JavaScript, launching commands, 
+and issuing HTTP requests. Adobe Reader even includes a flash 
+player to play embedded flash files on systems that do
+not have a player installed. %Considering that it might be a conscious decision
+%of the user to refuse a flash player, 
 
-\begin{lstlisting}[label=lst:minimal-pdf, caption=HTML / E4X Polyglot]
+\begin{lstlisting}[label=lst:minimal-pdf, caption=Minimal PDF file]
 %PDF-
 trailer<</Root<</Pages<<>>>>>>
 \end{lstlisting}
 
-\subsubsection{PDF communication channels}
 
-For communication with the containing page, one can either use
-hostContainer.postMessage(info) or app.launchURL('\#' + info). The latter has the
-advantage that it works in Firefox which seems to not handle the postMessage
-very well.
-
-
-
-\subsection{The object-tag}
-
+\subsection{The object- and embed-tags}
+\todo{consider renaming to "Embedded PDF documents", and describe the plug-in behaviour, origin of content, type handling, cookies?}
 %The object-tag allows the developer to specify which format 
 %the embedded content should be interpreted as.
 
-The object-tag is used to embed content, which requires a browser plug-in
+\todo{consider moving to section "Crossing origins"}
+The object- and embed-tags are used to embed content, which requires a browser plug-in
 to run, in a web page. The plug-in is selected based on the MIME-type of the content, but
 because the server delivering the content might not be able to determine its
 format, the object tag allows a developer to set the type-attribute to guide the
@@ -495,6 +526,7 @@ browser in which plug-in to run. When the type attribute is used, the
 corresponding plug-in is run regardless of which MIME-type the server returns
 and it is up to the plug-in to respond to and handle the content it is served.
 
+\todo{consider revising}
 As it turns out, various browser plug-ins deal with the situation differently. The Chrome browser
 built-in PDF reader refuses to render content that was served with an inappropriate 
 MIME-type. The Java plug-in used to ignore the MIME-type, but after several 
@@ -504,6 +536,74 @@ In the case of the Adobe Reader plug-in, it completely disregards the MIME-type
 supplied by the server and will attempt to interpret any content as PDF. If the 
 Chrome browser is configured to use the Adobe Reader plug-in, the behavior will 
 be the same as in other browsers and the content will be interpreted as PDF.
+
+
+\subsection{PDF communication primitives}
+
+% Cross-origin leaks
+To leak information across origins, a communication channel is 
+required between the attacker and the target. PDF provides the necessary means 
+to mediate this information leakage. The flow of information can be divided into 
+two steps, extracting information from the target and delivering it to the attacker.
+Each requiring its own communication primitives.
+
+When embedded in a web page, many of the PDF communication primitives utilize
+the underlying browser to make requests by navigating the browser to the target 
+URL. This will unload the current page in which the document is embedded. Such 
+primitives can be used in Cross-Site Request Forgery (CSRF) attacks, but would 
+defeat the purpose of requesting information as the document cannot process the 
+response.
+
+\subsubsection{The target}
+There are two primitives for a PDF to communicate with the server it originated from, 
+that allow it to read the response; from JavaScript using XML external entities 
+or from an embedded flash file.
+
+\paragraph{XML}
+The PDF JavaScript API includes a method to parse an XML document, called 
+XMLData.parse. The XML document being processed may rely on external entities, 
+which the XML parser will request and include in the document. The request is 
+bound to the origin of the document. As the response 
+is included in the document, it has to be valid, well-formed XML. This puts a 
+restriction on the content that can be requested using this method. Considering 
+that HTML pages are rarely well-formed this method may be too restricted.
+Listing~\ref{lst:xml-pdf} contains an example that uses XML external entities.
+
+\paragraph{Embedded Flash}
+The embedded flash file inherits the origin of the document, thus it can 
+request and read any document from the originating server. Unlike the XML
+method, there is no restrictions on what content can be requested.
+
+\begin{lstlisting}[label=lst:xml-pdf, caption=PDF using XML for communication]
+%PDF-
+1 0 obj<<>>stream
+xml = '<!DOCTYPE foo[<!ENTITY x SYSTEM "'+
+	URL+'">]><foo>&x;</foo>'
+app.alert(XMLData.parse(xml).saveXML())
+endstream
+trailer<</Root<</Pages<<>>
+    /OpenAction<</S/JavaScript/JS 1 0 R>>
+    >>
+>>
+\end{lstlisting}
+
+\subsubsection{The attacker}
+There are a number of ways to communicate with the attacker, either directly 
+via the embedding page or through the attackers server. While it is not To prevent the document from unloading 
+
+\paragraph{PostMessage}
+The PDF plugin includes an API for communicating directly with the page in 
+which it is embedded. The document can send messages to the page using 
+the hostContainer.postMessage method.
+
+\paragraph{Hash transport}
+
+\paragraph{Embedded Flash}
+Cross-origin communication in Flash is restricted by Cross-Origin Resource Sharing. 
+As mentioned, the embedded Flash file inherits the origin of the document.
+However, this is not a restriction, since an attacker can set a cross-origin policy 
+that allow the request.
+
 
 
 
