@@ -109,6 +109,7 @@ characteristics of a malicious polyglot. From that we derive two attack vectors 
 show how previous work on the subject relate to these vectors.
 
 \subsection{Crossing origins}
+\label{sec:cross-origin}
 
 By crossing origins we mean being able to request and access content
 which is normally restricted under the Same-Origin Policy. 
@@ -138,10 +139,16 @@ Other examples of problematic elements include the object- and embed-tags. These
 tags allow inclusion of resources that might require a 
 plug-in to run. As with images, the content handled by the plug-in retains its origin, 
 but the browsers are forced to rely on the plug-ins to employ correct security 
-measures to prevent information leaks. While the containing page is restricted 
+measures to prevent information leaks. The plug-in is selected based on the MIME-type of the content, but
+because the server delivering the content might not be able to determine its
+format, the object tag allows a developer to set the type-attribute to guide the
+browser in which plug-in to run. When the type attribute is used, the
+corresponding plug-in is run regardless of which MIME-type the server returns
+and it is up to the plug-in to respond to and handle the content it is served. While the containing page is restricted 
 from directly accessing the content handled by the plug-in, a number of plugins provide 
 an API for interacting with the plug-in and the data. As we will show, this can lead to 
 to cross-origin information leaks.
+
 
 \subsection{Crossing formats}
 
@@ -512,50 +519,46 @@ trailer<</Root<</Pages<<>>>>>>
 \end{lstlisting}
 
 
-\subsection{The object- and embed-tags}
-\todo{consider renaming to "Embedded PDF documents", and describe the plug-in behaviour, origin of content, type handling, cookies?}
-%The object-tag allows the developer to specify which format 
-%the embedded content should be interpreted as.
-
-\todo{consider moving to section "Crossing origins"}
-The object- and embed-tags are used to embed content, which requires a browser plug-in
-to run, in a web page. The plug-in is selected based on the MIME-type of the content, but
-because the server delivering the content might not be able to determine its
-format, the object tag allows a developer to set the type-attribute to guide the
-browser in which plug-in to run. When the type attribute is used, the
-corresponding plug-in is run regardless of which MIME-type the server returns
-and it is up to the plug-in to respond to and handle the content it is served.
-
-\todo{consider revising}
-As it turns out, various browser plug-ins deal with the situation differently. The Chrome browser
-built-in PDF reader refuses to render content that was served with an inappropriate 
-MIME-type. The Java plug-in used to ignore the MIME-type, but after several 
-vulnerabilities were disclosed, this behavior was changed. 
-
-In the case of the Adobe Reader plug-in, it completely disregards the MIME-type
-supplied by the server and will attempt to interpret any content as PDF. If the 
-Chrome browser is configured to use the Adobe Reader plug-in, the behavior will 
-be the same as in other browsers and the content will be interpreted as PDF.
+\subsection{Embedded PDF documents}
+\todo{Not sure how well it fits here}
+When a PDF document is embedded in a web page, the corresponding plugin 
+is executed to render the content. Recall from Section~\ref{sec:cross-origin} 
+that the plug-in is selected based 
+on the MIME-type, either supplied by the server or in the type attribute, and 
+that the browser rely on the plug-in to handle the situation when the MIME-type 
+supplied by the server is in appropriate for the plug-in.
+In the case of the Adobe Reader plug-in, it disregards the MIME-type
+supplied by the server and will attempt to interpret any content as PDF. 
 
 
-\subsection{PDF communication primitives}
+
+\subsection{PDF communication methods}
+
+The embedded document will retain the origin from which it was served. Any 
+request issued from the document will include any cookies available in the 
+browser for the target domain. This provides an attacker with the means to 
+perform actions in the name of an authenticated victim, i.e. Cross-Site Request 
+Forgery (CSRF). If the attacker can extract information, such as a CSRF-token, 
+the protection mechanism is defeated. \todo{this is describing another attack scenario, expand?}
+
+When embedded in a web page, many of the PDF communication methods utilize
+the underlying browser to make requests by navigating the browser to the target 
+URL. This will unload the current page in which the document is embedded. Page 
+navigation is allowed wtih respect to the SOP, since the response is not visible 
+to the document. Such methods can be used in CSRF attacks, but would 
+defeat the purpose of requesting information as the document cannot process the 
+response.
 
 % Cross-origin leaks
 To leak information across origins, a communication channel is 
 required between the attacker and the target. PDF provides the necessary means 
 to mediate this information leakage. The flow of information can be divided into 
 two steps, extracting information from the target and delivering it to the attacker.
-Each requiring its own communication primitives.
+Each requiring its own communication methods.
 
-When embedded in a web page, many of the PDF communication primitives utilize
-the underlying browser to make requests by navigating the browser to the target 
-URL. This will unload the current page in which the document is embedded. Such 
-primitives can be used in Cross-Site Request Forgery (CSRF) attacks, but would 
-defeat the purpose of requesting information as the document cannot process the 
-response.
 
 \subsubsection{The target}
-There are two primitives for a PDF to communicate with the server it originated from, 
+There are two methods for a PDF to communicate with the server it originated from, 
 that allow it to read the response; from JavaScript using XML external entities 
 or from an embedded flash file.
 
@@ -564,9 +567,9 @@ The PDF JavaScript API includes a method to parse an XML document, called
 XMLData.parse. The XML document being processed may rely on external entities, 
 which the XML parser will request and include in the document. The request is 
 bound to the origin of the document. As the response 
-is included in the document, it has to be valid, well-formed XML. This puts a 
+is included in the XML, the result has to be well-formed XML. This puts a 
 restriction on the content that can be requested using this method. Considering 
-that HTML pages are rarely well-formed this method may be too restricted.
+that HTML pages are rarely well-formed this method may be too restricted in practice.
 Listing~\ref{lst:xml-pdf} contains an example that uses XML external entities.
 
 \paragraph{Embedded Flash}
@@ -589,22 +592,35 @@ trailer<</Root<</Pages<<>>
 
 \subsubsection{The attacker}
 There are a number of ways to communicate with the attacker, either directly 
-via the embedding page or through the attackers server. While it is not To prevent the document from unloading 
+via the embedding page or through the attackers server. As mentioned previously, 
+many methods trigger page navigation in the browser. This will result in a 
+noticeable change in the victims browser. While it fulfills the purpose of 
+leaking information, an attacker can use more covert methods of communication
+to refrain from alerting the victim. 
+
+\paragraph{Fragment identifier}
+The methods that navigate the browser can still be used for a somewhat covert 
+communication with the attacker. Navigating to the same page with a different 
+fragment identifier will not reload the page. Embedding the information in the fragment 
+identifier of the URL of the embedding website, creates a one-way communication 
+channel from the document to the page. Since the fragment identifier is visible 
+in the address field of the browser, an alert user would notice it changing.
 
 \paragraph{PostMessage}
 The PDF plugin includes an API for communicating directly with the page in 
 which it is embedded. The document can send messages to the page using 
-the hostContainer.postMessage method.
-
-\paragraph{Hash transport}
+the hostContainer.postMessage method. The page registers a handler to receive 
+the event and is also able to post messages back to the document.
+This two way communication is not visible to the victim.
 
 \paragraph{Embedded Flash}
-Cross-origin communication in Flash is restricted by Cross-Origin Resource Sharing. 
+Cross-origin communication in Flash is restricted by the Same-Origin Policy,
+but also support cross-origin communication via Cross-Origin Resource Sharing 
+(CORS). Using CORS, a web server can relax the SOP to allow access to specified content.
 As mentioned, the embedded Flash file inherits the origin of the document.
 However, this is not a restriction, since an attacker can set a cross-origin policy 
-that allow the request.
-
-
+that allow the request. This allows for a two way communication that is not 
+visible to the victim.
 
 
 \subsection{Syntax injection}
@@ -658,6 +674,15 @@ Not vulnerable: Internet Explorer
 
 
 \subsubsection{Readers}
+
+\todo{see if this makes sense here}
+As it turns out, various browser plug-ins deal with the situation differently. The Chrome browser
+built-in PDF reader refuses to render content that was served with an inappropriate 
+MIME-type. If the 
+Chrome browser is configured to use the Adobe Reader plug-in, the behavior will 
+be the same as in other browsers and the content will be interpreted as PDF.
+The Java plug-in used to ignore the MIME-type, but after several 
+vulnerabilities were disclosed, this behavior was changed. 
 
 Vulnerable: Adobe Reader
 
