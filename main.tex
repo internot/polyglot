@@ -81,27 +81,69 @@ interpreters (such as PDF readers) show how to mitigate the attacks.
 \section{Introduction}
 \label{sec:intro}
 
-General introduction for web application security.
+Web application security is concerned with protecting information as
+it is manipulated by web applications. The different trust domains
+correspond to different Internet origins. A major goal for web
+application security is preventing undesired communication across
+origins. 
+%
+With the goal of separating information from the different origins,
+today's browsers enforce the \emph{same-origin policy} (SOP). SOP
+restricts only allows access between two documents if they share the
+origin. In addition, a document can only directly communicate with the
+server from which it originates.
 
-The following attacks have been particularly successful (support with
-references).
+There are several classes of cross-domain attacks that circumvent SOP.
+The OWASP top 10 list~\cite{OWASP:top10:10} places injection
+and \emph{cross-site scripting} (XSS) attacks as two top security
+risks for web applications.
+%
+A classical XSS attack injects a malicious script in the context of a
+trusted origin. This opens up opportunities for leaking sensitive
+information that users might have in the context of the trusted origin
+such as cookies, personal information, and session tokens.
 
-\subsection{Injection attacks}
+XSS attacks are relatively well understood by researchers and
+developers~\cite{XSS:understood}. Known defense include various
+flavors of \emph{sanitization} on server side and the
+\emph{content security policy} (CSP) on client side. Sanitization
+is often performed by the server which sanitizes input data
+before it is used in the generated web pages. Content security policy puts
+requirement on the structure of the document and the origins of the
+scripts that are included by web pages.
 
-Injection attacks have gone from classical to sophisticated.
+This paper identifies a new breed of attacks and its root cause:
+\emph{polyglots}. 
+%
+In a heterogeneous system like the web, information is exchanged
+between components in versatile formats.
+%
+This gives rise to attacks that exploit the mismatch between the
+expected and provided content.
+%
+The existing defense mechanisms fall short to prevent these attacks
+from achieving cross-domain communication.
 
-New breed of attacks.
+A polyglot is a program that is valid in multiple programming languages. Polyglots allow
+multiple interpretation of the content, providing a new space of attack vectors.
+We characterize of what constitutes a dangerous format in the web setting and
+identify particularly dangerous formats, with PDF as the prime example. We
+demonstrate that polyglot-based attacks on the web open up for insecure
+communication across Internet origins. We perform a systematic study of
+PDF-based injection and content repurposing attacks. We evaluate the current
+practice in client/server content filtering and PDF readers for polyglot-based
+attacks, and report on vulnerabilities in the top 100 Alexa web sites. Our
+recommendations for protective measures on server side, in browsers, and in content
+interpreters (such as PDF readers) show how to mitigate the attacks.
 
-\subsection{Content repurposing attacks}
+\todo{Emphasize novel attack vectors}
 
-Server side verification
+\emph{Injection attacks} are becoming increasingly more sophisticated by
+operating across multiple languages. \emph{Content repurposing} attacks supply
+malicious payload that appears formatted as benign content. 
 
-Examples
+The paper is organized as follows...
 
-
-Bridge to the next section saying that we take these attacks to the next level.
-
-\todo{Define SOP}
 
 %3 pages
 \section{Crossing origins by crossing formats}
@@ -122,7 +164,7 @@ which is normally restricted under the Same-Origin Policy.
 Recall that SOP dictates that a two document can only access each others 
 content and resources if they share the same origin. Similarly this applies to communication as 
 well; a document can only directly communicate with the server from which it originated. 
-This is not to be confused with Cross-Origin Resource Sharing (CORS), which is an 
+This is not to be confused with Cross-Origin Resource Sharing (CORS)~\cite{CORS}, which is an 
 intentional relaxing of the SOP.
 
 While there are exceptions to this policy, e.g. images, scripts, and style sheets 
