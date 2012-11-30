@@ -209,10 +209,10 @@ Section~\ref{sec:conc} concludes and outlines future work.
 %3 pages
 \section{Crossing origins by crossing formats}
 \label{sec:cross}
-% Describe how the attacks lead to Same-Origin Policy bypass.
+% Describe how the attacks lead to same-origin policy bypass.
 
 This section describes how formats can be crossed and how that can be abused 
-to cross origins by circumventing the Same-Origin Policy. We begin by 
+to cross origins by circumventing the same-origin policy. We begin by 
 generalizing the problem of crossing formats to \emph{polyglots} and then describe the  
 characteristics of a malicious polyglot. From that we derive two attack vectors and 
 show how previous work on the subject relate to these vectors.
@@ -221,16 +221,16 @@ show how previous work on the subject relate to these vectors.
 \label{sec:cross-origin}
 
 By crossing origins we mean being able to request and access content
-which is normally restricted under the Same-Origin Policy. 
-Recall that SOP dictates that a two document can only access each others 
-content and resources if they share the same origin. Similarly this applies to communication as 
-well; a document can only directly communicate with the server from which it originated. 
-This is not to be confused with Cross-Origin Resource Sharing (CORS)~\cite{w3-cors}, which is an 
-intentional relaxing of the SOP.
+which is normally restricted under the same-origin policy. 
+Recall that SOP only allows two documents accessing each others'
+content and resources if they share the origin. Similarly,
+a document can only directly communicate with the server from which it originated. 
+This is not to be confused with \emph{cross-origin resource sharing} (CORS)~\cite{w3-cors}, which is an 
+intentional relaxation of SOP.
 
 While there are exceptions to this policy, e.g. images, scripts, and style sheets 
 are allowed to be included as resources across origins, access to these resources is 
-carefully restricted to prevent information leaks. As an example, the including 
+restricted to prevent information leaks. As an example, the including 
 document is prevented from accessing the image data of images loaded across 
 origins. 
 
@@ -239,18 +239,19 @@ Scripts loaded across origins become part of the document and inherit the
 origin of the including document, which allows the script to communicate with the 
 server from which the \emph{document} originated. Such scripts are also able to interact 
 with the document, e.g. by adding nodes, which in turn require new content to be 
-requested. Since these requests are not restricted by the SOP, this creates a side 
+requested. Since these requests are not restricted by SOP, this creates a side 
 channel that permits cross-origin information leakage. At the same time, the including document
 is prevented from inspecting the source of the script and can only observe the public 
 side-effects that the script produce as it is executed.
 
-Other examples of problematic elements include the object- and embed-tags. These 
+Other examples of problematic elements include the \emph{object} and
+\emph{embed} tags. These 
 tags allow inclusion of resources that might require a 
 plug-in to run. As with images, the content handled by the plug-in retains its origin, 
 but the browsers are forced to rely on the plug-ins to employ correct security 
 measures to prevent information leaks. The plug-in is selected based on the MIME-type of the content, but
 because the server delivering the content might not be able to determine its
-format, the object tag allows a developer to set the type-attribute to guide the
+format, the \emph{object} tag allows a developer to set the type-attribute to guide the
 browser in which plug-in to run. When the type attribute is used, the
 corresponding plug-in is run regardless of which MIME-type the server returns
 and it is up to the plug-in to respond to and handle the content it is served. While the containing page is restricted 
@@ -263,8 +264,9 @@ to cross-origin information leaks.
 
 % What and how?
 
-A polyglot is defined as ``A person who knows several languages.'', and the term
-is widely used in various fields of science. In computer science, a \emph{polyglot} is
+A polyglot is perhaps most commonly known as a person who speaks several
+languages. However, the term
+is widely used in several scientific fields. In computer science, a \emph{polyglot} is
 a program that is valid in multiple programming languages. In this paper we use
 a broader definition of a programming language, not limited to code meant for
 compilation to machine code or scripting languages, but extended to any format
@@ -279,8 +281,8 @@ in parts interpreted as comments or plain text of another.
 
 Certain languages are particularly suitable for creating polyglots. These
 languages either have a lot of constructs in common with other languages, such
-as \emph{C}, or are defined such that the parser ignores that which it cannot
-interpret, such as \emph{HTML}. The latter allows for ample opportunity to hide
+as the C language, or are defined such that the parser ignores that which it cannot
+interpret, such as HTML. The latter allows for ample opportunity to hide
 any code specific to another language, as long as there is no overlap with the
 syntax of the first language.
 
@@ -307,9 +309,10 @@ in the expected context. Due to the nature of the polyglot, the content is
 verified as valid and benign, but subsequently the malicious
 content is executed.
 
-In a web context, coercing content to be interpreted as a different type be 
-done easily. If the content is loaded using an image-tag it will be interpreted 
-as an image, if a script-tag is used it will be interpreted as a script. Some 
+Coercing content to be interpreted
+as a different type can be accommodated in the context of the web. 
+If the content is loaded using an \emph{image} tag it will be interpreted 
+as an image, if a \emph{script} tag is used it will be interpreted as a script. Some 
 tags even let the developer decide which type to interpret the content as. 
 To prevent abuse, the browsers employ content-type 
 sniffing for certain content-types, a practice which has historically led to 
@@ -319,7 +322,7 @@ security issues.
 % Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
 
 We have identified two vectors in which malicious polyglots can be used for 
-exploitation; syntax injection, and content repurposing.
+exploitation: syntax injection and content repurposing.
 
 
 %It is possible to create such a polyglot by mixing content, that is benign when
@@ -341,14 +344,15 @@ In a cross-site scripting attack, HTML syntax is injected into a preexisting
 HTML document via vulnerable user supplied parameters. Similarly, a syntax
 injection attack consists of injecting foreign syntax into preexisting content
 of a different format, thereby creating a polyglot. The polyglot content can
-then be interpreted as either format; the benign original format, or the
+then be interpreted as either the benign original format or the
 malicious user-supplied format.
 
 % Attack building blocks
 
 % Browser, plug-in/content handler, target, vulnerability, server
 
-\todo{diagram}
+\todo{diagram with attack scenario. for example: with example domains attacker.com and
+  vulnerable.com leaking secret file secret.txt}
 The target in this scenario is a user of the vulnerable website. The polyglot is
 served in the benign format on the vulnerable server. While the user is logged in to
 the service that the vulnerable website provides, the user unsuspectingly visits
@@ -385,11 +389,11 @@ For this attack to be successful certain requirements needs to be fulfilled.
 %The same-origin policy is intended to prevent a document from one origin from
 %accessing the content of a document of another origin. 
 As an example the
-same-origin policy allows a script-tag in one document to include JavaScript of
+same-origin policy allows a \emph{script} tag in one document to include JavaScript of
 another origin and execute it in the context of that document. If an attacker is
 able to inject an HTML document with JavaScript syntax in such a way that it
 became valid JavaScript, the attacker can include the document across origins
-via a script-tag and extract its content, thereby circumventing the same-origin
+via a \emph{script} tag and extract its content, thereby circumventing the same-origin
 policy.
 
 %Consider the php-program in listing \ref{lst:php-sample}. Apart from being
@@ -428,10 +432,14 @@ Instead,
 Section
 \ref{sec:vuln} will show practical attacks based on other formats.
 
-\todo{Mention and explain known attack instances}
+\todo{
+Mention and explain known attack instances.
+To what extent known attacks such as GIFAR follow this. if not
+  we should still mention them}
 
 \subsection{Content repurposing}
-\todo{diagram}
+\todo{diagram with attack scenario. for example: with example domains attacker.com and
+  vulnerable.com leaking secret file secret.txt}
 % Description of attack technique 
 A content repurposing attack targets the users of a website
 that allows and serves user supplied files. Examples are a file sharing
@@ -465,7 +473,10 @@ For this attack to be successful, certain requirements needs to be fulfilled.
 \end{itemize}
 
 % Scenarios
-\todo{Mention and explain known attack instances}
+\todo{
+Mention and explain known attack instances.
+To what extent known attacks such as GIFAR follow this. if not
+  we should still mention them}
 
 
 %3 pages 
@@ -474,7 +485,8 @@ For this attack to be successful, certain requirements needs to be fulfilled.
 
 In this section we give concrete examples of the attacks described in 
 Section~\ref{sec:cross}, using the PDF format as the running example. We begin
-by detailing how the design decision made in the PDF-standard make it ideal 
+by detailing how the design decision made in the PDF-standard make it 
+highly suitable
 for creating malicious polyglots.
 
 %\subsection{Concept}
@@ -492,6 +504,27 @@ embedding of files and resources.
 According to the PDF specification \todo{cite specification} a PDF file is composed of
 a header, several objects, a cross-reference section and a trailer. Listing~\ref{lst:sample-pdf} 
 shows a sample of how a PDF file is structured and its elements.
+
+\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
+%PDF-1.7
+1 0 obj<</Type/Catalog/Pages<<>>>>
+endobj
+2 0 obj<</Length 13>>stream
+Sample Author
+endstream
+endobj
+xref
+0 3
+0000000000 65536 f
+0000000009 00000 n
+0000000057 00000 n
+trailer<</Root 1 0 R
+	/Info<</Author 2 0 R>>
+>>
+startxref
+118
+%%EOF
+\end{lstlisting}
 
 
 % header
@@ -566,27 +599,6 @@ cross-reference section, it can be omitted. The string "\%\%EOF" marks the
 end-of-file, but can be omitted.
 
 
-\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
-%PDF-1.7
-1 0 obj<</Type/Catalog/Pages<<>>>>
-endobj
-2 0 obj<</Length 13>>stream
-Sample Author
-endstream
-endobj
-xref
-0 3
-0000000000 65536 f
-0000000009 00000 n
-0000000057 00000 n
-trailer<</Root 1 0 R
-	/Info<</Author 2 0 R>>
->>
-startxref
-118
-%%EOF
-\end{lstlisting}
-
 \subsection{PDF-based polyglots}
 Several design choices in the PDF specification make the format particularly 
 suitable for making polyglots. One such design choice is the error tolerant 
@@ -656,7 +668,7 @@ the protection mechanism is defeated. \todo{this is describing another attack sc
 When embedded in a web page, many of the PDF communication methods utilize
 the underlying browser to make requests by navigating the browser to the target 
 URL. This will unload the current page in which the document is embedded. Page 
-navigation is allowed wtih respect to the SOP, since the response is not visible 
+navigation is allowed wtih respect to SOP, since the response is not visible 
 to the document. Such methods can be used in CSRF attacks, but would 
 defeat the purpose of requesting information as the document cannot process the 
 response.
@@ -726,9 +738,9 @@ the event and is also able to post messages back to the document.
 This two way communication is not visible to the victim.
 
 \paragraph{Embedded Flash}
-Cross-origin communication in Flash is restricted by the Same-Origin Policy,
+Cross-origin communication in Flash is restricted by the same-origin policy,
 but also support cross-origin communication via Cross-Origin Resource Sharing 
-(CORS). Using CORS, a web server can relax the SOP to allow access to specified content.
+(CORS). Using CORS, a web server can relax SOP to allow access to specified content.
 As mentioned, the embedded Flash file inherits the origin of the document.
 However, this is not a restriction, since an attacker can set a cross-origin policy 
 that allow the request. This allows for a two way communication that is not 
@@ -903,7 +915,7 @@ interpreted as a particular format.
 
 In the case of PDF-based polyglots, the browser can intervene when there is a 
 mismatch between the content-type provided by the server and the type attribute 
-of the object tag. By acknowledging that there can be a potential security issue in 
+of the \emph{object} tag. By acknowledging that there can be a potential security issue in 
 interpreting the supplied content in the requested format and alerting the user to this
 threat, the vulnerability can be mitigated.
 
@@ -993,6 +1005,8 @@ a major conference submission system.
 \newpage
 \section*{Todo}
 Test page
+
+Billy's and Jonas' anonimized demos?
 
 \end{document}
 
