@@ -57,17 +57,19 @@ identify particularly dangerous formats, with PDF as the prime example. We
 demonstrate that polyglot-based attacks on the web open up for insecure
 communication across Internet origins. 
 %
-The paper presents novel attack vectors that are based on
-\emph{syntax injection} that 
-operate across multiple languages and on \emph{content repurposing} that supply
-malicious payload that appears formatted as benign content. 
+The paper presents novel attack vectors that infiltrate the trusted
+origin by \emph{syntax injection} across multiple languages and by
+\emph{content smuggling} of
+malicious payload that appears formatted as benign content. The
+attacks lead to both \emph{cross-domain leakage} and \emph{cross-site
+  request forgery}.
 %
 We perform a systematic study of
-PDF-based injection and content repurposing attacks. We evaluate the current
+PDF-based injection and content smuggling attacks. We evaluate the current
 practice in client/server content filtering and PDF readers for polyglot-based
 attacks, and report on vulnerabilities in the top 100 Alexa web sites. Our
 recommendations for protective measures on server side, in browsers, and in content
-interpreters (such as PDF readers) show how to mitigate the attacks.
+interpreters (in particular, PDF readers) show how to mitigate the attacks.
 \end{abstract}
 
 
@@ -135,26 +137,43 @@ between components in versatile formats.
 This gives rise to attacks that exploit the mismatch between the
 expected and provided content.
 %
-The existing defense mechanisms fall short to prevent these attacks
-from achieving cross-domain communication.
 
 Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
 We present novel attack vectors that are based on (i)
 \emph{syntax injection} that 
-operate across multiple languages and on (ii) \emph{content repurposing} that supply
-malicious payload that appears formatted as benign content. 
+operate across multiple languages and on (ii) \emph{content smuggling} that supply
+malicious payload that appears formatted as benign content. The
+attacks lead to both \emph{cross-domain leakage} and \emph{cross-site
+  request forgery}.
 
-\todo{Say why sanitization and CSP are of no use}
+The existing defense mechanisms fall short to prevent these attacks
+from achieving cross-domain communication. 
+On the server side, santization is specific to the target language of
+the web application. Sanitizing unexpected formats is typically not considered.
+On the client side, CSP
+has no effect unless the content is interpreted as HTML. This opens up
+opportunities for attacks that are based on other formats.
 
-\todo{Mention GIFAR and perhaps other profile examples and say we're
-  the first to perform a systematic study}
-
+First steps in exploiting the formats in the context of the web have
+been by researchers. Two noteworthy examples are GIFAR~\cite{XXX} and
+cross-origin CSS attacks~\cite{YYY} (Section~\ref{sec:related}
+discusses further realted work). 
+%
+GIFAR is based on polyglots that combine the GIF and JAR (Java
+archive) formats. The former is used as benign and the latter as
+malicious to bypass SOP.
+%
+Cross-origin CSS attacks inject fragments of CSS code into an existing
+web page to extract information from the existing web page.
+%
+The paper is the first to perform a systematic study of polyglot
+attacks.
 We characterize of what constitutes a dangerous format in the web setting and
 identify particularly dangerous formats, with PDF as the prime example. We
 demonstrate that polyglot-based attacks on the web open up for insecure
 communication across Internet origins. We perform a systematic study of
-PDF-based injection and content repurposing attacks. 
+PDF-based injection and content smuggling attacks. 
 
 
 \paragraph{Evaluation and mitigation}
@@ -167,21 +186,21 @@ interpreters (such as PDF readers) show how to mitigate the attacks.
 \paragraph{Contributions} The paper makes the following contributions:
 \begin{itemize}
 \vspace*{-.6cm}
-\item We identify polyglot attacks, a new breed of attacks for
+\item Identification of polyglot attacks, a new breed of attacks for
   crossing origins by crossing formats;
 \vspace*{-.2cm}
-\item We characterize the necessary ingredients for polyglot attacks
+\item Characterization of the necessary ingredients for polyglot attacks
 \vspace*{-.2cm}
-\item We arrive at the PDF format as a particularly exposed format for
-  polyglot-based attacks;
+\item Highlighting the PDF format as a particularly exposed format for
+  polyglot attacks;
 \vspace*{-.2cm}
-\item We present two novel attack vectors, based on syntax and
-  injection and content repurposing;
+\item Novel confidentiality and integrity attack vectors, based on syntax 
+  injection and content smuggling;
 \vspace*{-.2cm}
-\item We evaluate the current filtering mechanisms, browsers, and PDF
+\item Evaluation of the current filtering mechanisms, browsers, and PDF
   filters for vulnerabilities; and
 \vspace*{-.2cm}
-\item We propose mitigation for the server, client, and PDF readers.
+\item Mitigation for the server, client, and PDF readers.
 \end{itemize}
 
 
@@ -322,7 +341,7 @@ security issues.
 % Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
 
 We have identified two vectors in which malicious polyglots can be used for 
-exploitation: syntax injection and content repurposing.
+exploitation: syntax injection and content smuggling.
 
 
 %It is possible to create such a polyglot by mixing content, that is benign when
@@ -343,11 +362,11 @@ ourselves in case someone discovers the blog
 
 A form of injection attack.
 
-\subsubsection{Polyglot upload}
+\subsubsection{Content smuggling}
 
 A form of content repurposing attack.
 
-\subsection{Scenarios}
+\subsection{Exploiting the infiltrated origin}
 
 After infiltrating an origin two lines of exploitation is available.
 
@@ -461,11 +480,11 @@ Mention and explain known attack instances.
 To what extent known attacks such as GIFAR follow this. if not
   we should still mention them}
 
-\subsection{Content repurposing}
+\subsection{Content smuggling}
 \todo{diagram with attack scenario. for example: with example domains attacker.com and
   vulnerable.com leaking secret file secret.txt}
 % Description of attack technique 
-A content repurposing attack targets the users of a website
+A content smuggling attack targets the users of a website
 that allows and serves user supplied files. Examples are a file sharing
 service, an image database, or a job search service. Such a service 
 accepts a limited set of file-types, and the files are verified to
@@ -795,7 +814,7 @@ PoC which is not vulnerable to traditional XSS, where the injection is in a
 string and only </ is escaped, which will be vulnerable to PDF injection.
 
 
-\subsection{Content repurposing}
+\subsection{Content smuggling}
 
 
 
@@ -897,7 +916,7 @@ affected components.
 As a content provider on the Internet today there are precautions that one can 
 take to mitigate this class of vulnerabilities. Which precautions to take depend 
 on the kind of services provided. The mitigation recommendations for syntax 
-injection apply to services that rely on user input, and the content repurposing 
+injection apply to services that rely on user input, and the content smuggling
 recommendations apply to services that serve user-supplied files.
 
 \subsubsection{Syntax injection}
@@ -917,7 +936,7 @@ set of characters that are essential to create valid PDF syntax, namely \emph{'$
 user input to remove or encode these characters effectively mitigates the vulnerability.
 
 
-\subsubsection{Content repurposing}
+\subsubsection{Content smuggling}
 
 The current best-practice recommendation from Google~\cite{Google:ContentHosting} 
 on hosting user-supplied content, is to serve the content from an origin that is 
@@ -986,6 +1005,8 @@ Sundareswaran and Squicciarini~\cite{Sundareswaran:Squicciarini:CEAS10}
 
 Wolf~ OMG WTF PDF talk at CCC in 2010.
 
+PDFAR
+
 %1 page 
 \section{Conclusions}
 \label{sec:conc}
@@ -1029,9 +1050,7 @@ a major conference submission system.
 
 \newpage
 \section*{Todo}
-Test page
-
-Billy's and Jonas' anonymized demos?
+Test page \url{http://internot.noads.biz} with Billy's and Jonas' anonymized demos?
 
 \end{document}
 
