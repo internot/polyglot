@@ -47,17 +47,22 @@
  In a heterogeneous system like the web, information is
 exchanged between components in versatile formats. A new breed of attacks is on
 the rise that exploit the mismatch between the expected and provided content.
-\emph{Injection attacks} are becoming increasingly more sophisticated by
-operating across multiple languages. \emph{Content repurposing} attacks supply
-malicious payload that appears formatted as benign content. 
 % 
-This paper focuses on the root cause of a large class of attacks: \emph{polyglots}. 
+This paper identifies the root cause of a large class of attacks: \emph{polyglots}. 
 A polyglot is a program that is valid in multiple programming languages. Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
+%
 We characterize of what constitutes a dangerous format in the web setting and
 identify particularly dangerous formats, with PDF as the prime example. We
 demonstrate that polyglot-based attacks on the web open up for insecure
-communication across Internet origins. We perform a systematic study of
+communication across Internet origins. 
+%
+The paper presents novel attack vectors that are based on
+\emph{syntax injection} that 
+operate across multiple languages and on \emph{content repurposing} that supply
+malicious payload that appears formatted as benign content. 
+%
+We perform a systematic study of
 PDF-based injection and content repurposing attacks. We evaluate the current
 practice in client/server content filtering and PDF readers for polyglot-based
 attacks, and report on vulnerabilities in the top 100 Alexa web sites. Our
@@ -80,21 +85,27 @@ interpreters (such as PDF readers) show how to mitigate the attacks.
 %1 pages
 \section{Introduction}
 \label{sec:intro}
-
 Web application security is concerned with protecting information as
-it is manipulated by web applications. The different trust domains
+it is manipulated by web applications. This is an important area
+because ``attacks against web
+applications constitute more than 60\% of the total attack attempts
+observed on the Internet''~\cite{SANS09}.
+
+\paragraph{Internet origins at stake}
+The different trust domains
 correspond to different Internet origins. A major goal for web
 application security is preventing undesired communication across
 origins. 
 %
 With the goal of separating information from the different origins,
 today's browsers enforce the \emph{same-origin policy} (SOP). SOP
-restricts only allows access between two documents if they share the
+only allows access between two documents if they share the
 origin. In addition, a document can only directly communicate with the
 server from which it originates.
 
+\paragraph{Classical cross-domain attacks}
 There are several classes of cross-domain attacks that circumvent SOP.
-The OWASP top 10 list~\cite{OWASP:top10:10} places injection
+The OWASP top 10 list~\cite{OWASP:top10:2010} places \emph{injection}
 and \emph{cross-site scripting} (XSS) attacks as two top security
 risks for web applications.
 %
@@ -104,16 +115,19 @@ information that users might have in the context of the trusted origin
 such as cookies, personal information, and session tokens.
 
 XSS attacks are relatively well understood by researchers and
-developers~\cite{XSS:understood}. Known defense include various
+developers~\cite{XSSED}. Known defense include various
 flavors of \emph{sanitization} on server side and the
-\emph{content security policy} (CSP) on client side. Sanitization
-is often performed by the server which sanitizes input data
+\emph{content security policy}~\cite{CSP1.0} (CSP) on client side. Sanitization
+is often performed by the server to filter possibly malicious input data
 before it is used in the generated web pages. Content security policy puts
 requirement on the structure of the document and the origins of the
 scripts that are included by web pages.
 
+\paragraph{Crossing origins by crossing formats}
 This paper identifies a new breed of attacks and its root cause:
 \emph{polyglots}. 
+%
+A polyglot is a program that is valid in multiple programming languages.
 %
 In a heterogeneous system like the web, information is exchanged
 between components in versatile formats.
@@ -124,34 +138,81 @@ expected and provided content.
 The existing defense mechanisms fall short to prevent these attacks
 from achieving cross-domain communication.
 
-A polyglot is a program that is valid in multiple programming languages. Polyglots allow
+Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
+We present novel attack vectors that are based on (i)
+\emph{syntax injection} that 
+operate across multiple languages and on (ii) \emph{content repurposing} that supply
+malicious payload that appears formatted as benign content. 
+
+\todo{Say why sanitization and CSP are of no use}
+
+\todo{Mention GIFAR and perhaps other profile examples and say we're
+  the first to perform a systematic study}
+
 We characterize of what constitutes a dangerous format in the web setting and
 identify particularly dangerous formats, with PDF as the prime example. We
 demonstrate that polyglot-based attacks on the web open up for insecure
 communication across Internet origins. We perform a systematic study of
-PDF-based injection and content repurposing attacks. We evaluate the current
+PDF-based injection and content repurposing attacks. 
+
+
+\paragraph{Evaluation and mitigation}
+We evaluate the current
 practice in client/server content filtering and PDF readers for polyglot-based
 attacks, and report on vulnerabilities in the top 100 Alexa web sites. Our
 recommendations for protective measures on server side, in browsers, and in content
 interpreters (such as PDF readers) show how to mitigate the attacks.
 
-\todo{Emphasize novel attack vectors}
+\paragraph{Contributions} The paper makes the following contributions:
+\begin{itemize}
+\vspace*{-.6cm}
+\item We identify polyglot attacks, a new breed of attacks for
+  crossing origins by crossing formats;
+\vspace*{-.2cm}
+\item We characterize the necessary ingredients for polyglot attacks
+\vspace*{-.2cm}
+\item We arrive at the PDF format as a particularly exposed format for
+  polyglot-based attacks;
+\vspace*{-.2cm}
+\item We present two novel attack vectors, based on syntax and
+  injection and content repurposing;
+\vspace*{-.2cm}
+\item We evaluate the current filtering mechanisms, browsers, and PDF
+  filters for vulnerabilities; and
+\vspace*{-.2cm}
+\item We propose mitigation for the server, client, and PDF readers.
+\end{itemize}
 
-\emph{Injection attacks} are becoming increasingly more sophisticated by
-operating across multiple languages. \emph{Content repurposing} attacks supply
-malicious payload that appears formatted as benign content. 
 
-The paper is organized as follows...
-
+\paragraph{Overview}
+The paper is organized as follows. 
+%
+Section~\ref{sec:cross} explains the concept of crossing origins by
+crossing formats, identifies necessary ingredients, and provides
+attack scenarios.
+%
+Section~\ref{sec:vuln} focuses on the PDF format and describes
+concrete vulnerabilities and attacks.
+%
+Section~\ref{sec:eval} evaluates the current practice in client/server
+content filtering and PDF readers and report on vulnerabilities in the
+top 100 Alexa web sites.
+%
+Section~\ref{sec:mit} suggests mitigation for servers, clients, and
+PDF readers.
+%
+Section~\ref{sec:related} discusses the related work.
+%
+Section~\ref{sec:conc} concludes and outlines future work.
 
 %3 pages
 \section{Crossing origins by crossing formats}
 \label{sec:cross}
-% Describe how the attacks lead to Same-Origin Policy bypass.
+% Describe how the attacks lead to same-origin policy bypass.
 
 This section describes how formats can be crossed and how that can be abused 
-to cross origins by circumventing the Same-Origin Policy. We begin by 
+to cross origins by circumventing the same-origin policy. We begin by 
 generalizing the problem of crossing formats to \emph{polyglots} and then describe the  
 characteristics of a malicious polyglot. From that we derive two attack vectors and 
 show how previous work on the subject relate to these vectors.
@@ -160,36 +221,37 @@ show how previous work on the subject relate to these vectors.
 \label{sec:cross-origin}
 
 By crossing origins we mean being able to request and access content
-which is normally restricted under the Same-Origin Policy. 
-Recall that SOP dictates that a two document can only access each others 
-content and resources if they share the same origin. Similarly this applies to communication as 
-well; a document can only directly communicate with the server from which it originated. 
-This is not to be confused with Cross-Origin Resource Sharing (CORS)~\cite{CORS}, which is an 
-intentional relaxing of the SOP.
+which is normally restricted under the same-origin policy. 
+Recall that SOP only allows two documents accessing each others'
+content and resources if they share the origin. Similarly,
+a document can only directly communicate with the server from which it originates. 
+This is not to be confused with \emph{cross-origin resource sharing} (CORS)~\cite{w3-cors}, which is an 
+intentional relaxation of SOP.
 
 While there are exceptions to this policy, e.g. images, scripts, and style sheets 
 are allowed to be included as resources across origins, access to these resources is 
-carefully restricted to prevent information leaks. As an example, the including 
+restricted to prevent information leaks. As an example, the including 
 document is prevented from accessing the image data of images loaded across 
 origins. 
 
 Not all elements are as carefully restricted from information leaks as images. 
 Scripts loaded across origins become part of the document and inherit the 
 origin of the including document, which allows the script to communicate with the 
-server from which the \emph{document} originated. Such scripts are also able to interact 
+server from which the \emph{document} originates. Such scripts are also able to interact 
 with the document, e.g. by adding nodes, which in turn require new content to be 
-requested. Since these requests are not restricted by the SOP, this creates a side 
+requested. Since these requests are not restricted by SOP, this creates a side 
 channel that permits cross-origin information leakage. At the same time, the including document
 is prevented from inspecting the source of the script and can only observe the public 
 side-effects that the script produce as it is executed.
 
-Other examples of problematic elements include the object- and embed-tags. These 
+Other examples of problematic elements include the \emph{object} and
+\emph{embed} tags. These 
 tags allow inclusion of resources that might require a 
 plug-in to run. As with images, the content handled by the plug-in retains its origin, 
 but the browsers are forced to rely on the plug-ins to employ correct security 
 measures to prevent information leaks. The plug-in is selected based on the MIME-type of the content, but
 because the server delivering the content might not be able to determine its
-format, the object tag allows a developer to set the type-attribute to guide the
+format, the \emph{object} tag allows a developer to set the type-attribute to guide the
 browser in which plug-in to run. When the type attribute is used, the
 corresponding plug-in is run regardless of which MIME-type the server returns
 and it is up to the plug-in to respond to and handle the content it is served. While the containing page is restricted 
@@ -202,8 +264,9 @@ to cross-origin information leaks.
 
 % What and how?
 
-A polyglot is defined as ``A person who knows several languages.'', and the term
-is widely used in various fields of science. In computer science, a \emph{polyglot} is
+A polyglot is perhaps most commonly known as a person who speaks several
+languages. However, the term
+is widely used in several scientific fields. In computer science, a \emph{polyglot} is
 a program that is valid in multiple programming languages. In this paper we use
 a broader definition of a programming language, not limited to code meant for
 compilation to machine code or scripting languages, but extended to any format
@@ -218,8 +281,8 @@ in parts interpreted as comments or plain text of another.
 
 Certain languages are particularly suitable for creating polyglots. These
 languages either have a lot of constructs in common with other languages, such
-as \emph{C}, or are defined such that the parser ignores that which it cannot
-interpret, such as \emph{HTML}. The latter allows for ample opportunity to hide
+as the C language, or are defined such that the parser ignores that which it cannot
+interpret, such as HTML. The latter allows for ample opportunity to hide
 any code specific to another language, as long as there is no overlap with the
 syntax of the first language.
 
@@ -246,27 +309,31 @@ in the expected context. Due to the nature of the polyglot, the content is
 verified as valid and benign, but subsequently the malicious
 content is executed.
 
-In a web context, coercing content to be interpreted as a different type be 
-done easily. If the content is loaded using an image-tag it will be interpreted 
-as an image, if a script-tag is used it will be interpreted as a script. Some 
+Coercing content to be interpreted
+as a different type can be accommodated in the context of the web. 
+If the content is loaded using an \emph{image} tag it will be interpreted 
+as an image, if a \emph{script} tag is used it will be interpreted as a script. Some 
 tags even let the developer decide which type to interpret the content as. 
 To prevent abuse, the browsers employ content-type 
 sniffing for certain content-types, a practice which has historically led to 
 security issues.
-\todo{explain the issues and cite Barthe et al.}
+\todo{explain the issues and cite Barth et al.~\cite{Barth+:SP09}}
 
 % Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
 
 We have identified two vectors in which malicious polyglots can be used for 
-exploitation; syntax injection, and content repurposing.
+exploitation: syntax injection and content repurposing.
 
 
 %It is possible to create such a polyglot by mixing content, that is benign when
 %verified, with content, that is malicious when executed. The verification
 %process will see the benign content and allow it
 
-%In literature we find Content repurposing, content smuggling, chameleon, gifar
-
+\todo{
+In literature we find Content repurposing, content smuggling,
+chameleon, gifar; say that we have called it content smuggling
+ourselves in case someone discovers the blog
+}
 
 
 \subsection{Syntax injection}
@@ -277,14 +344,15 @@ In a cross-site scripting attack, HTML syntax is injected into a preexisting
 HTML document via vulnerable user supplied parameters. Similarly, a syntax
 injection attack consists of injecting foreign syntax into preexisting content
 of a different format, thereby creating a polyglot. The polyglot content can
-then be interpreted as either format; the benign original format, or the
+then be interpreted as either the benign original format or the
 malicious user-supplied format.
 
 % Attack building blocks
 
 % Browser, plug-in/content handler, target, vulnerability, server
 
-\todo{diagram}
+\todo{diagram with attack scenario. for example: with example domains attacker.com and
+  vulnerable.com leaking secret file secret.txt}
 The target in this scenario is a user of the vulnerable website. The polyglot is
 served in the benign format on the vulnerable server. While the user is logged in to
 the service that the vulnerable website provides, the user unsuspectingly visits
@@ -321,11 +389,11 @@ For this attack to be successful certain requirements needs to be fulfilled.
 %The same-origin policy is intended to prevent a document from one origin from
 %accessing the content of a document of another origin. 
 As an example the
-same-origin policy allows a script-tag in one document to include JavaScript of
+same-origin policy allows a \emph{script} tag in one document to include JavaScript of
 another origin and execute it in the context of that document. If an attacker is
 able to inject an HTML document with JavaScript syntax in such a way that it
 became valid JavaScript, the attacker can include the document across origins
-via a script-tag and extract its content, thereby circumventing the same-origin
+via a \emph{script} tag and extract its content, thereby circumventing the same-origin
 policy.
 
 %Consider the php-program in listing \ref{lst:php-sample}. Apart from being
@@ -364,10 +432,14 @@ Instead,
 Section
 \ref{sec:vuln} will show practical attacks based on other formats.
 
-\todo{Mention and explain known attack instances}
+\todo{
+Mention and explain known attack instances.
+To what extent known attacks such as GIFAR follow this. if not
+  we should still mention them}
 
 \subsection{Content repurposing}
-\todo{diagram}
+\todo{diagram with attack scenario. for example: with example domains attacker.com and
+  vulnerable.com leaking secret file secret.txt}
 % Description of attack technique 
 A content repurposing attack targets the users of a website
 that allows and serves user supplied files. Examples are a file sharing
@@ -401,7 +473,10 @@ For this attack to be successful, certain requirements needs to be fulfilled.
 \end{itemize}
 
 % Scenarios
-\todo{Mention and explain known attack instances}
+\todo{
+Mention and explain known attack instances.
+To what extent known attacks such as GIFAR follow this. if not
+  we should still mention them}
 
 
 %3 pages 
@@ -410,7 +485,7 @@ For this attack to be successful, certain requirements needs to be fulfilled.
 
 In this section we give concrete examples of the attacks described in 
 Section~\ref{sec:cross}, using the PDF format as the running example. We begin
-by detailing how the design decision made in the PDF-standard make it ideal 
+by detailing how the design decision made in the PDF-standard make it highly suitable
 for creating malicious polyglots. Throughout this section Adobe Reader is the 
 assumed target. A comparison between readers can be found in Section~\ref{sec:eval}.
 
@@ -429,6 +504,27 @@ embedding of files and resources.
 According to the PDF specification \todo{cite specification} a PDF file is composed of
 a header, several objects, a cross-reference section and a trailer. Listing~\ref{lst:sample-pdf} 
 shows a sample of how a PDF file is structured and its elements.
+
+\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
+%PDF-1.7
+1 0 obj<</Type/Catalog/Pages<<>>>>
+endobj
+2 0 obj<</Length 13>>stream
+Sample Author
+endstream
+endobj
+xref
+0 3
+0000000000 65536 f
+0000000009 00000 n
+0000000057 00000 n
+trailer<</Root 1 0 R
+	/Info<</Author 2 0 R>>
+>>
+startxref
+118
+%%EOF
+\end{lstlisting}
 
 
 % header
@@ -503,27 +599,6 @@ cross-reference section, it can be omitted. The string "\%\%EOF" marks the
 end-of-file, but can be omitted.
 
 
-\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
-%PDF-1.7
-1 0 obj<</Type/Catalog/Pages<<>>>>
-endobj
-2 0 obj<</Length 13>>stream
-Sample Author
-endstream
-endobj
-xref
-0 3
-0000000000 65536 f
-0000000009 00000 n
-0000000057 00000 n
-trailer<</Root 1 0 R
-	/Info<</Author 2 0 R>>
->>
-startxref
-118
-%%EOF
-\end{lstlisting}
-
 \subsection{PDF-based polyglots}
 Several design choices in the PDF specification make the format particularly 
 suitable for making polyglots. One such design choice is the error tolerant 
@@ -593,7 +668,7 @@ the protection mechanism is defeated. \todo{this is describing another attack sc
 When embedded in a web page, many of the PDF communication methods utilize
 the underlying browser to make requests by navigating the browser to the target 
 URL. This will unload the current page in which the document is embedded. Page 
-navigation is allowed wtih respect to the SOP, since the response is not visible 
+navigation is allowed wtih respect to SOP, since the response is not visible 
 to the document. Such methods can be used in CSRF attacks, but would 
 defeat the purpose of requesting information as the document cannot process the 
 response.
@@ -607,9 +682,9 @@ Each requiring its own communication methods.
 
 
 \subsubsection{The target}
-There are two methods for a PDF to communicate with the server it originated from, 
-that allow it to read the response; from JavaScript using XML external entities 
-or from an embedded flash file.
+There are two methods for a PDF file to communicate with the server it originates from, 
+both allowing it to read the response: from JavaScript using XML external entities 
+and from an embedded flash file.
 
 \paragraph{XML}
 The PDF JavaScript API includes a method to parse an XML document, called 
@@ -663,9 +738,9 @@ the event and is also able to post messages back to the document.
 This two way communication is not visible to the victim.
 
 \paragraph{Embedded Flash}
-Cross-origin communication in Flash is restricted by the Same-Origin Policy,
-but also support cross-origin communication via Cross-Origin Resource Sharing 
-(CORS). Using CORS, a web server can relax the SOP to allow access to specified content.
+Cross-origin communication in Flash is restricted by the same-origin policy,
+but also support cross-origin communication via  
+CORS. Using CORS, a web server can relax SOP to allow access to specified content.
 As mentioned, the embedded Flash file inherits the origin of the document.
 However, this is not a restriction, since an attacker can set a cross-origin policy 
 that allow the request. This allows for a two way communication that is not 
@@ -673,7 +748,6 @@ visible to the victim.
 
 
 \subsection{Syntax injection}
-
 the minimal malformed structure that is required for Adobe Reader to consider ita PDF.
 
 
@@ -709,7 +783,6 @@ string and only </ is escaped, which will be vulnerable to PDF injection.
 %3 pages 
 \section{Evaluation}
 \label{sec:eval}
-
 
 \subsection{Instances}
 
@@ -789,7 +862,7 @@ Alexa top 100 results
 
 %1-2 pages 
 \section{Mitigation}
-
+\label{sec:mit}
 This section will describe our recommendations for mitigation in each of the
 affected components.
 
@@ -841,7 +914,7 @@ interpreted as a particular format.
 
 In the case of PDF-based polyglots, the browser can intervene when there is a 
 mismatch between the content-type provided by the server and the type attribute 
-of the object tag. By acknowledging that there can be a potential security issue in 
+of the \emph{object} tag. By acknowledging that there can be a potential security issue in 
 interpreting the supplied content in the requested format and alerting the user to this
 threat, the vulnerability can be mitigated.
 
@@ -857,11 +930,11 @@ not attempt to interpret the content at all. This holds true especially when
 the served content-type is well known and radically different from that which 
 the interpreter is designed for.
 
-As for the PDF file format, the underlying design decisions has led to the 
+As for the PDF file format, the underlying design decisions have led to the 
 current parsing being very relaxed, even with respect to the specification. 
 Making the parsing more strict and enforcing many of the specified requirements 
-will reduce the attack surface. It is, however, not a complete 
-mitigation approach. Since the PDF format is a container format it is designed to 
+will reduce the attack surface. It is, however, not sufficient for complete 
+mitigation because the PDF format is a container format it is designed to 
 embed syntax from other files. Even when parsing strictly according to 
 the specification, it is a simple task to create a PDF-based polyglot.
 
@@ -870,7 +943,7 @@ the specification, it is a simple task to create a PDF-based polyglot.
 
 %1 page 
 \section{Related work}
-
+\label{sec:related}
 Backes et al.~\cite{Backes+:SP07} explore the power of the PostScript
 language. PostScript allows executable content and access to sensitive
 information from the environment such as the user id. This work
@@ -885,10 +958,11 @@ Barth et al.~\cite{Barth+:SP09}
 
 Sundareswaran and Squicciarini~\cite{Sundareswaran:Squicciarini:CEAS10}
 
-
+Wolf~ OMG WTF PDF talk at CCC in 2010.
 
 %1 page 
 \section{Conclusions}
+\label{sec:conc}
 We have put a spotlight on a new breed of attacks that smuggle
 malicious payload formatted as benign content. We have identified
 polyglots as the root cause for this class of attacks. In a systematic
@@ -930,6 +1004,8 @@ a major conference submission system.
 \newpage
 \section*{Todo}
 Test page
+
+Billy's and Jonas' anonymized demos?
 
 \end{document}
 
