@@ -224,7 +224,7 @@ By crossing origins we mean being able to request and access content
 which is normally restricted under the same-origin policy. 
 Recall that SOP only allows two documents accessing each others'
 content and resources if they share the origin. Similarly,
-a document can only directly communicate with the server from which it originated. 
+a document can only directly communicate with the server from which it originates. 
 This is not to be confused with \emph{cross-origin resource sharing} (CORS)~\cite{w3-cors}, which is an 
 intentional relaxation of SOP.
 
@@ -237,7 +237,7 @@ origins.
 Not all elements are as carefully restricted from information leaks as images. 
 Scripts loaded across origins become part of the document and inherit the 
 origin of the including document, which allows the script to communicate with the 
-server from which the \emph{document} originated. Such scripts are also able to interact 
+server from which the \emph{document} originates. Such scripts are also able to interact 
 with the document, e.g. by adding nodes, which in turn require new content to be 
 requested. Since these requests are not restricted by SOP, this creates a side 
 channel that permits cross-origin information leakage. At the same time, the including document
@@ -317,7 +317,7 @@ tags even let the developer decide which type to interpret the content as.
 To prevent abuse, the browsers employ content-type 
 sniffing for certain content-types, a practice which has historically led to 
 security issues.
-\todo{explain the issues and cite Barthe et al.}
+\todo{explain the issues and cite Barth et al.~\cite{Barth+:SP09}}
 
 % Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
 
@@ -682,9 +682,9 @@ Each requiring its own communication methods.
 
 
 \subsubsection{The target}
-There are two methods for a PDF to communicate with the server it originated from, 
-that allow it to read the response; from JavaScript using XML external entities 
-or from an embedded flash file.
+There are two methods for a PDF file to communicate with the server it originates from, 
+both allowing it to read the response: from JavaScript using XML external entities 
+and from an embedded flash file.
 
 \paragraph{XML}
 The PDF JavaScript API includes a method to parse an XML document, called 
@@ -739,8 +739,8 @@ This two way communication is not visible to the victim.
 
 \paragraph{Embedded Flash}
 Cross-origin communication in Flash is restricted by the same-origin policy,
-but also support cross-origin communication via Cross-Origin Resource Sharing 
-(CORS). Using CORS, a web server can relax SOP to allow access to specified content.
+but also support cross-origin communication via  
+CORS. Using CORS, a web server can relax SOP to allow access to specified content.
 As mentioned, the embedded Flash file inherits the origin of the document.
 However, this is not a restriction, since an attacker can set a cross-origin policy 
 that allow the request. This allows for a two way communication that is not 
@@ -748,7 +748,6 @@ visible to the victim.
 
 
 \subsection{Syntax injection}
-
 the minimal malformed structure that is required for Adobe Reader to consider ita PDF.
 
 
@@ -931,11 +930,11 @@ not attempt to interpret the content at all. This holds true especially when
 the served content-type is well known and radically different from that which 
 the interpreter is designed for.
 
-As for the PDF file format, the underlying design decisions has led to the 
+As for the PDF file format, the underlying design decisions have led to the 
 current parsing being very relaxed, even with respect to the specification. 
 Making the parsing more strict and enforcing many of the specified requirements 
-will reduce the attack surface. It is, however, not a complete 
-mitigation approach. Since the PDF format is a container format it is designed to 
+will reduce the attack surface. It is, however, not sufficient for complete 
+mitigation because the PDF format is a container format it is designed to 
 embed syntax from other files. Even when parsing strictly according to 
 the specification, it is a simple task to create a PDF-based polyglot.
 
