@@ -335,6 +335,30 @@ chameleon, gifar; say that we have called it content smuggling
 ourselves in case someone discovers the blog
 }
 
+\todo{discuss the layout}
+
+\subsection{Infiltrating the origin}
+
+\subsubsection{Syntax injection}
+
+A form of injection attack.
+
+\subsubsection{Polyglot upload}
+
+A form of content repurposing attack.
+
+\subsection{Scenarios}
+
+After infiltrating an origin two lines of exploitation is available.
+
+\subsubsection{Cross-domain leakage}
+
+Extract sensitive information and send to attacker
+
+\subsubsection{Cross-site request forgery}
+
+Extract CSRF protection token and do CSRF attack, despite protection!
+
 
 \subsection{Syntax injection}
 
@@ -748,7 +772,9 @@ visible to the victim.
 
 
 \subsection{Syntax injection}
-the minimal malformed structure that is required for Adobe Reader to consider ita PDF.
+
+Based on the minimal PDF sample in Listing~\ref{lst:minimal-pdf}, we can derive 
+the set of tokens required to build a PDF. Assuming that alpha-numeric characters pass through any filter unmodified, this set is ${\%, <<, >>, (, ), /}$.
 
 
 
