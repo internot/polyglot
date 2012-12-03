@@ -360,17 +360,19 @@ how a polyglot can infiltrate an origin.
 
 The scenario, illustrated in Figure~\ref{fig:scenario}, describe how the attack proceed, from the infiltration of the origin, to the compromise of the victim.
 The victim in this scenario is an authenticated user of a targeted vulnerable website, \emph{vulnerable.com}. 
-The target is infiltrated by the attacker, manipulating the website to serve polyglot content. Vulnerable.com serves the polyglot content as the benign content type, harmless to the victim. 
-At a certain point, while still authenticated to vulnerable.com, 
+The target is infiltrated by the attacker, manipulating the website to
+serve polyglot content. 
+The \emph{vulnerable.com} site serves the polyglot content as the benign content type, harmless to the victim. 
+At a certain point, while still authenticated to \emph{vulnerable.com}, 
 the victim unsuspectingly visits the attackers malicious website, \emph{attacker.com}.
-The attacker.com website embeds the polyglot content from vulnerable.com, but
+The \emph{attacker.com} site embeds the polyglot content from \emph{vulnerable.com}, but
 coerces the browser to interpret it as the malicious content type. 
 The capabilities of the malicious format determine the 
 severity of the consequences of exploitation. 
 
-To give more context to the scenario, vulnerable.com can be a cloud storage service. 
+To give more context to the scenario, \emph{vulnerable.com} can be a cloud storage service. 
 The attacker infiltrates the target by uploading a polyglot to the service and embed it 
-on attacker.com. While authenticated to vulnerable.com, the unsuspecting victim visits attacker.com, the embedded 
+on \emph{attacker.com}. While authenticated to \emph{vulnerable.com}, the unsuspecting victim visits \emph{attacker.com}, the embedded 
 polyglot is activated and extracts all the files stored in the victims account.
 
 Two attacker-centric components requires special attention, the infiltration of 
