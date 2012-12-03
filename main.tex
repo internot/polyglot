@@ -373,6 +373,10 @@ The attacker infiltrates the target by uploading a polyglot to the service and e
 on attacker.com. While authenticated to vulnerable.com, the unsuspecting victim visits attacker.com, the embedded 
 polyglot is activated and extracts all the files stored in the victims account.
 
+Other potential targets for this scenario are job broker services and conference 
+submission systems, which by design allow submission of PDFs to be viewed by
+users.
+
 Two attacker-centric components requires special attention, the infiltration of 
 an origin and the exploitation of an infiltrated origin.
 %In this situation, the same-origin policy is intended to prevent cross-origin 
@@ -387,7 +391,8 @@ an origin and the exploitation of an infiltrated origin.
 
 \subsection{Infiltrating an origin}
 
-Two vectors for infiltrating an origin has been identified, via syntax 
+In the scenario the attacker infiltrate the origin by uploading a polyglot. Infiltration could, however, be performed in more than one way
+This paper identifies two vectors for infiltrating an origin, via syntax 
 injection, or content smuggling. 
 
 \paragraph{Syntax injection}
