@@ -358,8 +358,7 @@ how a polyglot can infiltrate an origin.
 
 \subsection{Scenario}
 
-\todo{diagram with attack scenario. for example: with example domains attacker.com and
-  vulnerable.com leaking secret file secret.txt}
+
 The victim in these scenarios is an authenticated user of a targeted vulnerable website, \emph{vulnerable.com}. 
 The target is infiltrated by the attacker, manipulating the website to serve polyglot content. Vulnerable.com serves the polyglot content as the benign content type, harmless to the victim. 
 At a certain point, while still authenticated to vulnerable.com, 
@@ -373,6 +372,13 @@ Two attacker-centric components requires special attention, the infiltration of
 an origin and the exploitation of an infiltrated origin.
 %In this situation, the same-origin policy is intended to prevent cross-origin 
 %interaction.
+
+\begin{figure}[h!]
+  \center
+  \includegraphics[width=0.49\textwidth]{scenario.png}
+  \caption{Overview of the scenario}
+  \label{fig:scenario}
+\end{figure}
 
 \subsection{Infiltrating an origin}
 
