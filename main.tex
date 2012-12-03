@@ -895,11 +895,14 @@ method, there is no restrictions on what content can be requested.
 1 0 obj<<>>stream
 xml = '<!DOCTYPE foo[<!ENTITY x SYSTEM "'+
 	URL+'">]><foo>&x;</foo>'
-app.alert(XMLData.parse(xml).saveXML())
+var doc = XMLData.parse(xml);
+app.alert(doc.saveXML())
 endstream
-trailer<</Root<</Pages<<>>
-    /OpenAction<</S/JavaScript/JS 1 0 R>>
-    >>
+trailer<</Root
+   <</Pages<<>>
+      /OpenAction
+      <</S/JavaScript/JS 1 0 R>>
+   >>
 >>
 \end{lstlisting}
 
@@ -952,8 +955,8 @@ content sanitization filter, and a study of the Alexa top 100 websites.
 
 \subsection{Instances}
 
-
-How this problem presents itself in various instances of browsers and readers.
+To better understand the how this problem presents itself, a comparison of browser and reader instances 
+is presented. We compare all major browsers and two of the most common readers.
 
 \subsubsection{Readers}
 
