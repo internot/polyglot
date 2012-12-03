@@ -368,6 +368,11 @@ coerces the browser to interpret it as the malicious content type.
 The capabilities of the malicious format determine the 
 severity of the consequences of exploitation. 
 
+To give more context to the scenario, vulnerable.com can be a cloud storage service. 
+The attacker infiltrates the target by uploading a polyglot to the service and embed it 
+on attacker.com. While authenticated to vulnerable.com, the unsuspecting victim visits attacker.com, the embedded 
+polyglot is activated and extracts all the files stored in the victims account.
+
 Two attacker-centric components requires special attention, the infiltration of 
 an origin and the exploitation of an infiltrated origin.
 %In this situation, the same-origin policy is intended to prevent cross-origin 
