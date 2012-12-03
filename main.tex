@@ -156,9 +156,9 @@ has no effect unless the content is interpreted as HTML. This opens up
 opportunities for attacks that are based on other formats.
 
 First steps in exploiting the formats in the context of the web have
-been by researchers. Two noteworthy examples are GIFAR~\cite{XXX} and
-cross-origin CSS attacks~\cite{YYY} (Section~\ref{sec:related}
-discusses further realted work). 
+been by researchers. Two noteworthy examples are GIFAR~\cite{Brandis:GIFAR} and
+cross-origin CSS attacks~\cite{Huang+:CCS10} (Section~\ref{sec:related}
+discusses further related work). 
 %
 GIFAR is based on polyglots that combine the GIF and JAR (Java
 archive) formats. The former is used as benign and the latter as
@@ -369,7 +369,7 @@ an origin and the exploitation of an infiltrated origin.
 Two vectors for infiltrating an origin has been identified, via syntax 
 injection, or content smuggling. 
 
-\subsubsection{Syntax injection}
+\paragraph{Syntax injection}
 
 In a cross-site scripting attack, a HTML document is composed from input 
 containing fragments of HTML syntax, causing the execution of attacker supplied 
@@ -419,7 +419,7 @@ attack injects fragments of CSS syntax in a HTML
 document, thereby making it a HTML/CSS polyglot. The error-tolerant parsing of 
 style sheets allow the polyglot to parsed as valid CSS. The capabilities of CSS 
 provide trivial cross-origin leakage. The paper proposes a defense technique which has been
-adopted by all major browsers, which implies that the attacks outlined in the paper are now ineffective.
+adopted by all major browsers, which implies that the attacks outlined in their paper are now ineffective.
 Instead,
 Section
 \ref{sec:vuln} will show practical attacks based on other formats.
@@ -448,7 +448,7 @@ service will verify the file, assuming that it is of the benign format, but once
 the content is served an attacker can coerce the content to be interpreted as
 the malicious format.
 
-The Gifar attack is a polyglot attack based on content smuggling. In this attack 
+The GIFAR attack is a polyglot attack based on content smuggling. In this attack 
 a benign GIF-image and a malicious JAR-file is combined to create a GIF/JAR 
 polyglot. By submitting the combined GIFAR to a service, the attacker can 
 execute a Java applet under the origin of the targeted service. The Java runtime 
@@ -558,6 +558,9 @@ Section~\ref{sec:cross}, using the PDF format as the running example. We begin
 by detailing how the design decision made in the PDF-standard make it highly suitable
 for creating malicious polyglots. Throughout this section Adobe Reader is the 
 assumed target. A comparison between readers can be found in Section~\ref{sec:eval}.
+
+The reader is invited to visit the test page~\cite{Test:Page:12} for
+practical demonstration of the concepts from this section.
 
 %\subsection{Concept}
 
@@ -686,8 +689,8 @@ combining with syntax of another format.
 %
 The specification declares many components to be required in a
 PDF file, but as can be seen in Section~\ref{sec:format}, in practice several 
-components can be omitted. The code in Listing~\ref{lst:minimal-pdf} shows the 
-minimal syntax required for a malformed, but valid PDF file.\todo{cite Julia Wolf?}
+components can be omitted~\cite{Wolf:CCC10}. The code in Listing~\ref{lst:minimal-pdf} shows the 
+minimal syntax required for a malformed, but valid PDF file.
 %incrementally 
 %updated by appending updated versions of existing objects to 
 %the end of the file. In fact, 
@@ -1037,17 +1040,65 @@ information from the environment such as the user id. This work
 demonstrates how to compromise reviewer anonymity in a peer-reviewing
 process by maliciously crafting a PostScript document.
 
+As discussed in Section~\ref{sec:cross}, 
+GIFAR~\cite{Brandis:GIFAR} is based on polyglots that combine the GIF and JAR (Java
+archive) formats. The former is used as benign and the latter as
+malicious to bypass SOP. The Java virtual machine vendors have since
+then mitigated these attacks by patching the virtual machine to be
+more conservative on the format of the executed files.
+
+PDFAR~\cite{PDFAR:09} polyglots combine the PDF and JAR formats, where
+PDF serves as benign and JAR serves as malicious. Such a polyglot is
+possible due to the liberty of the requirements on the headers of PDF
+files. Mitigation against GIFAR attacks in the Java virtual machine
+effectively applies to PDFAR attacks.
+
 Nagra~\cite{Nagra:09} demonstrates GIF/JavaScript polyglots by the
 same file being interpreted as a script and as an image and
 informally discuses possible security implications.
 
-Barth et al.~\cite{Barth+:SP09}
+Barth et al.~\cite{Barth+:SP09} focus on security implications of
+content sniffing by browsers. They present content-sniffing XSS
+attacks by crossbreeding HTML with other formats like postscript. They
+show attacks on real systems like HotCRP, where an uploaded conference
+paper in the postscript format is interpreted as malicious HTML by the
+browser. They also propose a content-sniffing algorithm that does not
+suffer that helps defending against these class of attacks while
+maintaining compatibility.
 
-Sundareswaran and Squicciarini~\cite{Sundareswaran:Squicciarini:CEAS10}
+Sundareswaran and
+Squicciarini~\cite{Sundareswaran:Squicciarini:CEAS10,Sundareswaran:Squicciarini:SecureComm10} discuss image
+repurposing for GIFAR attacks. They present the AntiGifar tool for
+client-side protection. AntiGifar models the benign behavior of a user
+by a control-flow graph and detects possible anomalies when the
+interactions of the user and browser with the web site deviate from
+the control-flow model.
 
-Wolf~ OMG WTF PDF talk at CCC in 2010.
+As mentioned in Section~\ref{sec:cross}, Huang et
+al.~\cite{Huang+:CCS10} study an HTML/CSS attack. This attack injects
+fragments of CSS syntax in a HTML document, thereby making it a
+HTML/CSS polyglot. The error-tolerant parsing of style sheets allow
+the polyglot to parsed as valid CSS. The capabilities of CSS provide
+trivial cross-origin leakage. As discussed earlier, the paper's
+defense technique has been adopted by all major browsers, which
+implies that the attacks outlined in their paper are now ineffective.
 
-PDFAR
+Wolf's OMG WTF PDF presentation~\cite{Wolf:CCC10} is one of the main
+starting points for this work. The presentation explores the liberty
+of the PDF format. In addition, it highlights that PDF interpreters
+often disregard the specification demands. This particularly
+relevant as it allows crossbreeding PDF with such
+formats as ZIP and EXE.
+
+Heiderich et al.~\cite{Heiderich+:CCS11} explore the Scalable Vector
+Graphics (SVG) format. They discover attacks that allow SVG files,
+embedded via the \emph{img} tag, to run arbitrary JavaScript. 
+One of the
+attack vectors involves an SVG/HTML polyglot
+that behaves differently depending on the context in which it is
+accessed. When included in the \emph{img} tag, the file is interpreted as SVG,
+whereas when it is accessed directly it is interpreted as malicious HTML. 
+
 
 %1 page 
 \section{Conclusions}
@@ -1089,11 +1140,6 @@ a major conference submission system.
 %1-2 pages 
 \bibliographystyle{plain}
 \bibliography{literature}
-
-\newpage
-\section*{Todo}
-Test page \url{http://internot.noads.biz} with Billy's and Jonas' anonymized demos?
-
 \end{document}
 
 
