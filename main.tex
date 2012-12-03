@@ -336,14 +336,24 @@ tags even let the developer decide which type to interpret the content as.
 To prevent abuse, the browsers employ content-type 
 sniffing for certain content-types, a practice which has historically led to 
 security issues.
-\todo{explain the issues and cite Barth et al.~\cite{Barth+:SP09}}
 
-% Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
-\todo{
-In literature we find Content repurposing, content smuggling,
-chameleon, gifar; say that we have called it content smuggling
-ourselves in case someone discovers the blog
-}
+Barth et al.~\cite{Barth+:SP09} define \emph{chameleon} documents, 
+in which a benign file type crossbred with malicious HTML content. The document 
+is crafted in such a way that the content-sniffing algorithm used in the browser 
+will detect the content type as HTML. The paper proceeds to 
+describe how an attacker can create a 
+\emph{chameleon} document, that is valid PostScipt, but will be identified as HTML.
+This issue allows exploitation when there is a mismatch between a websites 
+content validation filter and the browsers content-sniffing algorithm.
+
+In literature we find, apart from chameleons, other names for similar,
+related concepts. Brandis~\cite{Brandis:GIFAR} refer \emph{GIFAR} 
+attacks, based on one of the early instances of attacks based on 
+GIF/JAR polyglots. 
+Sundareswaran et al.~\cite{Sundareswaran:Squicciarini:CEAS10,Sundareswaran:Squicciarini:SecureComm10}
+discuss GIFAR-related attacks as a form of \emph{content repurposing} attack. 
+In this paper the term content smuggling is used as it best represent 
+how a polyglot can infiltrate an origin.
 
 
 \subsection{Scenario}
@@ -574,7 +584,7 @@ capable of displaying text, rendering graphics, scripting, animation and other
 dynamic content. It is a container format in the sense that it allows 
 embedding of files and resources.
 
-According to the PDF specification \todo{cite specification} a PDF file is composed of
+According to the PDF specification~\cite{PDF:ISO08} a PDF file is composed of
 a header, several objects, a cross-reference section and a trailer. Listing~\ref{lst:sample-pdf} 
 shows a sample of how a PDF file is structured and its elements.
 
@@ -752,7 +762,7 @@ and the result is a valid HTML/PDF polyglot.
 
 \paragraph{JavaScript/CSS strings}
 
-
+\todo{JavaScript/CSS/JSON context}
 
 
 \subsection{Content smuggling}
@@ -959,7 +969,20 @@ Reader plug-in is used to render the document.
 
 \subsection{Alexa top 100}
 
-Alexa top 100 results
+A study to evaluate the prevalence of these issues was performed, 
+covering the Alexa top 100 websites. Because of their dominance 
+on the web, these websites are also the most exposed to security threats.
+The study covers PDF-based polyglot attacks using syntax injection as the infiltration method.
+The study did not cover polyglot attacks based on content smuggling, as 
+potential targets generally require authentication before submitting content.
+
+The study was conducted by supplying the websites with small benign samples 
+of PDF syntax, containing keywords and tokens, and examining the responses 
+for said tokens. The samples were benign strings containing  The conclusion is 
+that nine websites out of the hundred apply insufficient content filtering with 
+respect to the PDF format, which have the potential of compromising the 
+confidentiality and integrity of the website's users.
+
 
 %Baidu.com (allows <>, but escapes /) 
 %LinkedIn (allows <>, but escapes /) 
