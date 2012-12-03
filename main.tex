@@ -339,154 +339,107 @@ security issues.
 \todo{explain the issues and cite Barth et al.~\cite{Barth+:SP09}}
 
 % Malicious polyglots in literature; gifar, chameleon, cross-origin css attacks
-
-We have identified two vectors in which malicious polyglots can be used for 
-exploitation: syntax injection and content smuggling.
-
-
-%It is possible to create such a polyglot by mixing content, that is benign when
-%verified, with content, that is malicious when executed. The verification
-%process will see the benign content and allow it
-
 \todo{
 In literature we find Content repurposing, content smuggling,
 chameleon, gifar; say that we have called it content smuggling
 ourselves in case someone discovers the blog
 }
 
-\todo{discuss the layout}
 
-\subsection{Infiltrating the origin}
-
-\subsubsection{Syntax injection}
-
-A form of injection attack.
-
-\subsubsection{Content smuggling}
-
-A form of content repurposing attack.
-
-\subsection{Exploiting the infiltrated origin}
-
-After infiltrating an origin two lines of exploitation is available.
-
-\subsubsection{Cross-domain leakage}
-
-Extract sensitive information and send to attacker
-
-\subsubsection{Cross-site request forgery}
-
-Extract CSRF protection token and do CSRF attack, despite protection!
-
-
-\subsection{Syntax injection}
-
-% Description of attack technique
-
-In a cross-site scripting attack, HTML syntax is injected into a preexisting
-HTML document via vulnerable user supplied parameters. Similarly, a syntax
-injection attack consists of injecting foreign syntax into preexisting content
-of a different format, thereby creating a polyglot. The polyglot content can
-then be interpreted as either the benign original format or the
-malicious user-supplied format.
-
-% Attack building blocks
-
-% Browser, plug-in/content handler, target, vulnerability, server
+\subsection{Scenario}
 
 \todo{diagram with attack scenario. for example: with example domains attacker.com and
   vulnerable.com leaking secret file secret.txt}
-The target in this scenario is a user of the vulnerable website. The polyglot is
-served in the benign format on the vulnerable server. While the user is logged in to
-the service that the vulnerable website provides, the user unsuspectingly visits
-the attackers malicious website. The page embeds the polyglot content, but
-coerces the browser to interpret the content as the malicious format. 
-The capabilities of the malicious format determine the severity of the consequences.
-The attacker can
-exploit the vulnerability, either by making requests to the vulnerable website
-in the context of the user; or by extracting information about the user that is
-stored on the vulnerable website.
+The victim in these scenarios is an authenticated user of a targeted vulnerable website, \emph{vulnerable.com}. 
+The target is infiltrated by the attacker, manipulating the website to serve polyglot content. Vulnerable.com serves the polyglot content as the benign content type, harmless to the victim. 
+At a certain point, while still authenticated to vulnerable.com, 
+the victim unsuspectingly visits the attackers malicious website, \emph{attacker.com}.
+The attacker.com website embeds the polyglot content from vulnerable.com, but
+coerces the browser to interpret it as the malicious content type. 
+The capabilities of the malicious format determine the 
+severity of the consequences of exploitation. 
 
-In situations like these, the same-origin policy is intended to prevent a
-document from one origin from accessing the content of a document of another
-origin. However, depending on the capabilities of the malicious format used in
-the attack, it may be possible to circumvent the same-origin policy.
+Two attacker-centric components requires special attention, the infiltration of 
+an origin and the exploitation of an infiltrated origin.
+%In this situation, the same-origin policy is intended to prevent cross-origin 
+%interaction.
 
-For this attack to be successful certain requirements needs to be fulfilled.
-\begin{itemize} 
-	\item The original content must embed external information under the 
-	control of the attacker. 
-	\item The user-supplied content must circumvent any validation or 
-	filtering. 
-	\item There must exist a way of coercing the resulting polyglot to be 
-	interpreted as the malicious format. 
-	\item The malicious format must have capabilities that are restricted or 
-	missing in the benign format.
-\end{itemize}
+\subsection{Infiltrating an origin}
 
-% Scenarios
+Two vectors for infiltrating an origin has been identified, via syntax 
+injection, or content smuggling. 
 
-%Much like a cross-site scripting attack, we consider a scenario where a
-%website serves documents which are based upon user-supplied information.
+\subsubsection{Syntax injection}
 
-%The same-origin policy is intended to prevent a document from one origin from
-%accessing the content of a document of another origin. 
-As an example the
-same-origin policy allows a \emph{script} tag in one document to include JavaScript of
-another origin and execute it in the context of that document. If an attacker is
-able to inject an HTML document with JavaScript syntax in such a way that it
-became valid JavaScript, the attacker can include the document across origins
-via a \emph{script} tag and extract its content, thereby circumventing the same-origin
-policy.
+In a cross-site scripting attack, a HTML document is composed from input 
+containing fragments of HTML syntax, causing the execution of attacker supplied 
+script code. Similarly, in a syntax injection attack the vulnerable target will 
+compose content from attacker controlled input containing syntax of a foreign 
+format, thereby creating a polyglot. 
+%
+The target is assumed to employ server-side cross-site scripting sanitization. Hence, for the attack to be successful, the input must 
+bypass this sanitization. The sanitization filter will remove or encode 
+problematic characters, based on the context of the web application. In a polyglot attack
+the injected format would pose as a new context, unknown to the filter. Chances are that the 
+key elements of the injected format will pass the filter unaltered. 
+The polyglot content can
+be interpreted as either the benign original format or the
+malicious attacker-supplied format. 
+%
 
-%Consider the php-program in listing \ref{lst:php-sample}. Apart from being
-%vulnerable to traditional cross-site scripting, it is vulnerable
+%As an example the
+%same-origin policy allows a \emph{script} tag in one document to include JavaScript of
+%another origin and execute it in the origin of the document. If an attacker is
+%able to inject an HTML document with JavaScript syntax in such a way that it
+%became valid JavaScript, the attacker can include the document across origins
+%via a \emph{script} tag and extract its content, thereby circumventing the same-origin
+%policy.
 
-%By requesting the site with parameter $guess=</body></html>;x=<html><body>$,
-%the resulting document, 
-The document in Listing \ref{lst:html-js}, is both
-malformed but valid HTML and valid JavaScript in browsers that support
-EcmaScript for XML (E4X). \todo{ref}
+%The document in Listing \ref{lst:html-js}, is both
+%malformed but valid HTML and valid JavaScript in browsers that support
+%EcmaScript for XML (E4X). \todo{ref} The
+%document can be included as a script in another document and the secret can be
+%extracted from variable x. 
+%This implies that if an attacker is able to inject
+%HTML syntax into a document, closing all previously open tags and
+%opening all subsequently closed tags,
+%then information can be extracted across origins.
+%The injected syntax in the listing is illustrated by highlighting.
 
-The
-document can be included as a script in another document and the secret can be
-extracted from variable x. 
-This implies that if an attacker is able to inject
-HTML syntax into a document, closing all previously open tags and
-opening all subsequently closed tags,
-then information can be extracted across origins.
-The injected HTML in the listing is illustrated by highlighting.
+%This attack has been suggested as a potential way to bypass Content Security
+%Policy~\cite{Heyes:CSP}. As E4X is only supported in the SpiderMonkey JavaScript
+%engine, used in Firefox, this limits the exploitability of this example. However,
+%this is an unlikely scenario to use JavaScript as the injected format
+%because HTML characters are typically escaped by content
+%filters. 
 
-\definecolor{lightgray}{gray}{.8}
-\begin{lstlisting}[label=lst:html-js, caption=HTML / E4X Polyglot, escapechar=*]
-<html><body>
-Hello *\colorbox{lightgray}{$<$/body$><$/html$>$;x=$<$html$><$body$>$}*!
-Your secret is 'safe with me'.
-</body></html>
-\end{lstlisting}
-
-This attack has been suggested as a potential way to bypass Content Security
-Policy~\cite{Heyes:CSP}. As E4X is only supported in the SpiderMonkey JavaScript
-engine, used in Firefox, this limits the exploitability of this example. However,
-this is an unlikely scenario to use JavaScript as the injected format
-because HTML characters are typically escaped by content
-filters. 
+Previous work documents instances of polyglot attacks based on syntax injection.
+Huang et al.~\cite{Huang+:CCS10} describe a cross-origin \emph{cascading style-sheet} (CSS) attack. This 
+attack injects fragments of CSS syntax in a HTML 
+document, thereby making it a HTML/CSS polyglot. The error-tolerant parsing of 
+style sheets allow the polyglot to parsed as valid CSS. The capabilities of CSS 
+provide trivial cross-origin leakage. The paper proposes a defense technique which has been
+adopted by all major browsers, which implies that the attacks outlined in the paper are now ineffective.
 Instead,
 Section
 \ref{sec:vuln} will show practical attacks based on other formats.
 
-\todo{
-Mention and explain known attack instances.
-To what extent known attacks such as GIFAR follow this. if not
-  we should still mention them}
 
-\subsection{Content smuggling}
-\todo{diagram with attack scenario. for example: with example domains attacker.com and
-  vulnerable.com leaking secret file secret.txt}
-% Description of attack technique 
-A content smuggling attack targets the users of a website
-that allows and serves user supplied files. Examples are a file sharing
-service, an image database, or a job search service. Such a service 
+
+%\definecolor{lightgray}{gray}{.8}
+%\begin{lstlisting}[label=lst:html-js, caption=HTML / E4X Polyglot, escapechar=*]
+%<html><body>
+%Hello *\colorbox{lightgray}{$<$/body$><$/html$>$;x=$<$html$><$body$>$}*!
+%Your secret is 'safe with me'.
+%</body></html>
+%\end{lstlisting}
+
+
+\paragraph{Content smuggling}
+The vulnerable target of a polyglot attack based on content smuggling lets 
+users to submit files to the service which are then served under the origin of 
+the service. Examples of such services are file sharing services, image databases, 
+social networks or job broker services. Such a service 
 accepts a limited set of file-types, and the files are verified to
 be of one of these types, e.g. an image, before being served to the end
 user. By submitting a polyglot to such a service, an attacker can trick the
@@ -495,32 +448,106 @@ service will verify the file, assuming that it is of the benign format, but once
 the content is served an attacker can coerce the content to be interpreted as
 the malicious format.
 
-% Building blocks
+The Gifar attack is a polyglot attack based on content smuggling. In this attack 
+a benign GIF-image and a malicious JAR-file is combined to create a GIF/JAR 
+polyglot. By submitting the combined GIFAR to a service, the attacker can 
+execute a Java applet under the origin of the targeted service. The Java runtime 
+has been updated to prevent this kind of abuse.
+Instead,
+Section
+\ref{sec:vuln} will show practical attacks based on other formats.
 
-The difference in this scenario from the previous one is in the nature of the
-vulnerability. Where in the previous scenario an existing document was injected
-to become a polyglot, this scenario targets services which allow an attacker to
-introduce new documents. As in the previous scenario, the target is a user of
-the vulnerable website.
+
+\subsection{Exploiting the infiltrated origin}
+
+The consequences of exploiting an infiltrated origin depend on the capabilities 
+of the format used. These consequences span from forging requests to the vulnerable website,
+abusing the credentials of the victim, to extracting sensitive information about the user that is
+stored on the vulnerable website.
+
+\paragraph{Cross-site request forgery}
+
+If the format has the capability of issuing requests, that includes the victims 
+credentials, within the boundaries of the SOP, then this constitutes a 
+\emph{cross-site request forgery} (CSRF) attack. Websites protect against these attacks by 
+generating a token with each response that has to be included in the subsequent 
+request. However, if the format also have the capability of reading the response 
+the issued request, it can extract the token and thereby circumvent the CSRF 
+protection.
+
+\paragraph{Cross-origin leakage}
+
+If the format also has the capability of communicating with the attacker, then 
+the attacker can sensitive user information and leak it across origins. If the 
+format is not restricted by the SOP, it can communicate directly with the 
+attackers server. Otherwise, if the format can interact with the document that 
+embeds the polyglot, the communication could be tunneled through this channel.
 
 
-For this attack to be successful, certain requirements needs to be fulfilled.
-\begin{itemize} 
-	\item The service must accept and serve user-supplied files.
-	\item The service must verify the user-supplied polyglot under the 
-	assumption that it is in the benign format. 
-	\item The content is served under the same origin as sensitive user 
-	information.
-	\item There must exist a way of coercing the polyglot to be interpreted 
-	as the malicious format. 
-\end{itemize}
+
+
+
+
+%\subsection{Syntax injection}
+
+
+
+
+
+
+%For this attack to be successful certain requirements needs to be fulfilled.
+%\begin{itemize} 
+%	\item The original content must embed external information under the 
+%	control of the attacker. 
+%	\item The user-supplied content must circumvent any validation or 
+%	filtering. 
+%	\item There must exist a way of coercing the resulting polyglot to be 
+%	interpreted as the malicious format. 
+%	\item The malicious format must have capabilities that are restricted or 
+%	missing in the benign format.
+%\end{itemize}
 
 % Scenarios
-\todo{
-Mention and explain known attack instances.
-To what extent known attacks such as GIFAR follow this. if not
-  we should still mention them}
 
+%Much like a cross-site scripting attack, we consider a scenario where a
+%website serves documents which are based upon user-supplied information.
+
+%The same-origin policy is intended to prevent a document from one origin from
+%accessing the content of a document of another origin. 
+
+
+%Consider the php-program in listing \ref{lst:php-sample}. Apart from being
+%vulnerable to traditional cross-site scripting, it is vulnerable
+
+%By requesting the site with parameter $guess=</body></html>;x=<html><body>$,
+%the resulting document, 
+
+
+
+%\subsection{Content smuggling}
+% Description of attack technique 
+
+% Building blocks
+
+%The difference in this scenario from the previous one is in the nature of the
+%vulnerability. Where in the previous scenario an existing document was injected
+%to become a polyglot, this scenario targets services which allow an attacker to
+%introduce new documents. As in the previous scenario, the target is a user of
+%the vulnerable website.
+
+
+%For this attack to be successful, certain requirements needs to be fulfilled.
+%\begin{itemize} 
+%	\item The service must accept and serve user-supplied files.
+%	\item The service must verify the user-supplied polyglot under the 
+%	assumption that it is in the benign format. 
+%	\item The content is served under the same origin as sensitive user 
+%	information.
+%	\item There must exist a way of coercing the polyglot to be interpreted 
+%	as the malicious format. 
+%\end{itemize}
+
+% Scenarios
 
 %3 pages 
 \section{Vulnerabilities and attacks}
@@ -680,12 +707,6 @@ player to play embedded flash files on systems that do
 not have a player installed. %Considering that it might be a conscious decision
 %of the user to refuse a flash player, 
 
-\begin{lstlisting}[label=lst:minimal-pdf, caption=Minimal PDF file]
-%PDF-
-trailer<</Root<</Pages<<>>>>>>
-\end{lstlisting}
-
-
 %\subsection{Embedded PDF documents}
 %\todo{Not sure how well it fits here}
 When a PDF document is embedded in a web page, the corresponding plugin 
@@ -698,20 +719,71 @@ In the case of the Adobe Reader plug-in, it disregards the MIME-type
 supplied by the server and will attempt to interpret any content as PDF. 
 
 
+\begin{lstlisting}[label=lst:minimal-pdf, caption=Minimal PDF file]
+%PDF-
+trailer<</Root<</Pages<<>>>>>>
+\end{lstlisting}
+
+
+
+\subsection{Syntax injection}
+
+Based on the PDF samples in Listings~\ref{lst:minimal-pdf}, we can derive 
+the set of tokens required to build a PDF. Assuming that alpha-numeric characters 
+pass through a sanitization filter unmodified, the set of tokens is $\{\%, <<, >>, /\}$.
+As can be noted, there is a small but significant overlap with the tokens of HTML, 
+which implies that many websites protected against cross-site scripting attacks 
+are also protected against PDF-based polyglot attacks. One of the problems of 
+filtering input for inclusion in a web page are the many contexts in which the 
+input can be included. A problem made even more complex by the diversity of 
+languages the page contains. Language incompatibilities force context dependent 
+filtering, where the same input is treated differently based on the context in 
+which it is included. In certain contexts angle brackets are often left untouched by filters.
+
+\paragraph{HTML comments}
+No HTML enclosed in comments, "<--" and "-->", will be rendered, and therefore 
+filters consider this context safe. To prevent input from escaping the comment by 
+injecting an end comment token, certain filters remove any occurrences of "-->", 
+but leave the of the input untouched. HTML comments are meaningless to PDF, 
+and the result is a valid HTML/PDF polyglot.
+
+\paragraph{JavaScript/CSS strings}
+
+
+
+
+\subsection{Content smuggling}
+
+Due to the nature of the PDF, it can without much effort be combined with just 
+about any other format. This provides ample opportunity to create malicious 
+polyglots where PDF is either the benign or the malicious format.
+
+
+\paragraph{PDF as the benign format}
+Services like job brokers commonly let the user upload a CV in the form of a PDF-file.
+Before such PDF-files are published to recruiters, they are verified to not 
+contain any malicious payload. An attacker can produce a PDF that is valid and 
+benign, but also a polyglot hiding another malicious format, such as Flash. 
+A proof-of-concept can easily be created by storing the PDF as a static string 
+variable in the malicious flash source code. When the flash is compiled, the 
+source of the PDF is part of the output, making it a valid PDF. 
+
+\paragraph{PDF as the malicious format}
+ Given the extensive capabilities of PDF, exploiting a content smuggling 
+vulnerability with a PDF-based polyglot attack, can be done without much effort.
+A server-side verification process will base its verification on the benign format,
+and is likely to miss the malicious PDF components. To prevent the attack, the 
+verification process have to actively search for and remove PDF specific syntax.
 
 \subsection{PDF communication methods}
 
-The embedded document will retain the origin from which it was served. Any 
+The embedded document will retain the origin from which it was served. All 
 request issued from the document will include any cookies available in the 
-browser for the target domain. This provides an attacker with the means to 
-perform actions in the name of an authenticated victim, i.e. Cross-Site Request 
-Forgery (CSRF). If the attacker can extract information, such as a CSRF-token, 
-the protection mechanism is defeated. \todo{this is describing another attack scenario, expand?}
-
+browser for the target domain.
 When embedded in a web page, many of the PDF communication methods utilize
 the underlying browser to make requests by navigating the browser to the target 
-URL. This will unload the current page in which the document is embedded. Page 
-navigation is allowed wtih respect to SOP, since the response is not visible 
+URL. This will unload the current page in which the document is embedded. Arbitrary page 
+navigation is allowed with respect to SOP, since the response is not visible 
 to the document. Such methods can be used in CSRF attacks, but would 
 defeat the purpose of requesting information as the document cannot process the 
 response.
@@ -788,36 +860,6 @@ As mentioned, the embedded Flash file inherits the origin of the document.
 However, this is not a restriction, since an attacker can set a cross-origin policy 
 that allow the request. This allows for a two way communication that is not 
 visible to the victim.
-
-
-\subsection{Syntax injection}
-
-Based on the minimal PDF sample in Listing~\ref{lst:minimal-pdf}, we can derive 
-the set of tokens required to build a PDF. Assuming that alpha-numeric characters pass through any filter unmodified, this set is ${\%, <<, >>, (, ), /}$.
-
-
-
-This means the required tokens that we need to be able to inject are: \%PDF-,
-trailer, <<, >> and /. The \%PDF and trailer token is usually no problem. From
-what I have seen, sometimes PDF is turned to lower case which prevents the
-attacks. Quite naturally, unless the site is vulnerable to traditional XSS, the
-<< and >> tokens are usually converted to \&lt; or some other encoding. The
-exception is in a JavaScript string context. In this context only </script> pose
-a threat, in case the < is not encoded this is usually prevented by escaping the
-slash:
-
-var s = 'user string</script>';
-
-This is bad from a PDF syntax point of view, because \\/Root is not valid. But
-</script> is only valid when the < is directly followed by /. So we can create a
-PoC which is not vulnerable to traditional XSS, where the injection is in a
-string and only </ is escaped, which will be vulnerable to PDF injection.
-
-
-\subsection{Content smuggling}
-
-
-
 
 
 
