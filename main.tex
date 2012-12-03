@@ -874,57 +874,88 @@ visible to the victim.
 \section{Evaluation}
 \label{sec:eval}
 
+This section details the evaluation performed to investigate the persistence of 
+the vulnerabilities from Section~\ref{sec:vuln}. The evaluation covers various 
+instances of affected components, such as browsers and PDF interpreters, 
+content sanitization filter, and a study of the Alexa top 100 websites.
+
 \subsection{Instances}
+
 
 How this problem presents itself in various instances of browsers and readers.
 
+\subsubsection{Readers}
+
+Section~\ref{sec:vuln} focus on the Adobe PDF Reader as the attack surface, 
+due to its standing as the most commonly used reader. To give a comparison, the 
+Google Chrome built-in PDF reader, was selected as it is the default reader to 
+user of the browser.
+
+As mentioned in Section~\ref{sec:cross}, the browser rely on the reader plug-in to 
+implement correct security measures, in order to prevent cross-domain leakage. 
+Unlike Adobe Reader, the Chrome browser built-in PDF reader refuses to render 
+content that was served with an inappropriate MIME-type if the content is 
+delivered across origins. This effectively prevents the attacks in Section~\ref{sec:vuln}.
+If the Chrome browser is configured to use the Adobe Reader plug-in, it will 
+behave the same as in other browsers and the content will be interpreted as PDF.
 
 \subsubsection{Browsers}
 
-Vulnerable: Firefox, Safari, Opera, Chrome
+The behavior of cross-domain embedding of PDF resources is studied in the major 
+browsers, i.e., Firefox, Safari, Opera, Google Chrome and Internet Explorer. 
+The study shows that all major browsers are susceptible to the attacks outlined 
+in Section~\ref{sec:vuln}, with some minor differences. 
 
-Not vulnerable: Internet Explorer
+\paragraph{Safari and Opera}
+The browsers, Safari and Opera, are both susceptible to the attacks outlined as 
+per Section~\ref{sec:vuln}, without any restrictions or modifications.
 
+\paragraph{Firefox}
+The Mozilla Firefox browser is susceptible to the attacks, with the restriction 
+that the PostMessage API is unavailable. This merely prevents one channel of 
+communication with the attacker, and does not reduce the threat.
 
-\subsubsection{Readers}
+\paragraph{Internet Explorer}
+Microsoft's browser, Internet Explorer, is susceptible to the attacks. However, 
+it seems to only support embedding of PDF documents using the \emph{embed} tag. 
+This is not a major obstacle in exploiting the vulnerability, as the embed and 
+object tags are interchangeable in this respect.
 
-\todo{see if this makes sense here}
-As it turns out, various browser plug-ins deal with the situation differently. The Chrome browser
-built-in PDF reader refuses to render content that was served with an inappropriate 
-MIME-type. If the 
-Chrome browser is configured to use the Adobe Reader plug-in, the behavior will 
-be the same as in other browsers and the content will be interpreted as PDF.
-The Java plug-in used to ignore the MIME-type, but after several 
-vulnerabilities were disclosed, this behavior was changed. 
-
-Vulnerable: Adobe Reader
-
-Not vulnerable: Chrome PDF-viewer
-
-Not tested: Apple Preview
-
-
-\subsection{Bypassing content filters}
-
-
-\subsubsection{Server-side upload filters}
-
-Filter can verify that the benign file format is indeed benign without ever
-noticing the malicious file format hidden within.
+\paragraph{Google Chrome}
+Google's browser, Chrome, has built-in support for displaying PDF documents. 
+The built-in PDF reader is used by default by the browser, unless it has been 
+explicitly disabled by the user. Certain complex PDF documents can not be 
+handled by the built-in reader. The built-in reader will then prompt the user 
+to open the document in Adobe Reader. As previously noted, the built-in reader 
+is not vulnerable to attacks. Hence, Chrome is only susceptible when the Adobe 
+Reader plug-in is used to render the document.
 
 
-\subsubsection{Cross-site scripting filters}
-
-This effectively bypasses any cross-site scripting filters such as NoScript or
-filters built into browsers. Since the Reader plug-in handles the response, the
-browser never gets to see the content
+%\subsection{Bypassing content filters}
 
 
-\subsubsection{Context sensitive filters}
+%\subsubsection{Server-side upload filters}
 
-Clever filters that adapt their filtering to the context in which the user
-content is included. Basically filters that allow input that do not form harmfulHTML.
+%As discussed in Section~\ref{sec:cross} server-side content filters that 
+%validate files based on content type are not equipped to handle polyglot 
+%content. For polyglot content, specialized filters are required that analyze 
+%the content based on all considerable interpretations of the content. No such 
+%filters were encountered in this study.
 
+%\subsubsection{Cross-site scripting filters}
+%\todo{install NoScript?}
+%This effectively bypasses any cross-site scripting filters such as NoScript or
+%filters built into browsers. Since the Reader plug-in handles the response, the
+%browser never gets to see the content
+
+
+%\subsubsection{Context sensitive filters}
+
+%Context sensitive cross-site scripting filters, that remove or encode characters
+%Clever filters that adapt their filtering to the context in which the user
+%content is included. Basically filters that allow input that do not form harmfulHTML.
+
+% Don't want to claim something I have no basis for..
 
 \subsection{Alexa top 100}
 
@@ -976,9 +1007,11 @@ attacks has proved difficult due to the many contexts in which JavaScript can be
 introduced. Filtering all potentially harmful tokens from all formats in which a 
 document may be interpreted is hardly possible.
 
-To prevent PDF syntax injection attack, the task is simpler. As mentioned in Section~\ref{sec:vuln}, there is a limited 
-set of characters that are essential to create valid PDF syntax, namely \emph{'$<$', '$>$', and '/'}. Filtering 
-user input to remove or encode these characters effectively mitigates the vulnerability.
+To prevent PDF syntax injection attack, the task is simpler. As mentioned in 
+Section~\ref{sec:vuln}, there is a limited set of characters that are essential 
+to create valid PDF syntax, namely \emph{'$<$', '$>$', and '/'}. Filtering 
+user input to remove or encode these characters effectively mitigates the 
+vulnerability.
 
 
 \subsubsection{Content smuggling}
