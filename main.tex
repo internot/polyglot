@@ -760,10 +760,20 @@ injecting an end comment token, certain filters remove any occurrences of "-->",
 but leave the of the input untouched. HTML comments are meaningless to PDF, 
 and the result is a valid HTML/PDF polyglot.
 
-\paragraph{JavaScript/CSS strings}
+\paragraph{JavaScript strings}
+In an in-line JavaScript context, user input is often included in the shape of a 
+JavaScript string, delimited by single or double quotes. In this context only a 
+few characters require encoding, as they can break the string context. Naturally, 
+any single or double quotes need escaping, as well as any carriage return or 
+line feed characters. In the spirit of making minimal changes to the input, 
+certain websites only these characters. This is sufficient to prevent cross-site 
+scripting attacks, but fail to protect against PDF-based polyglot attacks.
 
-\todo{JavaScript/CSS/JSON context}
-
+Not only in-line JavaScript fall short in this regard. JavaScript object notation 
+(JSON) is used in modern websites as a data transport. This is particularly 
+common in websites that provide an API to interact with the offered services.
+JSON encoded information suffer the same problem as in-line JavaScript, thereby
+extending the attack surface further.
 
 \subsection{Content smuggling}
 
