@@ -360,15 +360,15 @@ how a polyglot can infiltrate an origin.
 
 The scenario, illustrated in Figure~\ref{fig:scenario}, describe how the attack proceed, from the infiltration of the origin, to the compromise of the victim.
 The victim in this scenario is an authenticated user of a targeted vulnerable website, \emph{vulnerable.com}. 
-The target is infiltrated by the attacker, manipulating the website to
+The target is infiltrated by the attacker (1), manipulating the website to
 serve polyglot content. 
 The \emph{vulnerable.com} site serves the polyglot content as the benign content type, harmless to the victim. 
 At a certain point, while still authenticated to \emph{vulnerable.com}, 
-the victim unsuspectingly visits the attackers malicious website, \emph{attacker.com}.
-The \emph{attacker.com} site embeds the polyglot content from \emph{vulnerable.com}, but
-coerces the browser to interpret it as the malicious content type. 
+the victim unsuspectingly visits the attackers malicious website, \emph{attacker.com} (2).
+The \emph{attacker.com} site embeds the polyglot content from \emph{vulnerable.com} (3), but
+coerces the browser to interpret it as the malicious content type (4). 
 The capabilities of the malicious format determine the 
-severity of the consequences of exploitation. 
+severity of the consequences of exploitation (5). 
 
 To give more context to the scenario, \emph{vulnerable.com} can be a cloud storage service. 
 The attacker infiltrates the target by uploading a polyglot to the service and embed it 
@@ -772,7 +772,7 @@ not have a player installed. %Considering that it might be a conscious decision
 %of the user to refuse a flash player, 
 
 %\subsection{Embedded PDF documents}
-%\todo{Not sure how well it fits here}
+
 When a PDF document is embedded in a web page, the corresponding plugin 
 is executed to render the content. Recall from Section~\ref{sec:cross-origin} 
 that the plug-in is selected based 
@@ -1039,7 +1039,7 @@ potential targets generally require authentication before submitting content.
 
 The study is based on supplying the websites with small benign samples 
 of PDF syntax, containing keywords and tokens, and examining the responses 
-for said tokens. The samples are benign strings containing \todo{?}. The conclusion is 
+for said tokens. The conclusion is 
 that nine websites out of the hundred apply insufficient content filtering with 
 respect to the PDF format, which have the potential of compromising the 
 confidentiality and integrity of the website's users.
