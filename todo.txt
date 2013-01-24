@@ -1,0 +1,170 @@
+> ----------------------- REVIEW 1 ---------------------
+> PAPER: 212
+> TITLE: Crossing origins by crossing formats
+> AUTHORS: Jonas Magazinius, Billy Rios and Andrei Sabelfeld
+> 
+> 
+> ----------- REVIEW -----------
+> This paper describes polyglot PDFs, i.e., code snippets that are both
+> valid PDF as well as valid code in another language such as HTML or
+> JavaScript. The paper describes a potential attack which uses a
+> hosting site without appropriate filtering, relies on the client
+> visiting an attacker website, and results in arbitrary user data from
+> the hosting site being leaked. The paper explains why PDF polyglots
+> are feasible, how to mitigate them with very simple techniques, which
+> browsers are vulnerable to the specified attack and that 9 of the
+> Alexa top 100 sites do not have enough filtering to prevent these
+> attacks.
+> 
+> Review:
+> 
+> The subject of the paper is interesting in principle and its coverage
+> is quite thorough, but the details are not interesting. The reason is
+> three-fold. First, polyglot attacks are not new; they are very
+> well-known. 
+
+Explain that although polyglots and attacks instances are known, the generalization is novel and there are novel PDF-specific attack vectors.
+
+> Second, the paper does not demonstrate any real attack at
+> all. 
+
+Provide code snippets of the attacks.
+
+> A website crafted by the authors with real attacks is
+> non-functional. 
+
+Ensure the site works, with no dependencies on other services.
+
+> Third, and perhaps most seriously, by the author's own
+> admittance, building PDF polyglots is very easy.
+
+Explain that gives a larger attack surface and therefore it makes 
+it more important to protect against these attacks.
+
+> The potential attack scenario presented in Section 2.3 is indeed
+> interesting. It combines CSRF with polyglots. The ensuing discussion
+> of how polyglots can be created (Sections 2.4, 3.3. and 3.5) is too
+> verbose; all it says is that there are two broad ways to create
+> polyglots on commercial sites --- to inject them (when there is
+> inadequate content filtering) and to upload them (on a content hosting
+> website). 
+
+Tighten up the verbose sections.
+
+> Section 3.5 on using PDFs to launch attacks is uninformative.
+
+Exemplify the communication methods in relation with scenarios.
+
+> The evaluation section is weak, largely because no real attack is
+> shown. Instead, vulnerable browsers (those that allow cross-domain
+> communication, which is essential for the described attack scenario)
+> are listed. That description is very verbose and will fit into a
+> single small table. 
+
+Table of comparison.
+
+> Next, there is an evaluation of Alexa top 100
+> websites for proper content filtering, but it is impossible to
+> determine how thorough or relevant it is because no details are
+> provided. Could you provide samples of your tests? 
+
+Samples and tests.
+
+> Section 5.1 on server-side mitigation is also uninformative.
+
+Conclusion for 5.1.2 endorsing Google's practices. 
+
+> On the whole, I am concerned about the lack of a meaningful
+> contribution in the paper, a general lack of technical content and
+> poor presentation. Hence, I recommend rejection.
+> 
+> 
+> ----------------------- REVIEW 2 ---------------------
+> PAPER: 212
+> TITLE: Crossing origins by crossing formats
+> AUTHORS: Jonas Magazinius, Billy Rios and Andrei Sabelfeld
+> 
+> 
+> ----------- REVIEW -----------
+> This paper reveals a kind of attack (polyglot attack) which exploits the different comprehension of content format between the client side and the server side. This paper takes the polyglots as the root cause and demonstrates how to construct PDF-based polyglots. To understand the prevalence of the PDF-based polyglot attack, the major browsers and the Alexa top 100 web sites are investigated in this paper. Some recommendations for the server, client and the PDF readers are discussed in the end.
+> 
+> I like this paper because it reveals polyglot attack in detail. Although polyglot attack described in this paper is similar to the classical cross-domain attacks such as XSS, differences exist as malformed contents in XSS are cross HTML elements and malformed contents in polyglot attack are cross file formats. 
+> 
+> The novelty of this paper lies in 1) revealing the polyglot attack and 2) making some investigation of the popular websites and major browsers. 
+> 
+> The language is not so fluent and there are some Typos/mistakes in this paper:
+> -" By crossing origins we mean being able to request and access content which is normally restricted under the sameorigin policy. " (wrong syntax) (Section 2.1)
+> -"it best represent how a polyglot can in_ltrate an origin. "(represents) (Section2.2)
+> -" when the MIME-type supplied by the server is in appropriate for the plug-in"( inappropriate?) (Section3.2)
+> -" but leave the of the input untouched. "( wrong syntax) (Section3.3)
+> -" In the spirit of making minimal changes to the input, certain websites only these characters. "(only?) (Section3.3)
+> -" it can without much effort be combined with just about any other format. " (about?)(Section3.4)
+> -" To better understand the how this problem presents itself, "(the?) (Section4.1)
+> -" Section 3 focus on the Adobe PDF Reader as the attack surface "(focuses) (Section4.1.1)
+> -"The browsers, Safari and Opera, are both susceptible to the attacks outlined as per Section 3, without any restrictions or modifications "(per?) (Section4.1.2)
+
+Address language comments.
+
+> The authors should request some native english-speaker to go through the paper before publishing it.
+> 
+> 
+> ----------------------- REVIEW 3 ---------------------
+> PAPER: 212
+> TITLE: Crossing origins by crossing formats
+> AUTHORS: Jonas Magazinius, Billy Rios and Andrei Sabelfeld
+> 
+> 
+> ----------- REVIEW -----------
+> This paper summarizes polyglot attacks, which exploit contents
+> appearing to be valid formats in multiple languages. It may bypass
+> sanitizers for one language, and get activated to perform malicious
+> tasks in the actual run-time context of another language.
+> 
+> The paper claims as the first to perform a systematic study of such
+> attacks. However, it only discusses in principle how such attacks are
+> possible and what potential consequences are, without providing any
+> concrete example of the attacks. As such, it fails to demonstrate any
+> technical contribution as a research paper.
+
+Concrete examples of attacks.
+
+> In particular, the paper does not provide the actual "novel
+> confidentiality and integrity attack vectors" as claimed. Syntax
+> injection is the prerequisite for launching polyglot attacks, and
+> content smuggling is just the result the attacks can cause. The
+> concepts summarized in the paper may be new, but they do not map to
+> novel attack vectors.
+
+PDF-specific attack vectors.
+
+> The paper unnecessarily mentions the attack scenarios many
+> times (at least 3 times), without giving any code snippet of an attack
+> example, or at least the mechanisms of the potential attacks. It is
+> not clear whether the authors have really identified real-world
+> PDF-based polyglot attacks in the claimed scenarios, such as cloud
+> storage or job broker.
+
+Code snippets. Keep coming back to the scenarios throughout the paper.
+
+> The evaluation reports 9 out of Alexa Top 100 websites are potentially
+> vulnerable to insufficient PDF content filtering. However, no further
+> detail is provided. It is understandable that full disclosure of such
+> vulnerabilities should be held until the websites have fixed them, but
+> no description of the vulnerabilities cannot support the paper's claim
+> to be the first to systematically study polyglot attacks.
+
+Samples and tests. Mention explicitly that no further details are revealed to avoid exploiting the sites before they are fixed. Neither we want to disclose that particular sites are vulnerable.
+
+> We recommend the authors to put in substantial details and examples for the
+> PDF-based polyglot attacks in revising the paper. Moreover, typos and
+> grammatical errors appear frequently throughout the paper. For
+> example, in introduction, "First steps in exploiting ... have been by
+> researchers". In 2.2, "but carrying different meaning ...",
+> "PostScipt", and "Brandis [4] refer GIFAR attacks". In 2.3, "Two
+> attacker-centric components requires ...". In 2.4, "a HTML document",
+> "... based on content smuggling lets users to submit ...". In 2.5,
+> "... then the attacker can sensitive user information". In 3.2, "This
+> is in part motivated it being ...", and "... when the MIME-type
+> supplied by the server is in appropriate for the plug-in".
+
+Language comments.
