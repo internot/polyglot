@@ -38,7 +38,8 @@ Ensure the site works, with no dependencies on other services.
 > Third, and perhaps most seriously, by the author's own
 > admittance, building PDF polyglots is very easy.
 
-Explain that gives a larger attack surface and therefore it makes 
+
+DONE: Explain that gives a larger attack surface and therefore it makes 
 it more important to protect against these attacks.
 
 > The potential attack scenario presented in Section 2.3 is indeed
@@ -103,7 +104,8 @@ Conclusion for 5.1.2 endorsing Google's practices.
 > -" Section 3 focus on the Adobe PDF Reader as the attack surface "(focuses) (Section4.1.1)
 > -"The browsers, Safari and Opera, are both susceptible to the attacks outlined as per Section 3, without any restrictions or modifications "(per?) (Section4.1.2)
 
-Address language comments.
+
+DONE: Address language comments.
 
 > The authors should request some native english-speaker to go through the paper before publishing it.
 > 
@@ -167,4 +169,4 @@ Samples and tests. Mention explicitly that no further details are revealed to av
 > is in part motivated it being ...", and "... when the MIME-type
 > supplied by the server is in appropriate for the plug-in".
 
-Language comments.
+DONE: Language comments.
