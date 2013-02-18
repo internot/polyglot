@@ -335,7 +335,8 @@ as an image, if a \emph{script} tag is used it will be interpreted as a script. 
 tags even let the developer decide which type to interpret the content as. 
 To prevent abuse, the browsers employ content-type 
 sniffing for certain content-types, a practice which has historically led to 
-security issues.
+security issues. 
+%
 
 Barth et al.~\cite{Barth+:SP09} define \emph{chameleon} documents, 
 in which a benign file type crossbred with malicious HTML content. The document 
@@ -356,10 +357,12 @@ In this paper the term content smuggling is used as it best represents
 how a polyglot can infiltrate an origin.
 
 
-
-
-Two attacker-centric components require special attention, the infiltration of 
-an origin and the exploitation of an infiltrated origin.
+While these articles document known instances of polyglot attacks, the attack 
+method has up until now never been generalized. 
+\todo{Is this a good place? is it a good way to say it?}
+%
+Two attacker-centric components require special attention; the infiltration of 
+an origin, i.e. the attack vector, and the exploitation of an infiltrated origin, i.e. the payload.
 %In this situation, the same-origin policy is intended to prevent cross-origin 
 %interaction.
 
@@ -369,26 +372,34 @@ an origin and the exploitation of an infiltrated origin.
 
 \subsection{Attack vectors}
 
-In the scenario the attacker infiltrate the origin by uploading a polyglot. Infiltration could, however, be performed in more than one way.
-This paper identifies two vectors for infiltrating an origin, via syntax 
-injection, or content smuggling. 
+%In the scenario the attacker infiltrate the origin by uploading a polyglot. Infiltration could, however, be performed in more %than one way.
+This paper identifies two vectors for infiltrating an origin, either via syntax 
+injection, or content smuggling. In the case of syntax injection, existing content is manipulated
+to become a polyglot, whereas with content smuggling, a polyglot is used to evade 
+content filters.
 
 \subsubsection{Syntax injection}
-
-In a cross-site scripting attack, an HTML document is composed from input 
-containing fragments of HTML syntax, causing the execution of attacker supplied 
+\label{sec:injection}
+In a cross-site scripting attack user input is used to compose an HTML document. 
+Fragments of HTML-syntax in the input alters the semantic of the document to 
+execute attacker supplied 
 script code. Similarly, in a syntax injection attack the vulnerable target will 
 compose content from attacker controlled input containing syntax of a foreign 
-format, thereby creating a polyglot. 
+format, thereby creating a polyglot. The polyglot is benign when viewed as the 
+original format, but malicious when viewed as the injected format. While the 
+targeted service serves the content as its original format, it is in the hands 
+of the attacker to decide how it is interpreted.
 %
-The target is assumed to employ server-side cross-site scripting sanitization. Hence, for the attack to be successful, the input must 
+The targeted service is assumed to employ server-side cross-site scripting 
+sanitization. Hence, for the attack to be successful, the input must 
 bypass this sanitization. The sanitization filter will remove or encode 
-problematic characters, based on the context of the web application. In a polyglot attack
-the injected format would pose as a new context, unknown to the filter. Chances are that the 
+problematic characters related to HTML-syntax, based on the context of the web application. In a polyglot attack
+the injected format will pose as a new context, unknown to the filter. Chances are that the 
 key elements of the injected format will pass the filter unaltered. 
-The polyglot content can
-be interpreted as either the benign original format or the
-malicious attacker-supplied format. 
+
+%The polyglot content can
+%be interpreted as either the benign original format or the
+%malicious attacker-supplied format. 
 %
 
 %As an example the
@@ -417,14 +428,8 @@ malicious attacker-supplied format.
 %because HTML characters are typically escaped by content
 %filters. 
 
-\begin{figure}[h!]
-  \center
-  \includegraphics[width=0.49\textwidth]{injection-scenario.png}
-  \caption{Overview of the syntax injection scenario}
-  \label{fig:scenario}
-\end{figure}
 
-Previous work documents instances of polyglot attacks based on syntax injection.
+Previous work documents an instance of a polyglot attack based on syntax injection, though not phrased in those terms.
 Huang et al.~\cite{Huang+:CCS10} describe a cross-origin \emph{cascading style-sheet} (CSS) attack. This 
 attack injects fragments of CSS syntax in a HTML 
 document, thereby making it a HTML/CSS polyglot. The error-tolerant parsing of 
@@ -435,6 +440,28 @@ Instead,
 Section
 \ref{sec:vuln} will show practical attacks based on other formats.
 
+
+\paragraph{Scenario}
+The scenario, illustrated in Figure~\ref{fig:injection-scenario}, describe how 
+the attack proceed, from the infiltration of the origin, to the compromise of the victim.
+The victim in this scenario is an authenticated user of the targeted website, \emph{vulnerable.com}. 
+The \emph{vulnerable.com} site serves the polyglot content as the benign content type, harmless to the victim. 
+At a certain point, while still authenticated to \emph{vulnerable.com}, 
+the victim unsuspectingly visits the attackers malicious website, \emph{attacker.com} (1).
+The \emph{attacker.com} site serves a page that embeds the content from \emph{vulnerable.com} (2). 
+The attacker supplies polyglot syntax in the input to the vulnerable 
+service, e.g. in the parameters of the request for the embedded content (3).
+The \emph{vulnerable.com} service responds with content of the benign content type (4), but
+the way it is embedded in the attackers page coerces the browser to interpret it as the malicious content type.
+The malicious payload is executed in the origin of \emph{vulnerable.com} and can 
+hence leverage the credentials of the victim to further exploit the vulnerability.
+
+\begin{figure}[t]
+  \center
+  \includegraphics[width=0.49\textwidth]{injection-scenario.png}
+  \caption{Overview of the syntax injection scenario}
+  \label{fig:injection-scenario}
+\end{figure}
 
 
 %\definecolor{lightgray}{gray}{.8}
@@ -447,17 +474,22 @@ Section
 
 
 \subsubsection{Content smuggling}
-The vulnerable target of a polyglot attack, based on content smuggling, lets 
-users to submit files to the service which are subsequently served under the origin of 
-the service. Examples of such services are file sharing services, image databases, 
-social networks or job broker services. Such a service 
-accepts a limited set of file-types, and the files are verified to
-be of one of these types, e.g. an image, before being served to the end
-user. By submitting a polyglot to such a service, an attacker can trick the
-service into serving malicious content under the origin of the service. The
-service will verify the file, assuming that it is of the benign format, but once
-the content is served an attacker can coerce the content to be interpreted as
-the malicious format.
+\label{sec:smuggling}
+The vulnerable target of a content smuggling attack, lets 
+users submit files to the service which are subsequently served under the origin of 
+the service. Examples of such potentially vulnerable services are file sharing services, image databases, 
+social networks, conference management systems or job broker services. Such a service 
+accepts a limited set of file-formats, and the files are run through a filter to verify that they 
+belong to this set, e.g. images, before being served to the end
+user. The
+service will verify the file under the assumption that it conforms strictly to one format. 
+By submitting a polyglot to such a service, an attacker can evade the filter as the polyglot does conform to the benign format.
+Since the attacker can coerce the content to be interpreted as the malicious format, the
+service is tricked into serving malicious content. 
+
+%a polyglot assuming that it is of the benign format, but once
+%the content is served an attacker can coerce the content to be interpreted as
+%the malicious format.
 
 
 The GIFAR attack is a polyglot attack based on content smuggling. In this attack 
@@ -470,8 +502,7 @@ Section
 \ref{sec:vuln} will show practical attacks based on other formats.
 
 \paragraph{Scenario}
-
-The scenario, illustrated in Figure~\ref{fig:scenario}, describe how the attack proceed, from the infiltration of the origin, to the compromise of the victim.
+The content smuggling scenario proceeds as illustrated in Figure~\ref{fig:smuggling-scenario}.
 The victim in this scenario is an authenticated user of a targeted vulnerable website, \emph{vulnerable.com}. 
 The target is infiltrated by the attacker (1), manipulating the website to
 serve polyglot content. 
@@ -484,7 +515,7 @@ The capabilities of the malicious format determine the
 severity of the consequences of exploitation (5). 
 
 To give more context to the scenario, \emph{vulnerable.com} can be a cloud storage service. 
-The attacker infiltrates the target by uploading a polyglot to the service and embed it 
+The attacker infiltrates the target by uploading a polyglot to the service and embedding it 
 on \emph{attacker.com}. While authenticated to \emph{vulnerable.com}, the unsuspecting victim visits \emph{attacker.com}, the embedded 
 polyglot is activated and extracts all the files stored in the victims account.
 
@@ -492,11 +523,11 @@ Other potential targets for this scenario are job broker services and conference
 submission systems, which by design allow submission of PDFs to be viewed by
 users.
 
-\begin{figure}[h!]
+\begin{figure}[t]
   \center
   \includegraphics[width=0.49\textwidth]{smuggling-scenario.png}
   \caption{Overview of the content smuggling scenario}
-  \label{fig:scenario}
+  \label{fig:smuggling-scenario}
 \end{figure}
 
 
@@ -719,14 +750,20 @@ objects through references, e.g. relating a page to its contents. %At least one
 % actions?
 A special type of dictionary describes \emph{actions}. Actions are triggered when a
 certain event occur, such as a file is opened or a page is displayed, and the action 
-dictionary specify how it should be handled. Actions can be used to, among other 
+dictionary specify how it is handled. Actions can be used to, among other 
 things, go to a specific page, play a sound, execute JavaScript or launch a command.
 
 % stream objects
 \paragraph{Stream objects}
-A stream is an unlimited sequence of bytes. A stream object consists of a 
+A stream is an unlimited sequence of bytes. A stream object shall always be indirect and consists of a 
 dictionary, describing the stream, and the associated stream delimited by the 
-"stream" and "endstream" keywords. PDF supports encoding of streams, in which
+"stream" and "endstream" keywords. 
+%
+According to the specification, the stream dictionary shall contain a \emph{Length} 
+name to specify the length of the stream. In practice this can be omitted as 
+long as the delimiting keywords are in place.
+%
+PDF supports encoding of streams, in which
 case the dictionary describe which filters are required to decode the stream. 
 
 % cross-reference
@@ -741,7 +778,10 @@ will be reconstructed if missing and can therefore be omitted.
 \subsubsection{Trailer}
 The trailer is composed of a trailer dictionary, a pointer to the cross-reference 
 section and an end-of-file marker. The trailer dictionary is introduced by the 
-"trailer" keyword. It contains among other things a reference to the root of the 
+"trailer" keyword. 
+%
+\emph{Root} is in practice the only mandatory name in the trailer dictionary, referencing the root of the 
+%
 document structure. The "startxref" keyword is followed by the number of bytes from 
 the beginning of the file to the first cross-reference section. As with the 
 cross-reference section, it can be omitted. The string "\%\%EOF" marks the 
@@ -749,10 +789,14 @@ end-of-file, but can be omitted.
 
 
 \subsection{PDF-based polyglots}
+\label{sec:pdf-based-polyglots}
 Several design choices in the PDF specification make the format particularly 
 suitable for making polyglots. One such design choice is the error tolerant 
-parser. This is in part motivated by PDF being a container format, of which the 
-implication is that a PDF file can, by design, contain foreign syntax that 
+parser. This is in part motivated by PDF being a container format, 
+%of which the 
+another design choice which implies
+%implication is 
+that a PDF file can, by design, contain foreign syntax that 
 could interfere with the syntax of the file. Another motivation is that PDF 
 files are designed to be both forward- and backward-compatible. Readers 
 implementing an older version of the specification do not recognize new 
@@ -774,6 +818,12 @@ minimal syntax required for a malformed, but valid PDF file.
 %provides us with a format that is powerful, flexible and ideal for creating
 %malicious polyglots.
 
+
+\begin{lstlisting}[label=lst:minimal-pdf, caption=Minimal PDF file]
+%PDF-
+trailer<</Root<</Pages<<>>>>>>
+\end{lstlisting}
+
 % - Execute JavaScript
 % - Embed flash files
 % - Launch commands
@@ -781,9 +831,11 @@ minimal syntax required for a malformed, but valid PDF file.
 
 Furthermore the PDF format is of particular interest to us because of its 
 many capabilities. Some examples include executing JavaScript, launching commands, 
-and issuing HTTP requests. Adobe Reader even includes a flash 
-player to play embedded flash files on systems that do
-not have a player installed. %Considering that it might be a conscious decision
+and issuing HTTP requests. The HTTP requests are restricted to the origin of the 
+PDF file, and will include any cookies associated with that origin. 
+Adobe Reader also includes a flash 
+runtime to play embedded flash files on systems that do
+not have the Flash runtime installed. %Considering that it might be a conscious decision
 %of the user to refuse a flash player, 
 
 %\subsection{Embedded PDF documents}
@@ -791,23 +843,49 @@ not have a player installed. %Considering that it might be a conscious decision
 When a PDF document is embedded in a web page, the corresponding plugin 
 is executed to render the content. Recall from Section~\ref{sec:cross-origin} 
 that the plug-in is selected based 
-on the MIME-type, either supplied by the server or in the type attribute, and 
+on the MIME-type, either supplied by the server or in the type attribute
+%
+with preference for the later.
+%
+Also recall
 that the browser rely on the plug-in to handle the situation when the MIME-type 
-supplied by the server is inappropriate for the plug-in.
+supplied by the server is inconsistent with the MIME-type of the plug-in.
 In the case of the Adobe Reader plug-in, it disregards the MIME-type
 supplied by the server and will attempt to interpret any content as PDF. 
+Listing~\ref{lst:embed-pdf} shows how 
+arbitrary content can be rendered as PDF format. 
 
 
-\begin{lstlisting}[label=lst:minimal-pdf, caption=Minimal PDF file]
-%PDF-
-trailer<</Root<</Pages<<>>>>>>
+\begin{lstlisting}[label=lst:embed-pdf, caption=HTML for embedding PDF content]
+<embed type="application/pdf" 
+src="vulnerable.com/content?input=%PDF...">
 \end{lstlisting}
 
 
 
 \subsection{Syntax injection}
 
-Based on the PDF samples in Listings~\ref{lst:minimal-pdf}, we can derive 
+As the scenario details in Section~\ref{sec:injection}, the attacker in a syntax 
+injection attack manipulates a vulnerable service to include PDF syntax in existing content, e.g. HTML-documents.
+The PDF syntax is typically injected through user input used by the vulnerable service in the composition of documents.
+%
+An example of a suitable fragment to inject is shown in Listing~\ref{lst:xml-pdf}.
+%
+The content is subsequently 
+embedded in the attackers page as PDF, as exemplified in Listing~\ref{lst:embed-pdf}.
+As mentioned in Section~\ref{sec:pdf-based-polyglots}, the embedded PDF can issue 
+requests to the origin it came from, carrying the cookies associated with that origin.
+These requests allow for the extraction of sensitive user data that can either be communicated back to the attacker, or be leveraged in further attacks.
+
+Thus far, exploitation of vulnerable services have been discussed, excluding the specific 
+conditions under which a service is vulnerable. In order to exploit the 
+vulnerability, the injected syntax must pass through any existing filters 
+unchanged or at least with its semantics preserved. If user input in an 
+HTML-document is not sanitized, any syntax would be unchanged and 
+the service is vulnerable to less sophisticated attacks, e.g. cross-site scripting, 
+therefore sanitized user input is of greater concern.
+%
+Based on the PDF samples in Listings~\ref{lst:minimal-pdf} and~\ref{lst:xml-pdf}, we can derive 
 the set of tokens required to build a PDF. Assuming that alpha-numeric characters 
 pass through a sanitization filter unmodified, the set of tokens is $\{\%, <<, >>, /\}$.
 As can be noted, there is a small but significant overlap with the tokens of HTML, 
@@ -842,7 +920,7 @@ JSON encoded information suffer the same problem as in-line JavaScript, thereby
 extending the attack surface further.
 
 \subsection{Content smuggling}
-
+\todo{Deal with this section, extend and polish}
 Due to the nature of the PDF, it can without much effort be combined with just 
 about any other format. This provides ample opportunity to create malicious 
 polyglots where PDF is either the benign or the malicious format. Consequently, 
@@ -851,6 +929,7 @@ measures to protect against these attacks.
 
 
 \paragraph{PDF as the benign format}
+\todo{Services that accept PDFs, PDFs can be used to hide another malicious format}
 Services like job brokers commonly let the user upload a CV in the form of a PDF-file.
 Before such PDF-files are published to recruiters, they are verified to not 
 contain any malicious payload. An attacker can produce a PDF that is valid and 
@@ -867,45 +946,55 @@ and is likely to miss the malicious PDF components. To prevent the attack, the
 verification process have to actively search for and remove PDF specific syntax.
 
 \subsection{PDF communication methods}
+%\todo{rewrite section, focus on embedded flash, xxe and code samples}
+%
+In order to extract information and leak across origins, a communication channel
+is required. PDF documents provide multiple ways of generating HTTP requests. 
+Many of these are cross-origin, but, out of security concerns, only one-way in the sense that 
+the PDF document will never see the result. Therefore, the focus is directed towards 
+two methods that allow bidirectional communication. Since the document will retain the 
+origin from which it was served, all 
+requests issued from the document will include any cookies associated with the target origin.
 
-The embedded document will retain the origin from which it was served. All 
-request issued from the document will include any cookies available in the 
-browser for the target domain.
-When embedded in a web page, many of the PDF communication methods utilize
-the underlying browser to make requests by navigating the browser to the target 
-URL. This will unload the current page in which the document is embedded. Arbitrary page 
-navigation is allowed with respect to SOP, since the response is not visible 
-to the document. Such methods can be used in CSRF attacks, but would 
-defeat the purpose of requesting information as the document cannot process the 
-response.
+%When embedded in a web page, many of the PDF communication methods utilize
+%the underlying browser to make requests by navigating the browser to the target 
+%URL. This will unload the current page in which the document is embedded. Arbitrary page 
+%navigation is allowed with respect to SOP, since the response is not visible 
+%to the document. Such methods can be used in CSRF attacks, but would 
+%defeat the purpose of requesting information as the document cannot process the 
+%response.
 
 % Cross-origin leaks
-To leak information across origins, a communication channel is 
-required between the attacker and the target. PDF provides the necessary means 
-to mediate this information leakage. The flow of information can be divided into 
-two steps, extracting information from the target and delivering it to the attacker.
-Each requiring its own communication methods.
+%To leak information across origins, a communication channel is 
+%required between the attacker and the target. PDF provides the necessary means 
+%to mediate this information leakage. The flow of information can be divided into 
+%two steps, extracting information from the target and delivering it to the attacker.
+%Each requiring its own communication methods.
 
 
-\subsubsection{The target}
-There are two methods for a PDF file to communicate with the server it originates from, 
-both allowing it to read the response: from JavaScript using XML external entities 
-and from an embedded flash file.
+%\subsubsection{The target}
+%There are two methods for a PDF file to communicate with the server it originates from, 
+%both allowing it to read the response: from JavaScript using XML external entities 
+%and from an embedded flash file.
 
-\paragraph{XML}
-The PDF JavaScript API includes a method to parse an XML document, called 
-XMLData.parse. The XML document being processed may rely on external entities, 
-which the XML parser will request and include in the document. The request is 
-bound to the origin of the document. As the response 
+\paragraph{XML External Entities}
+The PDF JavaScript API includes a method to parse XML documents, called 
+XMLData.parse. The XML document being processed may in turn rely on external entities, 
+required for the parsing of the document, which the XML parser will request. The request is 
+bound to the origin of the document, and the response is included in the XML document. 
+The source code of the XML document reflects this response and can be retrieved at a later point. This 
+results in a bidirectional communication channel.
+%
+As the response 
 is included in the XML, the result has to be well-formed XML. This puts a 
 restriction on the content that can be requested using this method. Considering 
 that HTML pages are rarely well-formed this method may be too restricted in practice.
-Listing~\ref{lst:xml-pdf} contains an example that uses XML external entities.
 
-\paragraph{Embedded Flash}
-The embedded flash file inherits the origin of the document, thus it can 
-request and read any document from the originating server. Unlike the XML
-method, there is no restrictions on what content can be requested.
+Listing~\ref{lst:xml-pdf} contains an example PDF document that uses XML external 
+entities. Note that the one-way method \emph{getURL} is used to communicate the 
+information back to the attacker. Given the compact size of the example, it is useful for the syntax 
+injection scenario in Section~\ref{sec:injection}, which require injection of 
+small syntax fragments.
 
 \begin{lstlisting}[label=lst:xml-pdf, caption=PDF using XML for communication]
 %PDF-
@@ -913,7 +1002,7 @@ method, there is no restrictions on what content can be requested.
 xml = '<!DOCTYPE foo[<!ENTITY x SYSTEM "'+
 	URL+'">]><foo>&x;</foo>'
 var doc = XMLData.parse(xml);
-app.alert(doc.saveXML())
+getURL('attacker.com/?'+doc.saveXML())
 endstream
 trailer<</Root
    <</Pages<<>>
@@ -923,37 +1012,83 @@ trailer<</Root
 >>
 \end{lstlisting}
 
-\subsubsection{The attacker}
-There are a number of ways to communicate with the attacker, either directly 
-via the embedding page or through the attackers server. As mentioned previously, 
-many methods trigger page navigation in the browser. This will result in a 
-noticeable change in the victims browser. While it fulfills the purpose of 
-leaking information, an attacker can use more covert methods of communication
-to refrain from alerting the victim. 
-
-\paragraph{Fragment identifier}
-The methods that navigate the browser can still be used for a somewhat covert 
-communication with the attacker. Navigating to the same page with a different 
-fragment identifier will not reload the page. Embedding the information in the fragment 
-identifier of the URL of the embedding website, creates a one-way communication 
-channel from the document to the page. Since the fragment identifier is visible 
-in the address field of the browser, an alert user would notice it changing.
-
-\paragraph{PostMessage}
-The PDF plugin includes an API for communicating directly with the page in 
-which it is embedded. The document can send messages to the page using 
-the hostContainer.postMessage method. The page registers a handler to receive 
-the event and is also able to post messages back to the document.
-This two way communication is not visible to the victim.
-
 \paragraph{Embedded Flash}
-Cross-origin communication in Flash is restricted by the same-origin policy,
-but also support cross-origin communication via  
-CORS. Using CORS, a web server can relax SOP to allow access to specified content.
-As mentioned, the embedded Flash file inherits the origin of the document.
-However, this is not a restriction, since an attacker can set a cross-origin policy 
-that allow the request. This allows for a two way communication that is not 
-visible to the victim.
+By embedding a Flash file in the PDF document the capabilities of the format can be 
+extended even further. The Flash runtime supports bidirectional communication in 
+accordance with SOP.
+%
+The embedded Flash inherits the origin of the PDF document, thus it can 
+request and read any document from the originating server. Unlike the XML
+method, there are no restrictions on what content can be requested, thus making 
+it the most versatile of the available communication methods. The only drawback 
+using this approach is the significant increase in terms of file size. Even the compact 
+flash code in Listing~\ref{lst:flash-pdf} will result in a 6 kB Flash file. 
+This suggests that this method might be better suited for the content smuggling 
+scenario in Section~\ref{sec:smuggling}, rather than the syntax injection scenario.
+
+\begin{lstlisting}[label=lst:flash-pdf, caption=Flash code for communication]
+package {
+  import flash.net.*;
+  import flash.display.Sprite;
+  public class Secret extends Sprite {
+    var u:String;
+    var r:URLRequest;
+    var l:URLLoader;
+    public function Secret() {
+      u = 'vulnerable.com/secret';
+      r = new URLRequest(u);
+      l = new URLLoader(r);
+
+      l.addEventListener('complete', 
+        function():void {
+          u = 'attacker.com/?' + r.data;
+          r = new URLRequest(u);
+          l = new URLLoader(r);
+        });
+    }
+  }
+}
+\end{lstlisting}
+
+Cross-origin communication in Flash adheres to the same-origin policy. However, this is not a restriction, since
+ Flash also supports cross-origin communication via  
+cross-origin resource sharing. Using CORS, a web server can relax the SOP to allow access to specified content.
+%As mentioned, the embedded Flash file inherits the origin of the document.
+An attacker can set an allow-all cross-origin policy, such as in Listing~\ref{lst:crossdomain} 
+that open up for two way communication.
+
+\begin{lstlisting}[label=lst:crossdomain, caption=Allow-all crossdomain.xml]
+<?xml version="1.0"?>
+<cross-domain-policy>
+  <allow-access-from domain="*" />
+</cross-domain-policy>
+\end{lstlisting}
+
+%\subsubsection{The attacker}
+%There are a number of ways to communicate with the attacker, either directly 
+%via the embedding page or through the attackers server. As mentioned previously, 
+%many methods trigger page navigation in the browser. This will result in a 
+%noticeable change in the victims browser. While it fulfills the purpose of 
+%leaking information, an attacker can use more covert methods of communication
+%to refrain from alerting the victim. 
+
+%\paragraph{Fragment identifier}
+%The methods that navigate the browser can still be used for a somewhat covert 
+%communication with the attacker. Navigating to the same page with a different 
+%fragment identifier will not reload the page. Embedding the information in the fragment 
+%identifier of the URL of the embedding website, creates a one-way communication 
+%channel from the document to the page. Since the fragment identifier is visible 
+%in the address field of the browser, an alert user would notice it changing.
+
+%\paragraph{PostMessage}
+%The PDF plugin includes an API for communicating directly with the page in 
+%which it is embedded. The document can send messages to the page using 
+%the hostContainer.postMessage method. The page registers a handler to receive 
+%the event and is also able to post messages back to the document.
+%This two way communication is not visible to the victim.
+
+%\paragraph{Embedded Flash}
+
 
 
 
@@ -997,14 +1132,9 @@ browsers, i.e., Firefox, Safari, Opera, Google Chrome and Internet Explorer.
 The study shows that all major browsers are susceptible to the attacks outlined 
 in Section~\ref{sec:vuln}, with some minor differences. 
 
-\paragraph{Safari and Opera}
-The browsers, Safari and Opera, are both susceptible to the attacks outlined as 
+\paragraph{Firefox, Safari and Opera}
+The browsers, Firefox, Safari and Opera, are all susceptible to the attacks outlined as 
 per Section~\ref{sec:vuln}, without any restrictions or modifications.
-
-\paragraph{Firefox}
-The Mozilla Firefox browser is susceptible to the attacks, with the restriction 
-that the PostMessage API is unavailable. This merely prevents one channel of 
-communication with the attacker, and does not reduce the threat.
 
 \paragraph{Internet Explorer}
 Microsoft's browser, Internet Explorer, is susceptible to the attacks. However, 
@@ -1130,6 +1260,9 @@ many cases. These best-practices successfully prevents content-smuggling
 attacks in all aspects, as the infiltrated origin is separate from the origin 
 containing sensitive data. 
 
+\todo{What about serving as attachment, so that it is not viewed within the browser? How does it work with embedded content?}
+\todo{Problem of transferring credentials between domains for services where the content requires authentication}
+
 %Google uses the domain name \emph{googleusercontent.com} to sandbox all the 
 %untrusted user files that their various services provide for their customers.
 
@@ -1227,7 +1360,7 @@ implies that the attacks outlined in their paper are now ineffective.
 Wolf's OMG WTF PDF presentation~\cite{Wolf:CCC10} is one of the 
 inspirations for our work. The presentation explores the liberty
 of the PDF format. In addition, it highlights that PDF interpreters
-often disregard the specification demands. This particularly
+often disregard the specification demands. This is particularly
 relevant as it allows crossbreeding PDF with such
 formats as ZIP and EXE.
 

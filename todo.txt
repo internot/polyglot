@@ -23,17 +23,19 @@
 > three-fold. First, polyglot attacks are not new; they are very
 > well-known. 
 
-Explain that although polyglots and attacks instances are known, the generalization is novel and there are novel PDF-specific attack vectors.
+DONE: Explain that although polyglots and attacks instances are known, the generalization is novel and there are novel PDF-specific attack vectors.
+
+Andrei: Please check this one (todo in paper)
 
 > Second, the paper does not demonstrate any real attack at
 > all. 
 
-Provide code snippets of the attacks.
+DONE: Provide code snippets of the attacks.
 
 > A website crafted by the authors with real attacks is
 > non-functional. 
 
-Ensure the site works, with no dependencies on other services.
+TODO: Ensure the site works, with no dependencies on other services.
 
 > Third, and perhaps most seriously, by the author's own
 > admittance, building PDF polyglots is very easy.
@@ -50,11 +52,16 @@ it more important to protect against these attacks.
 > inadequate content filtering) and to upload them (on a content hosting
 > website). 
 
-Tighten up the verbose sections.
+TODO: Tighten up the verbose sections.
+
+In progress...
+v 2.4
+v 3.3
+- 3.4?
 
 > Section 3.5 on using PDFs to launch attacks is uninformative.
 
-Exemplify the communication methods in relation with scenarios.
+DONE: Exemplify the communication methods in relation with scenarios.
 
 > The evaluation section is weak, largely because no real attack is
 > shown. Instead, vulnerable browsers (those that allow cross-domain
@@ -62,18 +69,25 @@ Exemplify the communication methods in relation with scenarios.
 > are listed. That description is very verbose and will fit into a
 > single small table. 
 
-Table of comparison.
+TODO: Table of comparison.
 
 > Next, there is an evaluation of Alexa top 100
 > websites for proper content filtering, but it is impossible to
 > determine how thorough or relevant it is because no details are
 > provided. Could you provide samples of your tests? 
 
-Samples and tests.
+TODO: Samples and tests.
+
+See reviewer 3
 
 > Section 5.1 on server-side mitigation is also uninformative.
 
-Conclusion for 5.1.2 endorsing Google's practices. 
+TODO: Conclusion for 5.1.2 endorsing Google's practices. 
+
+In progress...
+- describe in more detail
+- add part on problems of transferring credentials across domains
+- endorse google
 
 > On the whole, I am concerned about the lack of a meaningful
 > contribution in the paper, a general lack of technical content and
@@ -128,7 +142,7 @@ DONE: Address language comments.
 > concrete example of the attacks. As such, it fails to demonstrate any
 > technical contribution as a research paper.
 
-Concrete examples of attacks.
+DONE: Concrete examples of attacks.
 
 > In particular, the paper does not provide the actual "novel
 > confidentiality and integrity attack vectors" as claimed. Syntax
@@ -137,7 +151,9 @@ Concrete examples of attacks.
 > concepts summarized in the paper may be new, but they do not map to
 > novel attack vectors.
 
-PDF-specific attack vectors.
+TODO: PDF-specific attack vectors.
+
+Andrei: Where to mention?
 
 > The paper unnecessarily mentions the attack scenarios many
 > times (at least 3 times), without giving any code snippet of an attack
@@ -146,7 +162,7 @@ PDF-specific attack vectors.
 > PDF-based polyglot attacks in the claimed scenarios, such as cloud
 > storage or job broker.
 
-Code snippets. Keep coming back to the scenarios throughout the paper.
+DONE: Code snippets. Keep coming back to the scenarios throughout the paper.
 
 > The evaluation reports 9 out of Alexa Top 100 websites are potentially
 > vulnerable to insufficient PDF content filtering. However, no further
@@ -155,7 +171,15 @@ Code snippets. Keep coming back to the scenarios throughout the paper.
 > no description of the vulnerabilities cannot support the paper's claim
 > to be the first to systematically study polyglot attacks.
 
-Samples and tests. Mention explicitly that no further details are revealed to avoid exploiting the sites before they are fixed. Neither we want to disclose that particular sites are vulnerable.
+TODO: Samples and tests. Mention explicitly that no further details are revealed to avoid exploiting the sites before they are fixed. Neither we want to disclose that particular sites are vulnerable.
+
+In progress...
+- Test string
+- Injection only / All cloud storage on top 100 follows best practices, an extended study focussing on such services would be required
+- Prevent sites from being singled out for exploitation until fixed
+- No names mentioned to not draw bad publicity to certain sites
+- Statistics (5 XSS, 2 comments, 1 JSON, 1 JavaScript)
+- Specifics on certain site problems
 
 > We recommend the authors to put in substantial details and examples for the
 > PDF-based polyglot attacks in revising the paper. Moreover, typos and
