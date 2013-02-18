@@ -25,7 +25,7 @@
 
 DONE: Explain that although polyglots and attacks instances are known, the generalization is novel and there are novel PDF-specific attack vectors.
 
-Andrei: Please check this one (todo in paper)
+DONE: checked and replied by email. Andrei: Please check this one (todo in paper)
 
 > Second, the paper does not demonstrate any real attack at
 > all. 
@@ -153,7 +153,7 @@ DONE: Concrete examples of attacks.
 
 TODO: PDF-specific attack vectors.
 
-Andrei: Where to mention?
+Andrei: Where to mention? - both in the intro and body -Andrei
 
 > The paper unnecessarily mentions the attack scenarios many
 > times (at least 3 times), without giving any code snippet of an attack
