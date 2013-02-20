@@ -1,10 +1,15 @@
-\documentclass{acm_proc_article-sp}
+%\documentclass{acm_proc_article-sp}
 %\documentclass[10pt, conference, compsocconf]{IEEEtran}
 
-% From ASIACCS'13 CFP
-% Submissions must be written in English, and must be at most 10 pages
-% excluding the bibliography and well-marked appendices, and at most
-% 12 pages overall.
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix,epsfig,endnotes}
+
+%don't want date printed
+\date{}
+
+%make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf Polyglots : Crossing Origins by Crossing Formats}
+
 
 \usepackage{listings}
 \usepackage{url}
@@ -15,7 +20,6 @@
 \newcommand{\todo}[1]{\colorbox{red}{\textcolor{white}{\sffamily\bfseries\scriptsize TODO}} \textcolor{red}{#1} \textcolor{red}{$\blacktriangleleft$}}
 
 
-\title{Crossing Origins by Crossing Formats}
 
 \begin{document}
 
@@ -166,15 +170,22 @@ malicious to bypass SOP.
 %
 Cross-origin CSS attacks inject fragments of CSS code into an existing
 web page to extract information from the existing web page.
-%
-The paper is the first to perform a systematic study of polyglot
+
+\paragraph{Generalizing polyglots} 
+The paper is the first to perform a generalization and systematic study of polyglot
 attacks.
+We identify the necessary ingredients for polyglot attacks.
 We characterize of what constitutes a dangerous format in the web setting and
 identify particularly dangerous formats, with PDF as the prime example. We
 demonstrate that polyglot-based attacks on the web open up for insecure
-communication across Internet origins. We perform a systematic study of
-PDF-based injection and content smuggling attacks. 
+communication across Internet origins. 
 
+\paragraph{PDF polyglots} 
+Having identified PDF as a particularly dangerous format, we perform
+a novel in-depth study of
+PDF-based injection and content smuggling attacks. 
+Our findings expose new attack vectors, which we demonstrate both
+conceptually and by a proof-of-concept web pages.
 
 \paragraph{Evaluation and mitigation}
 We evaluate the current
@@ -183,25 +194,26 @@ attacks, and report on vulnerabilities in the top 100 Alexa web sites. Our
 recommendations for protective measures on server side, in browsers, and in content
 interpreters (such as PDF readers) show how to mitigate the attacks.
 
-\paragraph{Contributions} The paper makes the following contributions:
-\begin{itemize}
-\vspace*{-.6cm}
-\item Identification of polyglot attacks, a new breed of attacks for
-  crossing origins by crossing formats;
-\vspace*{-.2cm}
-\item Characterization of the necessary ingredients for polyglot attacks
-\vspace*{-.2cm}
-\item Highlighting the PDF format as a particularly exposed format for
-  polyglot attacks;
-\vspace*{-.2cm}
-\item Novel confidentiality and integrity attack vectors, based on syntax 
-  injection and content smuggling;
-\vspace*{-.2cm}
-\item Evaluation of the current filtering mechanisms, browsers, and PDF
-  filters for vulnerabilities; and
-\vspace*{-.2cm}
-\item Mitigation for the server, client, and PDF readers.
-\end{itemize}
+%%% removed it - it repets what we already say above
+% \paragraph{Contributions} The paper makes the following contributions:
+% \begin{itemize}
+% \vspace*{-.6cm}
+% \item Identification of polyglot attacks, a new breed of attacks for
+%   crossing origins by crossing formats;
+% \vspace*{-.2cm}
+% \item Characterization of the necessary ingredients for polyglot attacks
+% \vspace*{-.2cm}
+% \item Highlighting the PDF format as a particularly exposed format for
+%   polyglot attacks;
+% \vspace*{-.2cm}
+% \item Novel confidentiality and integrity attack vectors, based on syntax 
+%   injection and content smuggling;
+% \vspace*{-.2cm}
+% \item Evaluation of the current filtering mechanisms, browsers, and PDF
+%   filters for vulnerabilities; and
+% \vspace*{-.2cm}
+% \item Mitigation for the server, client, and PDF readers.
+% \end{itemize}
 
 
 \paragraph{Overview}
@@ -358,8 +370,7 @@ how a polyglot can infiltrate an origin.
 
 
 While these articles document known instances of polyglot attacks, the attack 
-method has up until now never been generalized. 
-\todo{Is this a good place? is it a good way to say it?}
+method has not been generalized until this paper.
 %
 Two attacker-centric components require special attention; the infiltration of 
 an origin, i.e. the attack vector, and the exploitation of an infiltrated origin, i.e. the payload.
