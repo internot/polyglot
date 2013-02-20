@@ -864,7 +864,7 @@ src="vulnerable.com/content?input=%PDF...">
 
 
 \subsection{Syntax injection}
-
+\label{sec:pdf-injection}
 As the scenario details in Section~\ref{sec:injection}, the attacker in a syntax 
 injection attack manipulates a vulnerable service to include PDF syntax in existing content, e.g. HTML-documents.
 The PDF syntax is typically injected through user input used by the vulnerable service in the composition of documents.
@@ -1111,7 +1111,7 @@ To better understand how this problem presents itself, a comparison of browser a
 is presented. We compare all major browsers and two of the most common readers.
 
 \subsubsection{Readers}
-
+\label{sec:readers}
 Section~\ref{sec:vuln} focuses on the Adobe PDF Reader as the attack surface, 
 due to its standing as the most commonly used reader. To give a comparison, the 
 Google Chrome built-in PDF reader, was selected as it is the default reader to 
@@ -1130,7 +1130,7 @@ behave the same as in other browsers and the content will be interpreted as PDF.
 The behavior of cross-domain embedding of PDF resources is studied in the major 
 browsers, i.e., Firefox, Safari, Opera, Google Chrome and Internet Explorer. 
 The study shows that all major browsers are susceptible to the attacks outlined 
-in Section~\ref{sec:vuln}, with some minor differences. 
+in Section~\ref{sec:vuln}, with some minor differences detailed below and summarized in Table~\ref{tab:comparison}. 
 
 \paragraph{Firefox, Safari and Opera}
 The browsers, Firefox, Safari and Opera, are all susceptible to the attacks outlined as 
@@ -1147,11 +1147,22 @@ Google's browser, Chrome, has built-in support for displaying PDF documents.
 The built-in PDF reader is used by default by the browser, unless it has been 
 explicitly disabled by the user. Certain complex PDF documents can not be 
 handled by the built-in reader. The built-in reader will then prompt the user 
-to open the document in Adobe Reader. As previously noted, the built-in reader 
+to open the document in Adobe Reader. As previously noted in Section~\ref{sec:readers}, the built-in reader 
 is not vulnerable to attacks. Hence, Chrome is only susceptible when the Adobe 
 Reader plug-in is used to render the document.
 
-
+\begin{table}[h!]
+\begin{tabular}{l||c|c|c}
+& object & embed & Adobe is default \\ \hline
+Firefox & X & X & X \\ \hline
+Chrome & X & X & --- \\ \hline
+Safari & X & X & X \\ \hline
+Opera & X & X & X \\ \hline
+Internet Explorer & --- & X & X %\\ \hline
+\end{tabular}
+\caption{Comparison of browsers}
+\label{tab:comparison}
+\end{table}
 %\subsection{Bypassing content filters}
 
 
@@ -1186,13 +1197,26 @@ on the web, these websites are also the most exposed to security threats.
 The study covers PDF-based polyglot attacks using syntax injection as the infiltration method.
 It does not involve polyglot attacks based on content smuggling, as 
 potential targets generally require authentication before submitting content.
+We refrain from mentioning names of individual websites to prevent exploitation 
+before the issues have been properly dealt with. Neither do we want to disclose 
+these websites as particularly vulnerable.
 
-The study is based on supplying the websites with small benign samples 
-of PDF syntax, containing keywords and tokens, and examining the responses 
-for said tokens. The conclusion is 
+The study is based on supplying the websites with the benign minimal PDF in 
+Listing~\ref{lst:minimal-pdf}, and examining the corresponding responses to this input.
+The sample contains the essential keywords and tokens required to perform a syntax 
+injection based polyglot attack. If these tokens pass through unaltered, the website is 
+considered vulnerable. Only public accessible input parameters, those that do not require authentication, 
+were tested, which suggests that more websites are likely vulnerable in input that do
+requires authentication.
+
+The conclusion is 
 that nine websites out of the hundred apply insufficient content filtering with 
-respect to the PDF format, which have the potential of compromising the 
-confidentiality and integrity of the website's users.
+respect to the PDF format. Out of the nine found to be vulnerable;three were susceptible to traditional 
+XSS and thereby also to PDF polyglot attacks, two were susceptible only to PDF based polyglot attacks, and four applied 
+insufficient content filtering, but the input was reflected in a way that prevented exploitation.
+%
+%, which have the potential of compromising the 
+%confidentiality and integrity of the website's users.
 %
 We are in contact with the teams responsible for the websites to help
 mitigate the vulnerabilities. 
@@ -1212,16 +1236,11 @@ mitigate the vulnerabilities.
 
 
 
-
-
-
-
-
 %1-2 pages 
 \section{Mitigation}
 \label{sec:mit}
-This section will describe our recommendations for mitigation in each of the
-affected components.
+This section gives advice on various mitigation approaches available for each of the
+affected components, from server to client.
 
 \subsection{Server-side mitigation}
 
@@ -1243,8 +1262,8 @@ attacks has proved difficult due to the many contexts in which JavaScript can be
 introduced. Filtering all potentially harmful tokens from all formats in which a 
 document may be interpreted is hardly possible.
 
-To prevent PDF syntax injection attack, the task is simpler. As mentioned in 
-Section~\ref{sec:vuln}, there is a limited set of characters that are essential 
+To prevent PDF-based syntax injection attack, the task is simpler. The token-set identified in 
+Section~\ref{sec:pdf-injection}, are essential 
 to create valid PDF syntax, namely \emph{'$<$', '$>$', and '/'}. Filtering 
 user input to remove or encode these characters effectively mitigates the 
 vulnerability.
