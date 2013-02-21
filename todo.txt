@@ -52,12 +52,12 @@ it more important to protect against these attacks.
 > inadequate content filtering) and to upload them (on a content hosting
 > website). 
 
-TODO: Tighten up the verbose sections.
+DONE: Tighten up the verbose sections.
 
 In progress...
 v 2.4
 v 3.3
-- 3.4?
+v 3.4?
 
 > Section 3.5 on using PDFs to launch attacks is uninformative.
 
@@ -69,25 +69,25 @@ DONE: Exemplify the communication methods in relation with scenarios.
 > are listed. That description is very verbose and will fit into a
 > single small table. 
 
-TODO: Table of comparison.
+DONE: Table of comparison.
 
 > Next, there is an evaluation of Alexa top 100
 > websites for proper content filtering, but it is impossible to
 > determine how thorough or relevant it is because no details are
 > provided. Could you provide samples of your tests? 
 
-TODO: Samples and tests.
+DONE: Samples and tests.
 
 See reviewer 3
 
 > Section 5.1 on server-side mitigation is also uninformative.
 
-TODO: Conclusion for 5.1.2 endorsing Google's practices. 
+DONE: Conclusion for 5.1.2 endorsing Google's practices. 
 
 In progress...
-- describe in more detail
-- add part on problems of transferring credentials across domains
-- endorse google
+v describe in more detail
+v add part on problems of transferring credentials across domains
+v endorse google
 
 > On the whole, I am concerned about the lack of a meaningful
 > contribution in the paper, a general lack of technical content and
@@ -151,7 +151,7 @@ DONE: Concrete examples of attacks.
 > concepts summarized in the paper may be new, but they do not map to
 > novel attack vectors.
 
-TODO: PDF-specific attack vectors.
+DONE: PDF-specific attack vectors.
 
 Andrei: Where to mention? - both in the intro and body -Andrei
 
@@ -174,12 +174,10 @@ DONE: Code snippets. Keep coming back to the scenarios throughout the paper.
 TODO: Samples and tests. Mention explicitly that no further details are revealed to avoid exploiting the sites before they are fixed. Neither we want to disclose that particular sites are vulnerable.
 
 In progress...
-- Test string
-- Injection only / All cloud storage on top 100 follows best practices, an extended study focussing on such services would be required
-- Prevent sites from being singled out for exploitation until fixed
-- No names mentioned to not draw bad publicity to certain sites
-- Statistics (5 XSS, 2 comments, 1 JSON, 1 JavaScript)
-- Specifics on certain site problems
+v Test string
+v Injection only / All cloud storage on top 100 follows best practices, an extended study focussing on such services would be required
+v Prevent sites from being singled out for exploitation until fixed
+v No names mentioned to not draw bad publicity to certain sites
 
 > We recommend the authors to put in substantial details and examples for the
 > PDF-based polyglot attacks in revising the paper. Moreover, typos and
