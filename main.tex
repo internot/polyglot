@@ -149,7 +149,7 @@ We present novel attack vectors that are based on (i)
 operate across multiple languages and on (ii) \emph{content smuggling} that supply
 malicious payload that appears formatted as benign content. The
 attacks lead to both \emph{cross-domain leakage} and \emph{cross-site
-  request forgery}.
+request forgery}.
 
 The existing defense mechanisms fall short to prevent these attacks
 from achieving cross-domain communication. 
@@ -400,7 +400,7 @@ format, thereby creating a polyglot. The polyglot is benign when viewed as the
 original format, but malicious when viewed as the injected format. While the 
 targeted service serves the content as its original format, it is in the hands 
 of the attacker to decide how it is interpreted. Examples of 
-such services include dynamic user driven websites, e.g. social networks, search engines, etc.
+such services include social networks, search engines, i.e., nearly any dynamic user driven website.
 %
 The targeted service is assumed to employ server-side cross-site scripting 
 sanitization. Hence, for the attack to be successful, the input must 
@@ -852,7 +852,7 @@ not have the Flash runtime installed. %Considering that it might be a conscious 
 
 %\subsection{Embedded PDF documents}
 
-When a PDF document is embedded in a web page, the corresponding plugin 
+When a PDF document is embedded in a web page, the corresponding plug-in 
 is executed to render the content. Recall from Section~\ref{sec:cross-origin} 
 that the plug-in is selected based 
 on the MIME-type, either supplied by the server or in the type attribute
