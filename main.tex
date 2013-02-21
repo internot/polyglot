@@ -399,7 +399,8 @@ compose content from attacker controlled input containing syntax of a foreign
 format, thereby creating a polyglot. The polyglot is benign when viewed as the 
 original format, but malicious when viewed as the injected format. While the 
 targeted service serves the content as its original format, it is in the hands 
-of the attacker to decide how it is interpreted.
+of the attacker to decide how it is interpreted. Examples of 
+such services include dynamic user driven websites, e.g. social networks, search engines, etc.
 %
 The targeted service is assumed to employ server-side cross-site scripting 
 sanitization. Hence, for the attack to be successful, the input must 
@@ -488,7 +489,7 @@ hence leverage the credentials of the victim to further exploit the vulnerabilit
 \label{sec:smuggling}
 The vulnerable target of a content smuggling attack, lets 
 users submit files to the service which are subsequently served under the origin of 
-the service. Examples of such potentially vulnerable services are file sharing services, image databases, 
+the service. Examples of such potentially vulnerable services are cloud storage services, image databases, 
 social networks, conference management systems or job broker services. Such a service 
 accepts a limited set of file-formats, and the files are run through a filter to verify that they 
 belong to this set, e.g. images, before being served to the end
@@ -1183,13 +1184,13 @@ is not vulnerable to attacks. Hence, Chrome is only susceptible when the Adobe
 Reader plug-in is used to render the document.
 
 \begin{table}[h!]
-\begin{tabular}{l||c|c|c}
+\begin{tabular}{l|c|c|c}
 & object & embed & Adobe is default \\ \hline
-Firefox & X & X & X \\ \hline
-Chrome & X & X & --- \\ \hline
-Safari & X & X & X \\ \hline
-Opera & X & X & X \\ \hline
-Internet Explorer & --- & X & X %\\ \hline
+Firefox & Yes & Yes & Yes \\ \hline
+Chrome & Yes & Yes & No \\ \hline
+Safari & Yes & Yes & Yes \\ \hline
+Opera & Yes & Yes & Yes \\ \hline
+Internet Explorer & No & Yes & Yes %\\ \hline
 \end{tabular}
 \caption{Comparison of browsers}
 \label{tab:comparison}
@@ -1221,17 +1222,21 @@ Internet Explorer & --- & X & X %\\ \hline
 % Don't want to claim something I have no basis for..
 
 \subsection{Alexa top 100}
-We have conducted a
-study to evaluate the prevalence of the problem on popular sites, 
+We have conducted two
+studies to evaluate the prevalence of the problem on popular sites, 
 covering the Alexa top 100 websites. Because of their dominance 
 on the web, these websites are also the most exposed to security threats.
-The study covers PDF-based polyglot attacks using syntax injection as the infiltration method.
-It does not involve polyglot attacks based on content smuggling, as 
-potential targets generally require authentication before submitting content.
+The first study covers PDF-based polyglot attacks using syntax injection as the 
+infiltration method; the second covers content smuggling.
+%It does not involve polyglot attacks based on content smuggling, as 
+%potential targets generally require authentication before submitting content.
 We refrain from mentioning names of individual websites to prevent exploitation 
 before the issues have been properly dealt with. Neither do we want to disclose 
-these websites as particularly vulnerable.
+these websites as particularly vulnerable. We are in contact with the teams responsible for the websites to help
+mitigate the vulnerabilities. 
 
+
+\paragraph{Syntax injection}
 The study is based on supplying the websites with the benign minimal PDF in 
 Listing~\ref{lst:minimal-pdf}, and examining the corresponding responses to this input.
 The sample contains the essential keywords and tokens required to perform a syntax 
@@ -1242,15 +1247,42 @@ requires authentication.
 
 The conclusion is 
 that nine websites out of the hundred apply insufficient content filtering with 
-respect to the PDF format. Out of the nine found to be vulnerable;three were susceptible to traditional 
+respect to the PDF format. Out of the nine found to be vulnerable; three were susceptible to traditional 
 XSS and thereby also to PDF polyglot attacks, two were susceptible only to PDF based polyglot attacks, and four applied 
 insufficient content filtering, but the input was reflected in a way that prevented exploitation, e.g. the header appeared after 1024 bytes.
 %
 %, which have the potential of compromising the 
 %confidentiality and integrity of the website's users.
 %
-We are in contact with the teams responsible for the websites to help
-mitigate the vulnerabilities. 
+
+The two web sites found susceptible only to polyglot attacks and not XSS attacks
+are of particular interest. They both employ proper measures to protect properly 
+against XSS attacks, and yet fall short in defeating this new breed of attacks.
+
+\begin{enumerate}
+\item The first web site reflected user input in an inline  
+JavaScript context, inside a string. To prevent cross-site scripting in this 
+context, the following measures were taken: the JavaScript string delimiters 
+were properly encoded, the backslash character was properly escaped, and the 
+string "$<$/script$>$" was removed. None of these measures prevent an attacker 
+from injecting valid PDF syntax.
+\item The second website reflected the user input in an HTML-comment context. 
+The only measure taken to prevent XSS attacks in this context was removing any 
+occurrence of the character sequence "--$>$". Again, while successfully preventing 
+XSS attacks, this measure is ineffective in preventing an attacker from injecting PDF syntax.
+\end{enumerate}
+
+\paragraph{Content smuggling}
+Further, a smaller study was conducted, not covering the full Alexa top 100, but 
+targeting popular cloud storage services. 
+This study is based on polyglot content being uploaded to the service and 
+subsequently analyzed to determine which origin it was served under. One major 
+enterprise cloud storage service was found to be susceptible to attacks. The service makes an effort to
+follow current best practices, see Section~\ref{sec:smuggling-mitigation}, for almost all uploaded content; the exception being the user's 
+avatar images that are served under the sensitive origin. An attacker could 
+upload a specially crafted avatar image that, when embedded as PDF on the attackers 
+web site, can access and modify the contents of the victim's cloud storage.
+We are currently advising the service provider to help mitigate this vulnerability. 
 
 %Baidu.com (allows <>, but escapes /) 
 %LinkedIn (allows <>, but escapes /) 
@@ -1308,7 +1340,7 @@ Special attention is required in contexts are not traditionally filtered for
 HTML tokens, e.g. JSON.
 
 \subsubsection{Content smuggling}
-
+\label{sec:smuggling-mitigation}
 The current best-practice recommendation from Google~\cite{Google:ContentHosting} 
 on hosting user-supplied content, is to serve the content from a sandboxed origin that is 
 completely separate, as per SOP, and isolated from the sensitive services. 
