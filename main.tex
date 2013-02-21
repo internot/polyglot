@@ -910,9 +910,9 @@ filtering, where the same input is treated differently based on the context in
 which it is included. In certain contexts angle brackets are often left untouched by filters.
 
 \paragraph{HTML comments}
-No HTML enclosed in comments, "<--" and "-->", will be rendered, and therefore 
+No HTML enclosed in comments, "$<$--" and "--$>$", will be rendered, and therefore 
 filters consider this context safe. To prevent input from escaping the comment by 
-injecting an end comment token, certain filters remove any occurrences of "-->", 
+injecting an end comment token, certain filters remove any occurrences of "--$>$", 
 but leave the rest of the input untouched. HTML comments are meaningless to PDF, 
 and the result is a valid HTML/PDF polyglot.
 
