@@ -530,9 +530,9 @@ The attacker infiltrates the target by uploading a polyglot to the service and e
 on \emph{attacker.com}. While authenticated to \emph{vulnerable.com}, the unsuspecting victim visits \emph{attacker.com}, the embedded 
 polyglot is activated and extracts all the files stored in the victims account.
 
-Other potential targets for this scenario are job broker services and conference 
-submission systems, which by design allow submission of PDFs to be viewed by
-users.
+%Other potential targets for this scenario are job broker services and conference 
+%management systems, which by design allow submission of PDFs to be viewed by
+%users.
 
 \begin{figure}[t]
   \center
@@ -544,7 +544,7 @@ users.
 
 
 \subsection{Payloads}
-
+\label{sec:payloads}
 The consequences of exploiting an infiltrated origin depend on the capabilities 
 of the format used. These consequences span from forging requests to the vulnerable website,
 abusing the credentials of the victim, to extracting sensitive information about the user that is
@@ -560,7 +560,7 @@ request. However, if the format also have the capability of reading the response
 the issued request, it can extract the token and thereby circumvent the CSRF 
 protection.
 
-\paragraph{Cross-origin leakage}
+\paragraph{Cross-origin information leakage}
 
 If the format also has the capability of communicating with the attacker, then 
 the attacker can extract sensitive user information and leak it across origins. If the 
@@ -869,7 +869,7 @@ arbitrary content can be rendered as PDF format.
 
 \begin{lstlisting}[label=lst:embed-pdf, caption=HTML for embedding PDF content]
 <embed type="application/pdf" 
-src="vulnerable.com/content?input=%PDF...">
+src="vulnerable.com/?input=%PDF...">
 \end{lstlisting}
 
 
@@ -886,7 +886,8 @@ The content is subsequently
 embedded in the attackers page as PDF, as exemplified in Listing~\ref{lst:embed-pdf}.
 As mentioned in Section~\ref{sec:pdf-based-polyglots}, the embedded PDF can issue 
 requests to the origin it came from, carrying the cookies associated with that origin.
-These requests allow for the extraction of sensitive user data that can either be communicated back to the attacker, or be leveraged in further attacks.
+These requests allow for the extraction of sensitive user data that can either be 
+communicated back to the attacker, or be leveraged in further attacks.
 
 Thus far, exploitation of vulnerable services have been discussed, excluding the specific 
 conditions under which a service is vulnerable. In order to exploit the 
@@ -931,7 +932,7 @@ JSON encoded information suffer the same problem as in-line JavaScript, thereby
 extending the attack surface further.
 
 \subsection{Content smuggling}
-\todo{Deal with this section, extend and polish}
+
 Due to the nature of the PDF, it can without much effort be combined with just 
 about any other format. This provides ample opportunity to create malicious 
 polyglots where PDF is either the benign or the malicious format. Consequently, 
@@ -940,30 +941,48 @@ measures to protect against these attacks.
 
 
 \paragraph{PDF as the benign format}
-\todo{Services that accept PDFs, PDFs can be used to hide another malicious format}
+%\todo{Services that accept PDFs, PDFs can be used to hide another malicious format}
 Services like job brokers commonly let the user upload a CV in the form of a PDF-file.
 Before such PDF-files are published to recruiters, they are verified to not 
-contain any malicious payload. An attacker can produce a PDF that is valid and 
-benign, but also a polyglot hiding another malicious format, such as Flash. 
-A proof-of-concept can easily be created by storing the PDF as a static string 
-variable in the malicious flash source code. When the flash is compiled, the 
-source of the PDF is part of the output, making it a valid PDF. 
+contain any malicious payload. Such a verification only extends to the PDF format itself.
+An attacker can produce a PDF that is valid and 
+benign, but also a polyglot hiding another malicious format, such as Flash. As 
+described in the content smuggling scenario in Section~\ref{sec:smuggling}, the 
+uploaded PDF file is then embedded on the attacker's web site, but now as the 
+malicious format. Using social engineering, the attacker can persuade 
+the victim to visit the web site.
+
+Creating a PDF/Flash polyglot is no major challenge.
+A proof-of-concept can easily be created by storing the PDF source code as a static string 
+variable in the malicious Flash source code. When compiling Flash, the output is 
+compressed by default to save space, thereby obfuscating the PDF source code. However, tools exist 
+that decompress the Flash files, which restores the plain PDF code.
 
 \paragraph{PDF as the malicious format}
- Given the extensive capabilities of PDF, exploiting a content smuggling 
+As detailed in the content smuggling scenario in Section~\ref{sec:smuggling}, the 
+attacker uploads the PDF polyglot to a vulnerable content hosting service. 
+A server-side verification process will base its verification on the benign formats 
+it expects to receive. The polyglot is designed to verify correctly as the benign format,
+and the verification is likely to miss the malicious PDF components, as it is unaware of the alternate interpretation of the content. 
+
+Given the extensive capabilities of the PDF format, exploiting a content smuggling 
 vulnerability with a PDF-based polyglot attack, can be done without much effort.
-A server-side verification process will base its verification on the benign format,
-and is likely to miss the malicious PDF components. To prevent the attack, the 
+To prevent the attack, the 
 verification process have to actively search for and remove PDF specific syntax.
 
-\subsection{PDF communication methods}
+\subsection{PDF payloads}
 %\todo{rewrite section, focus on embedded flash, xxe and code samples}
 %
+As discussed in Section~\ref{sec:payloads}, there are two approaches to exploiting 
+these vulnerabilities; cross-site request forgery, and cross-origin information leakage.
+Both of these require extracting information from the vulnerable service, which is something that can be achieved using the capabilities of the PDF format.
+
 In order to extract information and leak across origins, a communication channel
-is required. PDF documents provide multiple ways of generating HTTP requests. 
-Many of these are cross-origin, but, out of security concerns, only one-way in the sense that 
+is established. PDF documents provide multiple ways of generating HTTP requests; 
+many of which allow cross-origin communication, but are, out of security concerns, only one-way in the sense that 
 the PDF document will never see the result. Therefore, the focus is directed towards 
-two methods that allow bidirectional communication. Since the document will retain the 
+two methods that allow bidirectional communication; XML external entities, and embedded Flash. 
+ Since the document will retain the 
 origin from which it was served, all 
 requests issued from the document will include any cookies associated with the target origin.
 
@@ -1010,10 +1029,11 @@ small syntax fragments.
 \begin{lstlisting}[label=lst:xml-pdf, caption=PDF using XML for communication]
 %PDF-
 1 0 obj<<>>stream
-xml = '<!DOCTYPE foo[<!ENTITY x SYSTEM "'+
-	URL+'">]><foo>&x;</foo>'
+xml = '<!DOCTYPE foo[<!ENTITY x ' +
+ 'SYSTEM "'+URL+'">]><foo>&x;</foo>';
 var doc = XMLData.parse(xml);
-getURL('attacker.com/?'+doc.saveXML())
+getURL('attacker.com/?secret='+
+  doc.saveXML())
 endstream
 trailer<</Root
    <</Pages<<>>
@@ -1224,7 +1244,7 @@ The conclusion is
 that nine websites out of the hundred apply insufficient content filtering with 
 respect to the PDF format. Out of the nine found to be vulnerable;three were susceptible to traditional 
 XSS and thereby also to PDF polyglot attacks, two were susceptible only to PDF based polyglot attacks, and four applied 
-insufficient content filtering, but the input was reflected in a way that prevented exploitation.
+insufficient content filtering, but the input was reflected in a way that prevented exploitation, e.g. the header appeared after 1024 bytes.
 %
 %, which have the potential of compromising the 
 %confidentiality and integrity of the website's users.
@@ -1251,14 +1271,17 @@ mitigate the vulnerabilities.
 \section{Mitigation}
 \label{sec:mit}
 This section gives advice on various mitigation approaches available for each of the
-affected components, from server to client.
+affected components, both server-side and client-side. It should be noted that 
+preventing polyglot attacks in the general case is a complex task, as one would 
+need to take all potentially malicious formats in to account. Mitigating instances of 
+polyglot attacks based on particular formats are significantly more straightforward.
 
 \subsection{Server-side mitigation}
 
 As a content provider on the Internet today there are precautions that one can 
 take to mitigate this class of vulnerabilities. Which precautions to take depend 
 on the kind of services provided. The mitigation recommendations for syntax 
-injection apply to services that rely on user input, and the content smuggling
+injection apply to all services that rely on user input, and the content smuggling
 recommendations apply to services that serve user-supplied files.
 
 \subsubsection{Syntax injection}
@@ -1273,25 +1296,39 @@ attacks has proved difficult due to the many contexts in which JavaScript can be
 introduced. Filtering all potentially harmful tokens from all formats in which a 
 document may be interpreted is hardly possible.
 
-To prevent PDF-based syntax injection attack, the task is simpler. The token-set identified in 
+To prevent PDF-based syntax injection attack, the task is simpler. As discussed in Section~\ref{sec:pdf-injection}, the token-set identified in 
 Section~\ref{sec:pdf-injection}, are essential 
-to create valid PDF syntax, namely \emph{'$<$', '$>$', and '/'}. Filtering 
+to create valid PDF syntax. %, namely \emph{'$<$', '$>$', and '/'}.
+Filtering 
 user input to remove or encode these characters effectively mitigates the 
-vulnerability.
-
+vulnerability. 
+Luckily, because of the significant overlap with the token-set
+of HTML, many of the contexts where user input can occur are already being protected.
+Special attention is required in contexts are not traditionally filtered for 
+HTML tokens, e.g. JSON.
 
 \subsubsection{Content smuggling}
 
 The current best-practice recommendation from Google~\cite{Google:ContentHosting} 
-on hosting user-supplied content, is to serve the content from an origin that is 
-completely separate, and isolated from the sensitive services. It also describes how 
-Google moved away from sanitizing content, as it was found to be insufficient in 
-many cases. These best-practices successfully prevents content-smuggling 
-attacks in all aspects, as the infiltrated origin is separate from the origin 
-containing sensitive data. 
+on hosting user-supplied content, is to serve the content from a sandboxed origin that is 
+completely separate, as per SOP, and isolated from the sensitive services. 
+These best-practices successfully prevents content smuggling 
+attacks, as the restrictions of the SOP prevents the content from accessing any sensitive 
+resources in the origin of the web service.
 
-\todo{What about serving as attachment, so that it is not viewed within the browser? How does it work with embedded content?}
-\todo{Problem of transferring credentials between domains for services where the content requires authentication}
+These recommendations comes with a caveat that need to be taken into consideration. Some user supplied 
+content is only meant to be accessible to certain authenticated users, e.g. photos that 
+is only shared with friends. In that case, the service needs to transfer the 
+credentials required to authenticate the user from the sensitive origin to the sandboxed 
+origin, without actually revealing the credentials used in the sensitive origin. 
+Revealing the credentials, e.g. using the same cookies on both origins, defeats 
+the purpose of the sandbox origin entirely. Currently there is no uniform solution 
+to this problem. Some common solutions are encountered: using the hashed 
+credentials of the sensitive origin; or generating public, but obscured, links 
+that are later shared manually.
+
+
+%\todo{Problem of transferring credentials between domains for services where the content requires authentication}
 
 %Google uses the domain name \emph{googleusercontent.com} to sandbox all the 
 %untrusted user files that their various services provide for their customers.
@@ -1308,9 +1345,9 @@ interpreted as a particular format.
 
 In the case of PDF-based polyglots, the browser can intervene when there is a 
 mismatch between the content-type provided by the server and the type attribute 
-of the \emph{object} tag. By acknowledging that there can be a potential security issue in 
+of the \emph{object} tag. The vulnerability can be mitigated by acknowledging that there can be a potential security issue in 
 interpreting the supplied content in the requested format and alerting the user to this
-threat, the vulnerability can be mitigated.
+threat.
 
 One may argue that the browser is as confused as the originating server as to the 
 actual format of the content, and that the issue would be best resolved by the 
@@ -1318,7 +1355,7 @@ corresponding plug-in.
 
 \subsection{Interpreter}
 
-As a general rule of thumb, the interpreter at the very least alert the user if the served 
+As a general rule of thumb, the interpreter must at the very least alert the user if the served 
 content-type differs from the expected. A preferred alternative is to 
 not attempt to interpret the content at all. This holds true especially when 
 the served content-type is well known and radically different from that which 
@@ -1327,8 +1364,8 @@ the interpreter is designed for.
 As for the PDF file format, the underlying design decisions have led to the 
 current parsing being very relaxed, even with respect to the specification. 
 Making the parsing more strict and enforcing many of the specified requirements 
-will reduce the attack surface. It is, however, not sufficient for complete 
-mitigation because the PDF format is a container format it is designed to 
+will reduce the attack surface. However, it is not sufficient for complete 
+mitigation. As discussed in Section~\ref{sec:pdf-based-polyglots} the PDF format is a container format; designed to 
 embed syntax from other files. Even when parsing strictly according to 
 the specification, it is a simple task to create a PDF-based polyglot.
 
@@ -1439,7 +1476,7 @@ by alternative character sets.
 We also plan to extend the empirical study to popular services like
 HotCRP, Europass CV, and arXiv.org that allow uploading PDF
 documents. Authorization is pending for an in-depth security study of
-a major conference submission system.
+a major conference management system.
 
 %1-2 pages 
 \bibliographystyle{plain}
