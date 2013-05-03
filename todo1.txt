@@ -1,0 +1,131 @@
+Reformat to CCS format.
+
+
+>                           ===== Paper summary =====
+> 
+> This paper presents a systematic account of exploiting polyglot vectors for content extraction. The paper explains how these vulnerabilities
+> can be used to include documents of unintended MIME types into a victim's page if it has insufficient sanitization. The attacks has 2 steps: injecting
+> syntax to include a malicious polyglot, and then using the included document to exfiltrate sensitive information or perform CSRF attacks.
+
+New paragraph in intro "Attack vectors". Clarify SOP works for plugins in a different way and give intuition for the attacks that is common for both scenarios. Make forward pointer to the detailed scenarios.
+
+>                          ===== Paper strengths =====
+> 
+> 1. The paper presents a systematic account of previously known polyglots and introduces a PDF-based polyglot vector.
+> 
+> 2. The new contributions seems to be twofold: 1. explaining how to include a polyglot into web sites which are not adequately sanitizing. 2. how to
+> utilize bidirectional channels in PDF viewers for exfiltrating content.
+> 
+> 3. There is some evaluation showing that polyglot attacks differ from XSS attacks, in terms of sanitization, and so would not be immediately blocked
+> if web sites use proper XSS sanitization.
+> 
+>                         ===== Paper weaknesses =====
+> 
+> 1. The generality of the attacks isn't clear. Known fixes for handling MIME-types are sufficient to block these attacks.
+
+Say that each and every plugin must take this into account. Point to the evaluation saying that the state of the art is missing this, and therefore it's important to bring it up.
+
+> 2. The paper does not explain the attacks clearly enough, and the evaluation is missing details on the methodology of experiment.
+
+Streamlining pass over Section 2.
+
+Clarify the methodology for the experiments.
+
+>                        ===== Comments for author =====
+> 
+> The paper does a  investigation of the exploitability of PDF-based polyglot attacks and estimates the impact of these bugs.
+> However, here are the main criticisms of the paper viewed as an attack paper.
+> 
+> 1. The defenses for these attacks is that browsers respect the server's provided MIME type or to not perform the rendering if MIME-mismatch
+> is detected. Google Chrome already implements this strategy for its PDF reader and they have been discussed in prior work
+> by Barth et al. I wonder that if PDF readers / browsers upgrade to Google Chrome's policy, whether this paper's attacks will become irrelevant.
+
+DONE.
+
+Update the mitigation section to reflect the recent developments.
+
+> 2. The paper claims to generalize polyglot attacks. Since these are already well-known and several examples are available online,
+> the claimed contribution of "generalizing" these is not convincing.
+> Indeed, previous researchers have explained how dangerous polyglots may be used in other attack setting (such as GIFAR).
+
+DONE.
+
+Go over 2.2 watch out for the wording.
+
+> 3. The evaluation (section 4.2) lacks details on the methodology. How was the study conducted and how complete is the evaluation on Alexa Top 100 sites? Information
+> in the paper must be enough to reproduce your experiments. The number of attacks found is small. It is unclear whether these attacks arise so
+> infrequently or whether your testing is missing a lot of cases. The evaluation in Section 4.2 does not say which payloads were possible with these vulnerabilities.
+
+Clarify the methodology.
+
+> 4. The syntax injection part is confusing even after several reads. For example, the attacker manages to inject a PDF syntax in the vulnerable site within certain contexts (say in the JS string).
+> But, this may not be sufficient for the browser to interpret the injected string as a script or as PDF.
+
+explain and streamline
+
+> The bridge between Section 3.3 and 3.5 is not clear.
+
+PDf attacks as a new section to include Syntax injection and Content smuggling as subsections. Bridge among them with "cliff-hangers".
+
+> Perhaps the paper can provide more background to understand this with a clear end-to-end example rather than providing peices of the attack all over the place.
+
+Connect the pieces to the scenarios by coming back to the scenarios in the attack descriptions.
+
+> ===========================================================================
+>                       USENIX Security '13 Review #177B
+>                   Updated Sunday 24 Mar 2013 9:34:26am PDT
+> ---------------------------------------------------------------------------
+>          Paper #177: Polyglots: Crossing origins by crossing formats
+> ---------------------------------------------------------------------------
+> 
+>                        Overall merit: 1. Reject
+>                              Novelty: 2. Done before (not necessarily
+>                                          published)
+>                   Reviewer expertise: 4. Expert
+> 
+>                           ===== Paper summary =====
+> 
+> This paper describe some cases that the plugins of the browser can sometimes incorrectly interpret content as HTML documents, which they are not supposed to. So that attacker can inject attacks in the HTML payloads.
+
+Clarify in the intro and sec 2 the main setup so as to avoid this type of confusion.
+
+> 
+>                          ===== Paper strengths =====
+> 
+> Discussed some cases that plugin can execute content as HTML/JS and potentially dangerous
+> 
+>                         ===== Paper weaknesses =====
+> 
+> 1. Misunderstand the SOP and the two attack scenarios do not make sense
+
+More crisp discussion of SOP. Clarify the details of how it works, in particular for plugins.
+
+> 2. Ambiguous in the evaluation, not clear about the methodology.
+> 
+>                        ===== Comments for author =====
+> 
+> Isn’t this paper just a little bit extension about what [3] and [4] talk about? Cannot content sniffing be extended in browser to defend against it? I see Chrome’s built-in pdf plugin already defends against it.
+
+Explain that it cannot be done and why - in the browser part of the mitigation section.
+
+> For both of the attacking scenarios, the attacking won’t really affect vulnerable.com. Because the plugins would run in the attacker.com origin, thus won’t be able to affect the victim origin.
+>
+> One possibility for exploits to work is vulnerable.com somehow embeds content from attacker.com or embeds its own content that has been smuggled by attacker.com. For the former case, it is beyond the scope of the paper as it needs to infiltrate vulnerable.com. The later has already been discussed in the content sniffing paper.
+
+Clarify in what origin things are run.
+
+> The evaluation also needs to be vastly improved. How you feed the data, how do you check the responses and what responses do you check? Why do unfiltered pdf strings mean the sites are vulnerable to both traditional XSS attacks and polyglots attacks. If you submit pdf string in a form field that will be displayed in plain text, I don’t think it can be used as indicator of being vulnerable to polyglot attacks unless the somehow the websites magically embed the pdf strings in <obj> or <embed> tags.
+
+Explain.
+
+> It is quite surprise to see that you are able to use so simple way to find that there are 3 websites vulnerable to traditional XSS attacks. Could you provide more details about it?
+
+Details.
+
+> Is your test automatically carried out or manually? This might be a new contribution if you can automatically test websites to find real vulnerabilities.
+
+Explain it's manual, and automatic detection is an interesting direction for future work.
+
+> What does the YES mean in table 1?
+
+Explain.

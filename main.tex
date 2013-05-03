@@ -1,8 +1,7 @@
-%\documentclass{acm_proc_article-sp}
+\documentclass{sig-alternate}
 %\documentclass[10pt, conference, compsocconf]{IEEEtran}
-
-\documentclass[letterpaper,twocolumn,10pt]{article}
-\usepackage{usenix,epsfig,endnotes}
+%\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{epsfig,endnotes}
 
 %don't want date printed
 \date{}
@@ -23,7 +22,7 @@
 
 \begin{document}
 
-
+%\author{}
 % \author{\IEEEauthorblockN{Jonas Magazinius} 
 % \IEEEauthorblockA{Department ofComputer Science\\ 
 % Chalmers University of Technology\\ 
@@ -372,6 +371,13 @@ how a polyglot can infiltrate an origin.
 While these articles document known instances of polyglot attacks, the attack 
 method has not been generalized until this paper.
 %
+Under our generalization, previous work corresponds to
+instances. For example, we show that GIFAR attacks describe a form of content smuggling, and
+cross-origin CSS attacks describe a form of syntax injection attacks.
+%
+The added value of our paper is a generalized view and focus on new
+instances of polyglots that involve the PDF format.
+
 Two attacker-centric components require special attention; the infiltration of 
 an origin, i.e. the attack vector, and the exploitation of an infiltrated origin, i.e. the payload.
 %In this situation, the same-origin policy is intended to prevent cross-origin 
@@ -646,7 +652,8 @@ for creating malicious polyglots. Throughout this section Adobe Reader is the
 assumed target. A comparison between readers can be found in Section~\ref{sec:eval}.
 
 The reader is invited to visit the test page~\cite{Test:Page:12} for
-practical demonstration of the concepts from this section.
+practical demonstration of the attacks from this section. These
+attacks show that the vulnerabilities we focus on are exploitable in practice. 
 
 %\subsection{Concept}
 
@@ -1307,6 +1314,14 @@ affected components, both server-side and client-side. It should be noted that
 preventing polyglot attacks in the general case is a complex task, as one would 
 need to take all potentially malicious formats in to account. Mitigating instances of 
 polyglot attacks based on particular formats are significantly more straightforward.
+
+Note that although some mitigation discussed below is already in place
+(notably as implemented by the Chrome builtin PDF reader), the state of the art
+is far from being satisfactory. As our paper demonstrates, the
+polyglot attacks are a real threat. It is the paper's main value to
+bring attention to polyglot attacks and the importance of
+mitigation against them.
+
 
 \subsection{Server-side mitigation}
 
