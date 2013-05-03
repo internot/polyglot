@@ -129,3 +129,5 @@ Explain it's manual, and automatic detection is an interesting direction for fut
 > What does the YES mean in table 1?
 
 Explain.
+
+In PDF-based polyglots - "in accordance with our recommendations..."
