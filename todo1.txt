@@ -1,4 +1,4 @@
-﻿DONE: Reformat to CCS format.
+DONE: Reformat to CCS format.
 
 DONE
 
@@ -135,3 +135,5 @@ Explain.
 Done. In PDF-based polyglots - "in accordance with our recommendations..."
 
 Done. Replace plugins with plug-ins
+
+DONE: Flash uses separate cookies

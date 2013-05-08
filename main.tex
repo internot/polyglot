@@ -70,7 +70,17 @@ attacks lead to both \emph{cross-domain leakage} and \emph{cross-site
 We perform a systematic study of
 PDF-based injection and content smuggling attacks. We evaluate the current
 practice in client/server content filtering and PDF readers for polyglot-based
-attacks, and report on vulnerabilities in the top 100 Alexa web sites. Our
+attacks, and report on vulnerabilities in the top 100 Alexa web
+sites. 
+%
+We identify five web sites to be vulnerable to syntax injection
+attacks. Further,
+%
+we have found two major 
+enterprise cloud storage services to be susceptible to content
+smuggling attacks.
+%
+Our
 recommendations for protective measures on server side, in browsers, and in content
 interpreters (in particular, PDF readers) show how to mitigate the attacks.
 \end{abstract}
@@ -144,7 +154,6 @@ expected and provided content.
 Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
 
-\paragraph{Attack vectors}
 \todo{Describe general scenario with forward pointer}
 We present novel attack vectors that are based on (i)
 \emph{syntax injection} that 
@@ -192,7 +201,17 @@ conceptually and by proof-of-concept web pages.
 \paragraph{Evaluation and mitigation}
 We evaluate the current
 practice in client/server content filtering and PDF readers for polyglot-based
-attacks, and report on vulnerabilities in the top 100 Alexa web sites. Our
+attacks, and report on vulnerabilities in the top 100 Alexa web
+sites. 
+%
+Unfortunately, several major web sites do not protect against polyglot
+attacks. Five out of the top 100 Alexa web sites are vulnerable to syntax injection
+attacks. In addition,
+we have found two major 
+enterprise cloud storage services to be susceptible to content
+smuggling attacks.
+%
+Our
 recommendations for protective measures on server side, in browsers, and in content
 interpreters (such as PDF readers) show how to mitigate the attacks.
 
@@ -845,15 +864,17 @@ src="vulnerable.com/?input=%PDF...">
 \end{lstlisting}
 
 
-In recent versions of Adobe Reader certain measures has been taken to prevent 
-creating PDF-based polyglots. In accordance with our recommendations Adobe Reader 
+In recent versions of Adobe Reader certain measures have been taken to prevent 
+creating PDF-based polyglots. In accordance with our recommendations, Adobe Reader 
 has made the parsing more strict by attempting to match the first bytes of the 
 file against a set of known signatures. If 
-a match is found, the parser will abort loading of the document. The problem of 
+a match is found, the parser will abort loading of the document. 
+However, this does not fully defend against PDF-based polyglot attacks.
+The problem of 
 this approach is that there are a number of file formats that lack a reliable 
 signature, e.g., HTML. Also, for this approach to be reliable, the signature 
 must match the signature enforced by other interpreters of the format. A notable 
-counter example is the signature used for the JPG format. While the signature is 
+counterexample is the signature used for the JPG format. While the signature is 
 correct according to the specification of the format, several JPG interpreters
 will allow slightly malformed signatures. Such a malformed signature will bypass 
 the check in Adobe Reader and still be rendered correctly in a viewer. This opens up for PDF-based
@@ -1223,38 +1244,38 @@ Internet Explorer & No & Yes & Yes %\\ \hline
 \subsection{Alexa top 100}
 We have conducted two
 studies to evaluate the prevalence of the problem on popular sites, 
-covering the Alexa top 100 websites. Because of their dominance 
-on the web, these websites are also the most exposed to security threats.
+covering the Alexa top 100 web sites. Because of their dominance 
+on the web, these web sites are also the most exposed to security threats.
 The first study covers PDF-based polyglot attacks using syntax injection as the 
 infiltration method; the second covers content smuggling.
 %It does not involve polyglot attacks based on content smuggling, as 
 %potential targets generally require authentication before submitting content.
-We refrain from mentioning names of individual websites to prevent exploitation 
-before the issues have been properly dealt with. Neither do we want to disclose 
-these websites as particularly vulnerable. We are in contact with the teams responsible for the websites to help
+We refrain from mentioning names of individual web sites to prevent exploitation 
+before the issues have been properly dealt with. Neither do we disclose 
+these web sites as particularly vulnerable. We are in contact with the teams responsible for the web sites to help
 mitigate the vulnerabilities. 
 
 
 \paragraph{Syntax injection}
-The study is based on supplying the websites with the benign minimal PDF in 
+The study is based on supplying the web sites with the benign minimal PDF in 
 Listing~\ref{lst:minimal-pdf}, and examining the corresponding responses to this input.
 The sample contains the essential keywords and tokens required to perform a syntax 
-injection based polyglot attack. If these tokens pass through unaltered, the website is 
+injection based polyglot attack. If these tokens pass through unaltered, the web site is 
 considered vulnerable. The process has been conducted manually and only input 
 parameters on publicly accessible pages, those that do not require authentication, 
 were tested. Considering that most inputs are available only to authenticated 
-users, the results suggests that more websites are likely vulnerable in input that do
+users, the results suggests that more web sites are likely vulnerable in input that do
 require authentication.
 
 The conclusion is 
-that nine websites out of the hundred apply insufficient content filtering with 
+that nine web sites out of the hundred apply insufficient content filtering with 
 respect to the PDF format. Out of the nine found to be vulnerable; five were 
 susceptible to PDF based polyglot attacks, and four applied 
 insufficient content filtering, but the input was reflected in a way that 
 prevented exploitation, e.g. the header appeared after 1024 bytes.
 %
 %, which have the potential of compromising the 
-%confidentiality and integrity of the website's users.
+%confidentiality and integrity of the web site's users.
 %
 
 Three of the five vulnerable web sites could also be determined to be vulnerable to 
@@ -1271,7 +1292,7 @@ and the backslash character were properly escaped, and the
 string "$<$/script$>$" was removed. These measures are sufficient to protect against XSS attacks, 
 but do not prevent an attacker 
 from injecting valid PDF syntax.
-\item The second website reflected the user input in an HTML-comment context. 
+\item The second web site reflected the user input in an HTML-comment context. 
 The only measure taken to prevent XSS attacks in this context was removing any 
 occurrence of the character sequence "--$>$". Again, while successfully preventing 
 XSS attacks, this measure is ineffective in preventing an attacker from injecting PDF syntax.
@@ -1281,8 +1302,9 @@ XSS attacks, this measure is ineffective in preventing an attacker from injectin
 Further, a smaller study was conducted, not covering the full Alexa top 100, but 
 targeting popular cloud storage services. 
 This study is based on polyglot content being uploaded to the service and 
-subsequently analyzed to determine which origin it was served under. Two major 
-enterprise cloud storage services were found to be susceptible to attacks. Both service makes an effort to
+subsequently analyzed to determine which origin it was served
+under. We have found two major 
+enterprise cloud storage services to be susceptible to attacks. Both service makes an effort to
 follow current best practices, see Section~\ref{sec:smuggling-mitigation}, but fail to cover scenarios for content upload. 
 
 The first service serves almost all uploaded content from a sandboxed origin; the exception being the user's 
