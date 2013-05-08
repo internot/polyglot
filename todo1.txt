@@ -1,4 +1,4 @@
-Reformat to CCS format.
+﻿DONE: Reformat to CCS format.
 
 
 >                           ===== Paper summary =====
@@ -23,13 +23,13 @@ New paragraph in intro "Attack vectors". Clarify SOP works for plugins in a diff
 > 
 > 1. The generality of the attacks isn't clear. Known fixes for handling MIME-types are sufficient to block these attacks.
 
-Say that each and every plugin must take this into account. Point to the evaluation saying that the state of the art is missing this, and therefore it's important to bring it up.
+Done (Last paragraphs of 2.1): Say that each and every plugin must take this into account. Point to the evaluation saying that the state of the art is missing this, and therefore it's important to bring it up.
 
 > 2. The paper does not explain the attacks clearly enough, and the evaluation is missing details on the methodology of experiment.
 
 Streamlining pass over Section 2.
 
-Clarify the methodology for the experiments.
+Done. Clarify the methodology for the experiments.
 
 >                        ===== Comments for author =====
 > 
@@ -56,7 +56,7 @@ Go over 2.2 watch out for the wording.
 > in the paper must be enough to reproduce your experiments. The number of attacks found is small. It is unclear whether these attacks arise so
 > infrequently or whether your testing is missing a lot of cases. The evaluation in Section 4.2 does not say which payloads were possible with these vulnerabilities.
 
-Clarify the methodology.
+DONE. Clarify the methodology.
 
 > 4. The syntax injection part is confusing even after several reads. For example, the attacker manages to inject a PDF syntax in the vulnerable site within certain contexts (say in the JS string).
 > But, this may not be sufficient for the browser to interpret the injected string as a script or as PDF.
@@ -65,7 +65,7 @@ explain and streamline
 
 > The bridge between Section 3.3 and 3.5 is not clear.
 
-PDf attacks as a new section to include Syntax injection and Content smuggling as subsections. Bridge among them with "cliff-hangers".
+DONE. PDf attacks as a new section to include Syntax injection and Content smuggling as subsections. Bridge among them with "cliff-hangers".
 
 > Perhaps the paper can provide more background to understand this with a clear end-to-end example rather than providing peices of the attack all over the place.
 
@@ -98,7 +98,7 @@ Clarify in the intro and sec 2 the main setup so as to avoid this type of confus
 > 
 > 1. Misunderstand the SOP and the two attack scenarios do not make sense
 
-More crisp discussion of SOP. Clarify the details of how it works, in particular for plugins.
+Done. More crisp discussion of SOP. Clarify the details of how it works, in particular for plugins.
 
 > 2. Ambiguous in the evaluation, not clear about the methodology.
 > 
@@ -112,29 +112,24 @@ Explain that it cannot be done and why - in the browser part of the mitigation s
 >
 > One possibility for exploits to work is vulnerable.com somehow embeds content from attacker.com or embeds its own content that has been smuggled by attacker.com. For the former case, it is beyond the scope of the paper as it needs to infiltrate vulnerable.com. The later has already been discussed in the content sniffing paper.
 
-Clarify in what origin things are run.
+Done. Clarify in what origin things are run.
 
 > The evaluation also needs to be vastly improved. How you feed the data, how do you check the responses and what responses do you check? Why do unfiltered pdf strings mean the sites are vulnerable to both traditional XSS attacks and polyglots attacks. If you submit pdf string in a form field that will be displayed in plain text, I don’t think it can be used as indicator of being vulnerable to polyglot attacks unless the somehow the websites magically embed the pdf strings in <obj> or <embed> tags.
 
-Explain.
+Done.Explain.
 
 > It is quite surprise to see that you are able to use so simple way to find that there are 3 websites vulnerable to traditional XSS attacks. Could you provide more details about it?
 
-Details.
+Done. Details.
 
 > Is your test automatically carried out or manually? This might be a new contribution if you can automatically test websites to find real vulnerabilities.
 
-Explain it's manual, and automatic detection is an interesting direction for future work.
+Done. Explain it's manual, and automatic detection is an interesting direction for future work.
 
 > What does the YES mean in table 1?
 
 Explain.
 
-In PDF-based polyglots - "in accordance with our recommendations..."
+Done. In PDF-based polyglots - "in accordance with our recommendations..."
 
-
-Explain.
-
-In PDF-based polyglots - "in accordance with our recommendations..."
-
-Flash uses separate set of cookies!!
+Done. Replace plugins with plug-ins
