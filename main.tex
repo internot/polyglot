@@ -404,7 +404,7 @@ an origin, i.e. the attack vector, and the exploitation of an infiltrated origin
 
 
 \subsection{Attack vectors}
-
+\label{sec:vectors}
 %In the scenario the attacker infiltrate the origin by uploading a polyglot. Infiltration could, however, be performed in more %than one way.
 This paper identifies two vectors for infiltrating an origin, either via syntax 
 injection, or content smuggling. In the case of syntax injection, existing content is manipulated
@@ -861,7 +861,7 @@ polyglot attacks.
 
 \subsection{PDF attacks}
 
-As explained in Section~\ref{\todo{ref}} there are two vectors for polyglot 
+As explained in Section~\ref{sec:vectors} there are two vectors for polyglot 
 attacks; \emph{syntax injection} and \emph{content smuggling}. PDF is a suitable 
 format for both vectors as it is both a text based format with error tolerant parsing, 
 and has widespread acceptance as a document format, often preferred over 
@@ -1158,7 +1158,10 @@ behave the same as in other browsers and the content will be interpreted as PDF.
 The behavior of cross-domain embedding of PDF resources is studied in the major 
 browsers, i.e., Firefox, Safari, Opera, Google Chrome and Internet Explorer. 
 The study shows that all major browsers are susceptible to the attacks outlined 
-in Section~\ref{sec:vuln}, with some minor differences detailed below and summarized in Table~\ref{tab:comparison}. 
+in Section~\ref{sec:vuln}, with some minor differences detailed below and summarized in Table~\ref{tab:comparison}.
+In Table~\ref{tab:comparison}, "Yes" for the columns "object" and "embed" indicates that the 
+corresponding tag can be used to embed a PDF document, and for the column 
+"Adobe is default" it indicates that Adobe Reader is the commonly default PDF reader.
 
 \paragraph{Firefox, Safari and Opera}
 The browsers, Firefox, Safari and Opera, are all susceptible to the attacks outlined as 
