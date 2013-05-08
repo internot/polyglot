@@ -106,7 +106,8 @@ With the goal of separating information from the different origins,
 today's browsers enforce the \emph{same-origin policy} (SOP). SOP
 only allows access between two documents if they share the
 origin. In addition, a document can only directly communicate with the
-server from which it originates.
+server from which it originates. 
+\todo{More?} Typically a document is considered to be an HTML-page.
 
 \paragraph{Classical cross-domain attacks}
 There are several classes of cross-domain attacks that circumvent SOP.
@@ -140,9 +141,11 @@ between components in versatile formats.
 This gives rise to attacks that exploit the mismatch between the
 expected and provided content.
 %
-
 Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
+
+\paragraph{Attack vectors}
+\todo{Describe general scenario with forward pointer}
 We present novel attack vectors that are based on (i)
 \emph{syntax injection} that 
 operate across multiple languages and on (ii) \emph{content smuggling} that supply
@@ -170,7 +173,7 @@ malicious to bypass SOP.
 Cross-origin CSS attacks inject fragments of CSS code into an existing
 web page to extract information from the existing web page.
 
-\paragraph{Generalizing polyglots} 
+\paragraph{Generalizing polyglot attacks} 
 The paper is the first to perform a generalization and systematic study of polyglot
 attacks.
 We identify the necessary ingredients for polyglot attacks.
@@ -253,7 +256,9 @@ show how previous work on the subject relate to these vectors.
 By crossing origins we mean being able to request and access content
 which is normally restricted under the same-origin policy. 
 Recall that SOP only allows two documents accessing each others'
-content and resources if they share the origin. Similarly,
+content and resources if they share the origin.
+%\todo{More on SOP}
+Similarly,
 a document can only directly communicate with the server from which it originates. 
 This is not to be confused with \emph{cross-origin resource sharing} (CORS)~\cite{w3-cors}, which is an 
 intentional relaxation of SOP.
@@ -276,17 +281,28 @@ side-effects that the script produce as it is executed.
 
 Other examples of problematic elements include the \emph{object} and
 \emph{embed} tags. These 
-tags allow inclusion of resources that might require a 
-plug-in to run. As with images, the content handled by the plug-in retains its origin, 
-but the browsers are forced to rely on the plug-ins to employ correct security 
-measures to prevent information leaks. The plug-in is selected based on the MIME-type of the content, but
+tags allow inclusion of resources that may require a 
+plug-in to run. The plug-in is selected based on the MIME-type of the content, but
 because the server delivering the content might not be able to determine its
-format, the \emph{object} tag allows a developer to set the type-attribute to guide the
+format, the tags allow a developer to set the type-attribute to guide the
 browser in which plug-in to run. When the type attribute is used, the
-corresponding plug-in is run regardless of which MIME-type the server returns
-and it is up to the plug-in to respond to and handle the content it is served. While the containing page is restricted 
-from directly accessing the content handled by the plug-in, a number of plug-ins provide 
-an API for interacting with the plug-in and the data. As we will show, this can lead to 
+corresponding plug-in is run regardless of the MIME-type provided by the server. 
+%
+In the event that the provided MIME-type do not match that for which the plug-in is 
+designed, e.g., \emph{text/html} for a PDF plug-in, it is up to the plug-in to respond to the content it is served.
+Known methods of handling MIME-types, such as content-sniffing, are effective 
+in this situation, but they have to be employed by each and every plug-in.
+Most plug-ins will disregard the MIME-type of the content and attempt to parse 
+it. 
+%
+
+As with images, the content handled by the plug-in is executed in the origin it was served from. 
+This implies that the containing page is restricted 
+from directly accessing the content handled by the plug-in, and that the content can 
+communicate freely with the origin it was loaded from. However,  a number of plug-ins provide 
+an API for interaction between the plug-in and the document.
+The browsers are forced to rely on the plug-ins to employ correct security 
+measures. Section~\ref{sec:eval} shows that even state-of-the-art plug-ins fail to properly do so. As we will show, this can lead to 
 to cross-origin information leaks.
 
 
@@ -671,59 +687,7 @@ According to the PDF specification~\cite{PDF:ISO08} a PDF file is composed of
 a header, several objects, a cross-reference section and a trailer. Listing~\ref{lst:sample-pdf} 
 shows a sample of how a PDF file is structured and its elements. Supposedly, it is also a minimal PDF file according to the specification.
 
-\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
-%PDF-1.4
-1 0 obj
-<< /Type /Catalog
-   /Outlines 2 0 R
-   /Pages 3 0 R
->>
-endobj
-2 0 obj
-<< /Type Outlines
-   /Count 0
->>
-endobj
-3 0 obj
-<< /Type /Pages
-   /Kids [4 0 R]
-   /Count 1
->>
-endobj
-4 0 obj
-<< /Type /Page
-   /Parent 3 0 R
-   /MediaBox [0 0 612 792]
-   /Contents 5 0 R
-   /Resources << /ProcSet 6 0 R >>
->>
-endobj
-5 0 obj
-<< /Length 35 >>
-stream
-   ...Page-marking operators...
-endstream
-endobj
-6 0 obj
-   [/PDF]
-endobj
-xref
-0 7
-0000000000 65535 f
-0000000009 00000 n
-0000000074 00000 n
-0000000120 00000 n
-0000000179 00000 n
-0000000300 00000 n
-0000000384 00000 n
-trailer
-<< /Size 7
-   /Root 1 0 R
->>
-startxref
-408
-%%EOF
-\end{lstlisting}
+
 
 
 % header
@@ -872,7 +836,7 @@ supplied by the server is inconsistent with the MIME-type of the plug-in.
 In the case of the Adobe Reader plug-in, it disregards the MIME-type
 supplied by the server and will attempt to interpret any content as PDF. 
 Listing~\ref{lst:embed-pdf} shows how 
-arbitrary content can be rendered as PDF format. 
+arbitrary content can be rendered as PDF format.
 
 
 \begin{lstlisting}[label=lst:embed-pdf, caption=HTML for embedding PDF content]
@@ -881,8 +845,29 @@ src="vulnerable.com/?input=%PDF...">
 \end{lstlisting}
 
 
+In recent versions of Adobe Reader certain measures has been taken to prevent 
+creating PDF-based polyglots. In accordance with our recommendations Adobe Reader 
+has made the parsing more strict by attempting to match the first bytes of the 
+file against a set of known signatures. If 
+a match is found, the parser will abort loading of the document. The problem of 
+this approach is that there are a number of file formats that lack a reliable 
+signature, e.g., HTML. Also, for this approach to be reliable, the signature 
+must match the signature enforced by other interpreters of the format. A notable 
+counter example is the signature used for the JPG format. While the signature is 
+correct according to the specification of the format, several JPG interpreters
+will allow slightly malformed signatures. Such a malformed signature will bypass 
+the check in Adobe Reader and still be rendered correctly in a viewer. This opens up for PDF-based
+polyglot attacks.
 
-\subsection{Syntax injection}
+\subsection{PDF attacks}
+
+As explained in Section~\ref{\todo{ref}} there are two vectors for polyglot 
+attacks; \emph{syntax injection} and \emph{content smuggling}. PDF is a suitable 
+format for both vectors as it is both a text based format with error tolerant parsing, 
+and has widespread acceptance as a document format, often preferred over 
+other document formats.
+
+\subsubsection{Syntax injection}
 \label{sec:pdf-injection}
 As the scenario details in Section~\ref{sec:injection}, the attacker in a syntax 
 injection attack manipulates a vulnerable service to include PDF syntax in existing content, e.g. HTML-documents.
@@ -939,7 +924,7 @@ common in websites that provide an API to interact with the offered services.
 JSON encoded information suffer the same problem as in-line JavaScript, thereby
 extending the attack surface further.
 
-\subsection{Content smuggling}
+\subsubsection{Content smuggling}
 
 Due to the nature of the PDF, it can without much effort be combined with just 
 about any other format. This provides ample opportunity to create malicious 
@@ -977,6 +962,7 @@ Given the extensive capabilities of the PDF format, exploiting a content smuggli
 vulnerability with a PDF-based polyglot attack, can be done without much effort.
 To prevent the attack, the 
 verification process have to actively search for and remove PDF specific syntax.
+The impact of exploitation depends on the payload used in the attack.
 
 \subsection{PDF payloads}
 %\todo{rewrite section, focus on embedded flash, xxe and code samples}
@@ -1020,8 +1006,8 @@ The PDF JavaScript API includes a method to parse XML documents, called
 XMLData.parse. The XML document being processed may in turn rely on external entities, 
 required for the parsing of the document, which the XML parser will request. The request is 
 bound to the origin of the document, and the response is included in the XML document. 
-The source code of the XML document reflects this response and can be retrieved at a later point. This 
-results in a bidirectional communication channel.
+The source code of the XML document reflects this response and can be retrieved at a later point,
+resulting in a bidirectional communication channel.
 %
 As the response 
 is included in the XML, the result has to be well-formed XML. This puts a 
@@ -1033,6 +1019,9 @@ entities. Note that the one-way method \emph{getURL} is used to communicate the
 information back to the attacker. Given the compact size of the example, it is useful for the syntax 
 injection scenario in Section~\ref{sec:injection}, which require injection of 
 small syntax fragments.
+
+As of version 10.1.5, in accordance with our recommendations,  XML external entities 
+has been removed. Thereby the risks of leakage of sensitive information is significantly reduced.
 
 \begin{lstlisting}[label=lst:xml-pdf, caption=PDF using XML for communication]
 %PDF-
@@ -1248,30 +1237,36 @@ The study is based on supplying the websites with the benign minimal PDF in
 Listing~\ref{lst:minimal-pdf}, and examining the corresponding responses to this input.
 The sample contains the essential keywords and tokens required to perform a syntax 
 injection based polyglot attack. If these tokens pass through unaltered, the website is 
-considered vulnerable. Only public accessible input parameters, those that do not require authentication, 
-were tested, which suggests that more websites are likely vulnerable in input that do
-requires authentication.
+considered vulnerable. The process has been conducted manually and only input 
+parameters on publicly accessible pages, those that do not require authentication, 
+were tested. Considering that most inputs are available only to authenticated 
+users, the results suggests that more websites are likely vulnerable in input that do
+require authentication.
 
 The conclusion is 
 that nine websites out of the hundred apply insufficient content filtering with 
-respect to the PDF format. Out of the nine found to be vulnerable; three were susceptible to traditional 
-XSS and thereby also to PDF polyglot attacks, two were susceptible only to PDF based polyglot attacks, and four applied 
-insufficient content filtering, but the input was reflected in a way that prevented exploitation, e.g. the header appeared after 1024 bytes.
+respect to the PDF format. Out of the nine found to be vulnerable; five were 
+susceptible to PDF based polyglot attacks, and four applied 
+insufficient content filtering, but the input was reflected in a way that 
+prevented exploitation, e.g. the header appeared after 1024 bytes.
 %
 %, which have the potential of compromising the 
 %confidentiality and integrity of the website's users.
 %
 
-The two web sites found susceptible only to polyglot attacks and not XSS attacks
-are of particular interest. They both employ proper measures to protect properly 
+Three of the five vulnerable web sites could also be determined to be vulnerable to 
+traditional XSS attacks in the same input parameters. 
+The remaining two web sites found susceptible only to polyglot attacks and not XSS attacks
+are of particular interest since they employ proper measures to protect 
 against XSS attacks, and yet fall short in defeating this new breed of attacks.
 
 \begin{enumerate}
 \item The first web site reflected user input in an inline  
 JavaScript context, inside a string. To prevent cross-site scripting in this 
 context, the following measures were taken: the JavaScript string delimiters 
-were properly encoded, the backslash character was properly escaped, and the 
-string "$<$/script$>$" was removed. None of these measures prevent an attacker 
+and the backslash character were properly escaped, and the 
+string "$<$/script$>$" was removed. These measures are sufficient to protect against XSS attacks, 
+but do not prevent an attacker 
 from injecting valid PDF syntax.
 \item The second website reflected the user input in an HTML-comment context. 
 The only measure taken to prevent XSS attacks in this context was removing any 
@@ -1283,13 +1278,23 @@ XSS attacks, this measure is ineffective in preventing an attacker from injectin
 Further, a smaller study was conducted, not covering the full Alexa top 100, but 
 targeting popular cloud storage services. 
 This study is based on polyglot content being uploaded to the service and 
-subsequently analyzed to determine which origin it was served under. One major 
-enterprise cloud storage service was found to be susceptible to attacks. The service makes an effort to
-follow current best practices, see Section~\ref{sec:smuggling-mitigation}, for almost all uploaded content; the exception being the user's 
-avatar images that are served under the sensitive origin. An attacker could 
+subsequently analyzed to determine which origin it was served under. Two major 
+enterprise cloud storage services were found to be susceptible to attacks. Both service makes an effort to
+follow current best practices, see Section~\ref{sec:smuggling-mitigation}, but fail to cover scenarios for content upload. 
+
+The first service serves almost all uploaded content from a sandboxed origin; the exception being the user's 
+avatar image that are served under the sensitive origin. An attacker could 
 upload a specially crafted avatar image that, when embedded as PDF on the attackers 
 web site, can access and modify the contents of the victim's cloud storage.
-We are currently advising the service provider to help mitigate this vulnerability. 
+
+The second service lets the user publish a public link to an HTML 
+representation of the content. The content is served under the sensitive origin 
+and is therefore carefully processed to prevent 
+generation of malicious HTML, but fails to take other formats into account.
+A specially crafted file will result in the generation of valid PDF syntax that, when embedded as PDF on the attackers 
+web site, can access and modify the contents of the victim's cloud storage.
+
+We are currently advising both service providers to help mitigate these vulnerabilities. 
 
 %Baidu.com (allows <>, but escapes /) 
 %LinkedIn (allows <>, but escapes /) 
@@ -1535,6 +1540,59 @@ a major conference management system.
 \appendix
 
 \section{Sample PDF file}
+\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog
+   /Outlines 2 0 R
+   /Pages 3 0 R
+>>
+endobj
+2 0 obj
+<< /Type Outlines
+   /Count 0
+>>
+endobj
+3 0 obj
+<< /Type /Pages
+   /Kids [4 0 R]
+   /Count 1
+>>
+endobj
+4 0 obj
+<< /Type /Page
+   /Parent 3 0 R
+   /MediaBox [0 0 612 792]
+   /Contents 5 0 R
+   /Resources << /ProcSet 6 0 R >>
+>>
+endobj
+5 0 obj
+<< /Length 35 >>
+stream
+   ...Page-marking operators...
+endstream
+endobj
+6 0 obj
+   [/PDF]
+endobj
+xref
+0 7
+0000000000 65535 f
+0000000009 00000 n
+0000000074 00000 n
+0000000120 00000 n
+0000000179 00000 n
+0000000300 00000 n
+0000000384 00000 n
+trailer
+<< /Size 7
+   /Root 1 0 R
+>>
+startxref
+408
+%%EOF
+\end{lstlisting}
 
 \end{document}
 

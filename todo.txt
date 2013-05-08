@@ -171,7 +171,7 @@ DONE: Code snippets. Keep coming back to the scenarios throughout the paper.
 > no description of the vulnerabilities cannot support the paper's claim
 > to be the first to systematically study polyglot attacks.
 
-TODO: Samples and tests. Mention explicitly that no further details are revealed to avoid exploiting the sites before they are fixed. Neither we want to disclose that particular sites are vulnerable.
+DONE: Samples and tests. Mention explicitly that no further details are revealed to avoid exploiting the sites before they are fixed. Neither we want to disclose that particular sites are vulnerable.
 
 In progress...
 v Test string
