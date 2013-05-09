@@ -1,6 +1,4 @@
-DONE: Reformat to CCS format.
-
-DONE
+﻿DONE: Reformat to CCS format.
 
 
 >                           ===== Paper summary =====
@@ -9,7 +7,7 @@ DONE
 > can be used to include documents of unintended MIME types into a victim's page if it has insufficient sanitization. The attacks has 2 steps: injecting
 > syntax to include a malicious polyglot, and then using the included document to exfiltrate sensitive information or perform CSRF attacks.
 
-New paragraph in intro "Attack vectors". Clarify SOP works for plugins in a different way and give intuition for the attacks that is common for both scenarios. Make forward pointer to the detailed scenarios.
+Done. New paragraph in intro "Attack vectors". Clarify SOP works for plugins in a different way and give intuition for the attacks that is common for both scenarios. Make forward pointer to the detailed scenarios.
 
 >                          ===== Paper strengths =====
 > 
@@ -29,7 +27,7 @@ Done (Last paragraphs of 2.1): Say that each and every plugin must take this int
 
 > 2. The paper does not explain the attacks clearly enough, and the evaluation is missing details on the methodology of experiment.
 
-Streamlining pass over Section 2.
+Done. Streamlining pass over Section 2.
 
 Done. Clarify the methodology for the experiments.
 
@@ -44,7 +42,7 @@ Done. Clarify the methodology for the experiments.
 
 DONE.
 
-Update the mitigation section to reflect the recent developments.
+Done. Update the mitigation section to reflect the recent developments.
 
 > 2. The paper claims to generalize polyglot attacks. Since these are already well-known and several examples are available online,
 > the claimed contribution of "generalizing" these is not convincing.
@@ -52,7 +50,7 @@ Update the mitigation section to reflect the recent developments.
 
 DONE.
 
-Go over 2.2 watch out for the wording.
+Done. Go over 2.2 watch out for the wording.
 
 > 3. The evaluation (section 4.2) lacks details on the methodology. How was the study conducted and how complete is the evaluation on Alexa Top 100 sites? Information
 > in the paper must be enough to reproduce your experiments. The number of attacks found is small. It is unclear whether these attacks arise so
@@ -63,7 +61,7 @@ DONE. Clarify the methodology.
 > 4. The syntax injection part is confusing even after several reads. For example, the attacker manages to inject a PDF syntax in the vulnerable site within certain contexts (say in the JS string).
 > But, this may not be sufficient for the browser to interpret the injected string as a script or as PDF.
 
-explain and streamline
+Done. explain and streamline
 
 > The bridge between Section 3.3 and 3.5 is not clear.
 
@@ -71,7 +69,7 @@ DONE. PDf attacks as a new section to include Syntax injection and Content smugg
 
 > Perhaps the paper can provide more background to understand this with a clear end-to-end example rather than providing peices of the attack all over the place.
 
-Connect the pieces to the scenarios by coming back to the scenarios in the attack descriptions.
+Done. Connect the pieces to the scenarios by coming back to the scenarios in the attack descriptions.
 
 > ===========================================================================
 >                       USENIX Security '13 Review #177B
@@ -89,7 +87,7 @@ Connect the pieces to the scenarios by coming back to the scenarios in the attac
 > 
 > This paper describe some cases that the plugins of the browser can sometimes incorrectly interpret content as HTML documents, which they are not supposed to. So that attacker can inject attacks in the HTML payloads.
 
-Clarify in the intro and sec 2 the main setup so as to avoid this type of confusion.
+Done. Clarify in the intro and sec 2 the main setup so as to avoid this type of confusion.
 
 > 
 >                          ===== Paper strengths =====
@@ -108,7 +106,7 @@ Done. More crisp discussion of SOP. Clarify the details of how it works, in part
 > 
 > Isn’t this paper just a little bit extension about what [3] and [4] talk about? Cannot content sniffing be extended in browser to defend against it? I see Chrome’s built-in pdf plugin already defends against it.
 
-Explain that it cannot be done and why - in the browser part of the mitigation section.
+Done. Explain that it cannot be done and why - in the browser part of the mitigation section.
 
 > For both of the attacking scenarios, the attacking won’t really affect vulnerable.com. Because the plugins would run in the attacker.com origin, thus won’t be able to affect the victim origin.
 >
@@ -130,10 +128,8 @@ Done. Explain it's manual, and automatic detection is an interesting direction f
 
 > What does the YES mean in table 1?
 
-Explain.
+Done. Explain.
 
 Done. In PDF-based polyglots - "in accordance with our recommendations..."
 
 Done. Replace plugins with plug-ins
-
-DONE: Flash uses separate cookies
