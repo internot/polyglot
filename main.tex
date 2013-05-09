@@ -7,7 +7,7 @@
 \date{}
 
 %make title bold and 14 pt font (Latex default is non-bold, 16 pt)
-\title{\Large \bf Polyglots : Crossing Origins by Crossing Formats}
+\title{Polyglots: Crossing Origins by Crossing Formats}
 
 
 \usepackage{listings}
@@ -18,6 +18,29 @@
 \definecolor{lightred}{rgb}{1,0.8,0.8}
 \newcommand{\todo}[1]{\colorbox{red}{\textcolor{white}{\sffamily\bfseries\scriptsize TODO}} \textcolor{red}{#1} \textcolor{red}{$\blacktriangleleft$}}
 
+\makeatletter
+\def\@maketitle{\newpage
+ \null
+ \setbox\@acmtitlebox\vbox{%
+\baselineskip 20pt
+%\vskip 2em                   % Vertical space above title.
+%\vskip 0em                   % Vertical space above title.
+   \begin{center}
+    {\ttlfnt \@title\par}       % Title set in 18pt Helvetica (Arial) bold size.
+%    \vskip 1.5em                % Vertical space after title.
+%This should be the subtitle.
+{\subttlfnt \the\subtitletext\par}\vskip 1.25em%\fi
+    {\baselineskip 16pt\aufnt   % each author set in \12 pt Arial, in a
+     \lineskip .5em             % tabular environment
+     \begin{tabular}[t]{c}\@author
+     \end{tabular}\par}
+ %   \vskip 1.5em               % Vertical space after author.
+   \end{center}}
+ \dimen0=\ht\@acmtitlebox
+% \advance\dimen0 by -12.75pc\relax % comment by Marco Daniel
+ \unvbox\@acmtitlebox
+ \ifdim\dimen0<0.0pt\relax\vskip-\dimen0\fi}
+\makeatother
 
 
 \begin{document}
@@ -170,7 +193,7 @@ request forgery}.
 
 The existing defense mechanisms fall short to prevent these attacks
 from achieving cross-domain communication. 
-On the server side, santization is specific to the target language of
+On the server side, sanitization is specific to the target language of
 the web application. Sanitizing unexpected formats is typically not considered.
 On the client side, CSP
 has no effect unless the content is interpreted as HTML. This opens up
@@ -211,7 +234,7 @@ attacks, and report on vulnerabilities in the top 100 Alexa web
 sites.
 %
 Unfortunately, several major web sites do not protect against polyglot
-attacks. Five out of the top 100 Alexa web sites are vulnerable to syntax injec
+attacks. Five out of the top 100 Alexa web sites are vulnerable to syntax injection
 attacks. In addition,
 we have found two major
 enterprise cloud storage services to be susceptible to content
@@ -1244,8 +1267,8 @@ infiltration method; the second covers content smuggling.
 %It does not involve polyglot attacks based on content smuggling, as 
 %potential targets generally require authentication before submitting content.
 We refrain from mentioning names of individual web sites to prevent exploitation 
-before the issues have been properly dealt with. Neither do we disclose 
-these web sites as particularly vulnerable. We are in contact with the teams responsible for the web sites to help
+before the issues have been properly dealt with.
+We are in contact with the maintainers of the web sites to help
 mitigate the vulnerabilities. 
 
 
@@ -1387,7 +1410,7 @@ These best-practices successfully prevents content smuggling
 attacks, as the restrictions of the SOP prevents the content from accessing any sensitive 
 resources in the origin of the web service.
 
-These recommendations comes with a caveat that need to be taken into consideration. Some user supplied 
+These recommendations come with a caveat to be taken into consideration. Some user supplied 
 content is only meant to be accessible to certain authenticated users, e.g. photos that 
 is only shared with friends. In that case, the service needs to transfer the 
 credentials required to authenticate the user from the sensitive origin to the sandboxed 
@@ -1561,10 +1584,10 @@ potential for executing scripts. Further investigation of the PDF
 format might lead to enhanced possibilities to bypass content filters
 by alternative character sets.
 
-We also plan to extend the empirical study to popular services like
-HotCRP, Europass CV, and arXiv.org that allow uploading PDF
-documents. Authorization is pending for an in-depth security study of
-a major conference management system.
+% We also plan to extend the empirical study to popular services like
+% HotCRP, Europass CV, and arXiv.org that allow uploading PDF
+% documents. Authorization is pending for an in-depth security study of
+% a major conference management system.
 
 %1-2 pages 
 \bibliographystyle{plain}
