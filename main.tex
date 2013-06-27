@@ -180,7 +180,7 @@ multiple interpretation of the content, providing a new space of attack vectors.
 An attacker can use a polyglot to infiltrate a vulnerable origin.
 Once infiltrated, the polyglot is embedded in the attackers web site using a plug-in.
 According to the SOP, content loaded in a plug-in is considered to belong to the 
-origin from which it was loaded, thus allowing the polyglot to communicate with the vulnerable 
+origin from which the content was requested, thus allowing the polyglot to communicate with the vulnerable 
 origin. A victim visiting the attacker's web site, while authenticated in the vulnerable
 origin, will activate the malicious polyglot, which can abuse the credentials of the victim 
 in its communication with the vulnerable service. The scenario is explained in detail in Section~\ref{sec:vectors},
@@ -312,7 +312,7 @@ a document can only directly communicate with the server from which it originate
 This is not to be confused with \emph{cross-origin resource sharing} (CORS)~\cite{w3-cors}, which is an 
 intentional relaxation of SOP.
 
-While there are exceptions to this policy, e.g. images, scripts, and style sheets 
+While there are exceptions to this policy, e.g., images, scripts, and style sheets 
 are allowed to be included as resources across origins, access to these resources is 
 restricted to prevent information leaks. As an example, the including 
 document is prevented from accessing the image data of images loaded across 
@@ -774,7 +774,7 @@ header.
 
 % objects
 \subsubsection{Objects}
-Objects can be direct or indirect, the difference being that indirect objects 
+Objects can be direct or indirect, the difference being that an indirect object 
 has labels which are used for referring to the object from another object. Object 
 labels are numbered and begin with the string "\emph{N n} obj", where "N" is the object number and "n" is the 
 revision number. Similarly object references are of the form "\emph{N n} R".
@@ -812,7 +812,7 @@ things, go to a specific page, play a sound, execute JavaScript or launch a comm
 
 % stream objects
 \paragraph{Stream objects}
-A stream is an unlimited sequence of bytes. A stream object shall always be indirect and consists of a 
+A stream is an unlimited sequence of bytes. A stream object is indirect and consists of a 
 dictionary, describing the stream, and the associated stream delimited by the 
 "stream" and "endstream" keywords. 
 %
@@ -882,7 +882,7 @@ trailer<</Root<</Pages<<>>>>>>
 \end{lstlisting}
 
 % - Execute JavaScript
-% - Embed flash files
+% - Embed Flash files
 % - Launch commands
 % - Network requests
 
@@ -890,8 +890,8 @@ Furthermore the PDF format is of particular interest to us because of its
 many capabilities. Some examples include executing JavaScript, launching commands, 
 and issuing HTTP requests. The HTTP requests are restricted to the origin of the 
 PDF file, and will include any cookies associated with that origin. 
-Adobe Reader also includes a flash 
-runtime to play embedded flash files on systems that do
+Adobe Reader also includes a Flash 
+runtime to play embedded Flash files on systems that do
 not have the Flash runtime installed. %Considering that it might be a conscious decision
 %of the user to refuse a flash player, 
 
@@ -1110,7 +1110,7 @@ request and read any document from the originating server. Unlike the XML
 method, there are no restrictions on what content can be requested, thus making 
 it the most versatile of the available communication methods. The only drawback 
 using this approach is the significant increase in terms of file size. Even the compact 
-flash code in Listing~\ref{lst:flash-pdf} will result in a 6 kB Flash file. 
+Flash code in Listing~\ref{lst:flash-pdf} will result in a 6 kB Flash file. 
 This suggests that this method might be better suited for the content smuggling 
 scenario in Section~\ref{sec:smuggling}, rather than the syntax injection scenario.
 
@@ -1165,7 +1165,7 @@ that open up for two way communication.
 \section{Evaluation}
 \label{sec:eval}
 
-This section details the evaluation performed to investigate the persistence of 
+This section details the evaluation performed to investigate the prevalence of 
 the vulnerabilities from Section~\ref{sec:vuln}. The evaluation covers various 
 instances of affected components, such as browsers and PDF interpreters, 
 content sanitization filter, and a study of the Alexa top 100 web sites.
@@ -1412,7 +1412,7 @@ resources in the origin of the web service.
 
 These recommendations come with a caveat to be taken into consideration. Some user supplied 
 content is only meant to be accessible to certain authenticated users, e.g. photos that 
-is only shared with friends. In that case, the service needs to transfer the 
+are only shared with friends. In that case, the service needs to transfer the 
 credentials required to authenticate the user from the sensitive origin to the sandboxed 
 origin, without actually revealing the credentials used in the sensitive origin. 
 Revealing the credentials, e.g. using the same cookies on both origins, defeats 

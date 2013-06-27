@@ -1,0 +1,188 @@
+To reviwers:
+
+Thank you for your valuable feedback! 
+
+The novelty of this paper, in relation to PDFs, lies not in showing how a PDF can be malicious, 
+but rather to show how the flexibility of the format makes it ideal for hiding a malicious PDF 
+in another format. In relation to Flash, it is not attempting to show that Flash is vulnerable, 
+but rather to show how PDF can serve as a delivery mechanism for malicious Flash. Future work 
+mentions scriptable media formats, e.g., Advanced Streaming Format (ASF), as another problem area.
+However, space constraints prohibited us from further exploring these formats within the scope 
+of this paper.
+
+As to the generality of the work;
+In comparison to Barth et al., who only consider formats that are combined with malicious HTML. 
+We show that the issue extends far beyond HTML, and that other formats can be abused in a web 
+context, thereby making the results more general.
+
+Concerning XML External Entities (XXE) in Adobe Reader, the problem of XXE was previously known 
+(since ca. 2008), but considered to be of little importance. Our reports may have influenced 
+Adobe's decision to finally remove them, but it is not known to us to what extent.
+
+As is suggested, the visualization will be updated for a more professional appearance, 
+and the listings moved to their appropriate positions. Finally, all typos have been corrected.
+
+
+
+
+
+----------------------- REVIEW 1 ---------------------
+PAPER: 496
+TITLE: Polyglots: Crossing Origins by Crossing Formats
+AUTHORS: (anonymous)
+
+OVERALL EVALUATION: 2 (accept)
+
+----------- REVIEW -----------
+This paper examines an attack based on interpretation of scripts. The idea is that a valid script in language A is also valid in language B but does something very different. So, a script that will pass checks for maliciousness in language A is uploaded in such a way that, when a client downloads it, the script is interpreted as language B -- and that produces a malicious action.
+
+This is not a new idea. The authors point out several examples, including GIFAR and a cross-origin CSS attack. Another good example is a type flaw in cryptographic protocols (see [1]). This paper analyzes the format of PDF objects in considerable detail, and demonstrates how to use that format to launch this type of attack.
+
+[1] C. Boyd, "Hidden assumptions in cryptographic protocols'", IEE Proceedings E: Computers and Digital Techniques 137(6) pp. 433-436 (Nov. 1990); 
+
+The paper is an excellent, in depth study of PDFs, and how to launch this type of attack on the web. One improvement that the authors should make is to tone down their initial claim that it is a "generalization and systematic study of polyglot attacks". While it does discuss elements of such attacks in general, the discussion is not at the depth this claim suggests. The discussion of how to do this type of attack in the context of the web is general, but that does not make the paper a general and systematic study of this type of attack. 
+
+### Jonas ###
+# To Andrei: Say something clever about being systematic, or take it back?
+#############
+
+Some minor comments.
+
+Section 4 begins with a sentence that says "investigate the persistence" -- you mean "investigate the prevalence", because persistence means the vulnerabilities "go on resolutely or stubbornly in spite of opposition, importunity, or warning". 
+
+### Jonas ###
+# To Andrei: Fixed.
+#############
+
+Some typographical errors: 
+
+Section 3.1.2, line 2: "indirect objects" should be "an indirect object"
+Section 3.1.2, subsection "Stream objects", line 2: "shall always be" should be "is", to preserve the parallelism of the sentence Section 5.1.2, paragraph 2, line 4: "that is" should be "that are"
+
+### Jonas ###
+# To Andrei: All fixed.
+#############
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 496
+TITLE: Polyglots: Crossing Origins by Crossing Formats
+AUTHORS: (anonymous)
+
+OVERALL EVALUATION: 1 (weak accept)
+
+----------- REVIEW -----------
+This paper proposes several new web attacks based on the idea that a file format may appear different to the webserver than the end user.
+Such programs can be abused to create insecure communications across Internet origins.  The authors notice that their attacks are additional instances of the same general problem, with one notable example being the GIFAR GIF+Java Archive attack.  The authors propose that their attacks and others be considered a general category, called polyglots. Their evaluation claims 5 of the top 100 web sites are vulnerable.  The authors analyze their new polyglots, and propose mitigations. 
+
+The overall attacks are interesting and fun to read. I like the idea of generalizing the notion of specific previous instances. I think this paper will result research in more generalized defenses. 
+
+The mitigation measures aren't that exciting. For example, the authors say in 5.1.1 that there isn't a general purpose answer for syntax injection attacks. It would be nice to have thought more deeply about more general mitigation measures. I agree that there will not be a complete defense, but the authors stop at the obvious.  There is a set of security people who believe attack papers without proposed defenses aren't of much value. I don't side with them, but certainly understand that position. Having more in-depth defenses would strengthen the paper against such attacks. 
+
+### Jonas ###
+# To Andrei: This is where I would have liked to add the new mitigation idea.
+#
+# 
+#############
+
+The basic mechanics of grammar and spelling are fine. (small exception I just noticed: "While there are exceptions to this policy, e.g.". You know the problem....there is a missing comma.) 
+
+### Jonas ###
+# To Andrei: Fixed.
+#############
+
+However, I found several sections unclear and hard to read.  For example, "According to the SOP, content loaded in a plug-in is considered to belong to the origin from which it was loaded, thus allowing the polyglot to communicate with the vulnerable origin."  The word "it" could refer to multiple nouns.  
+
+### Jonas ###
+# To Andrei: Corrected.
+#############
+
+"will activate the malicious polyglot".  This isn't clear; what does it mean to activate a polyglot?  Given specific names might be one way to solve the problem. In a sense, you have program M that is malicious wrapped in program N that is not.  It seems like the vulnerable website seems N||M, and interprets this as type N, while the victim sees M, the malware.
+
+### Jonas ###
+# To Andrei: Not corrected yet, thinking about it.
+#############
+
+I always find that cartoon diagrams, such as in Figure 1, look unprofessional.  This isn't a dig saying the paper isn't professional...it is. Just that the visual aids look hokey and unappealing.  A simple fix is to remove the cartoon and just use block diagrams.  Also, pay attention to scaling; when printed out the diagram is currently blurry. 
+
+### Jonas ###
+# As is suggested, the visualization will be updated for a more professional appearance, 
+#############
+
+Move the listings that appear at the end of the paper in place. Not every listing has to be a float; you can just put it right underneath where you want to talk about it.
+
+### Jonas ###
+# and the listings moved to their appropriate positions.
+#############
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 496
+TITLE: Polyglots: Crossing Origins by Crossing Formats
+AUTHORS: (anonymous)
+
+OVERALL EVALUATION: 0 (borderline paper)
+
+----------- REVIEW -----------
+This paper describes the concept of polyglots, programs that are syntactically valid in multiple languages. The focus of this work is on malicious polyglots, those programs that act benignly when loaded as one language in a particular context, but can be interpreted in a malicious manner by another language or browser plug-in. Particularly with plug-ins, it is possible to circumvent protections such as the same-origin policy, and these format-crossing polyglots can potentially inject syntax or smuggle undesired content in with them, which can then be interpreted and executed.
+An example content smuggling scenario is described, as are the consequences (e.g., CSRFs and cross-origin leakage). The authors find that PDFs are particularly well suited to be polyglots, as a Flash to a slightly lesser extent. An evaluation shows that every major browser has some susceptibility to these attacks, with Chrome slightly better when it come to defending against malicious PDFs. Mitigation strategies at the server and client sides are considered.
+
+This paper brings up an interesting area of focus, and explains it well. The paper was enjoyable to read and for someone who has not read considerably into the recent web literature, this was a very good overview of attacks that these polyglots can cause. 
+
+However, the novelty of these attacks is somewhat limited. It is hardly surprising that PDFs can be designed in a malicious fashion - Acrobat is well known for vulnerability to not only being taken over through buffer overflows, but for executing malicious PDFs as well. This was discussed in some length at BlackHat last year, where an example of a PDF hiding malicious JavaScript was shown by Jason Jones ("State of Web Exploit Kits").
+
+### Jonas ###
+# The novelty of this paper, in relation to PDFs, lies not in showing how a PDF can be malicious, 
+# but rather to show how the flexibility of the format makes it ideal for hiding a malicious PDF 
+# in another format.
+#############
+
+Similarly, it should come as a surprise to nobody to read that Flash is also a vulnerable format. 
+
+### Jonas ###
+# In relation to Flash, it is not attempting to show that Flash is vulnerable, but rather to show
+# how PDF can serve as a delivery mechanism for malicious Flash.
+#############
+
+It would have been interesting to delve into more surprising formats. The paper from Barth et al. looks at malicious PostScript, and PDF, while not being quite as bad, has certainly suffered from its share of problems. 
+
+### Jonas ###
+# Future work mentions scriptable media formats, such as Windows Media Format, as another problem area.
+# However, space constraints prohibited us from further exploring these formats within the scope of this paper.
+#############
+
+The evaluation for this paper felt somewhat pro forma. I would have rather seen a more extensive set of tests against the individual browsers, and perhaps to have considered mobile web browsers as well. 
+
+### Jonas ###
+# Mobile browsers would indeed make an interesting addition.
+#############
+
+Where I think the paper was particularly lacking was on the mitigation side. For a venue such as this, I would have liked to have seen an implementation of one of the mitigation solutions and a full evaluation of security and performance. This could be done either on the browser or server side. Without that, this paper has more of an informational feel to it.
+
+### Jonas ###
+# To Andrei: Again this could be improved upon with the new mitigation technique. It would even be simple to
+# implement and evaluate. What to do?
+#
+#
+#############
+
+Smaller issues: 
+
+- The related work reads like a laundry list of papers, and could stand to be more coherent in its treatment of other work, thus better positioning what the novel contribution of this paper is. The authors claim a generalization of the polyglot idea, but there were not enough cases to show a large generalization beyond what Barth et al. had already shown. 
+
+### Jonas ###
+# To Andrei: Don't know how to tackle the "laundry list" part. Remove some related work?
+#
+# Barth et al. only consider formats that are combined with malicious HTML. We show that the issue 
+# extends far beyond HTML, and that other formats can be abused in a web context, thereby making the 
+# results more general.
+#############
+
+- Did the authors influence the design of XML External Entities as appears
+  to be suggested in Section 3.4? If so, that is certainly worth playing up
+  as a contribution.
+
+### Jonas ###
+# The problem of XML External Entities was previously known (since 2008), but considered to 
+# be of little importance. Our reports may have influenced Adobe's decision to finally remove them,
+# but it is not known to us to which extent.
+#############
+
