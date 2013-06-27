@@ -1,6 +1,6 @@
-To reviwers:
+To reviewers:
 
-Thank you for your valuable feedback! 
+We would like to thank the reviewers for the valuable feedback. 
 
 The novelty of this paper, in relation to PDFs, lies not in showing how a PDF can be malicious, 
 but rather to show how the flexibility of the format makes it ideal for hiding a malicious PDF 
@@ -10,16 +10,26 @@ mentions scriptable media formats, e.g., Advanced Streaming Format (ASF), as ano
 However, space constraints prohibited us from further exploring these formats within the scope 
 of this paper.
 
-As to the generality of the work;
-In comparison to Barth et al., who only consider formats that are combined with malicious HTML. 
-We show that the issue extends far beyond HTML, and that other formats can be abused in a web 
-context, thereby making the results more general.
+As to the generality of the work: In comparison to Barth et al., who only consider formats
+that are combined with malicious HTML, we show that the issue extends far beyond HTML, and
+that other formats can be abused in a web context, thereby making the results more
+general.
+
+Regarding more in-depth defenses, we will be happy to include in the paper a discussion of
+most promising directions in this space. For example, note that when content is loaded in
+a specific context, as it is in the case of the paper, the browser already has exact
+knowledge as to what type it will interpret the requested content as. A natural defense
+technique can be to send the expected type along with the request. The web server then
+can compare the types and react accordingly. Further, It can be implemented in the web
+server itself (as opposed to the web application), since the web server makes the final
+decision on the supplied content-type. This can help mitigate both syntax injection and
+content smuggling.
 
 Concerning XML External Entities (XXE) in Adobe Reader, the problem of XXE was previously known 
 (since ca. 2008), but considered to be of little importance. Our reports may have influenced 
 Adobe's decision to finally remove them, but it is not known to us to what extent.
 
-As is suggested, the visualization will be updated for a more professional appearance, 
+As suggested, the visualization will be updated for a more professional appearance, 
 and the listings moved to their appropriate positions. Finally, all typos have been corrected.
 
 
