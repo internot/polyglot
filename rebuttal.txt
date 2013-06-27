@@ -15,7 +15,7 @@ that are combined with malicious HTML, we show that the issue extends far beyond
 that other formats can be abused in a web context, thereby making the results more
 general.
 
-Regarding more in-depth defenses, we will be happy to include in the paper a discussion of
+Regarding more advanced defenses, we will be happy to include in the paper a discussion of
 most promising directions in this space. For example, note that when content is loaded in
 a specific context, as it is in the case of the paper, the browser already has exact
 knowledge as to what type it will interpret the requested content as. A natural defense
