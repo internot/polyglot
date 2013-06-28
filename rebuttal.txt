@@ -1,6 +1,6 @@
-To reviewers:
-
 We would like to thank the reviewers for the valuable feedback. 
+
+Novelty:
 
 The novelty of this paper, in relation to PDFs, lies not in showing how a PDF can be malicious, 
 but rather to show how the flexibility of the format makes it ideal for hiding a malicious PDF 
@@ -10,10 +10,18 @@ mentions scriptable media formats, e.g., Advanced Streaming Format (ASF), as ano
 However, space constraints prohibited us from further exploring these formats within the scope 
 of this paper.
 
-As to the generality of the work: In comparison to Barth et al., who only consider formats
-that are combined with malicious HTML, we show that the issue extends far beyond HTML, and
-that other formats can be abused in a web context, thereby making the results more
-general.
+Generality:
+
+As proposed, we plan to make the claims of generality more precise, with our high-level
+presentation of polyglots and their abuse possibilities as general, and the focus on new
+PDF-based attacks as particular. Similarly, we agree it is a good idea to clarify the
+general vs. particular aspects of mitigation.
+
+In comparison to Barth et al., who only consider formats that are combined with malicious
+HTML, we show that the issue extends far beyond HTML, and that other formats can be abused
+in a web context, thereby making the results more general.
+
+Advanced mitigation:
 
 Regarding more advanced defenses, we will be happy to include in the paper a discussion of
 most promising directions in this space. For example, note that when content is loaded in
@@ -28,6 +36,8 @@ content smuggling.
 Concerning XML External Entities (XXE) in Adobe Reader, the problem of XXE was previously known 
 (since ca. 2008), but considered to be of little importance. Our reports may have influenced 
 Adobe's decision to finally remove them, but it is not known to us to what extent.
+
+As suggested, we plan make the treatment of the related work more coherent.
 
 As suggested, the visualization will be updated for a more professional appearance, 
 and the listings moved to their appropriate positions. Finally, all typos have been corrected.
