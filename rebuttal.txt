@@ -2,18 +2,31 @@ To reviewers:
 
 We would like to thank the reviewers for the valuable feedback. 
 
-The novelty of this paper, in relation to PDFs, lies not in showing how a PDF can be malicious, 
-but rather to show how the flexibility of the format makes it ideal for hiding a malicious PDF 
+Our paper builds on the work of Barth et al. who show how malicious HTML hidden in other file 
+formats can trick the browser's content-sniffing algorithm into rendering the file as HTML. Taking 
+into account previous instances of similar attacks, we show that the issue extends beyond content-
+sniffing, and generalize an attack pattern, polyglot attacks, where formats are cross-bred to hide 
+a malicious file. The novelty of this paper lies in (1) generalizing polyglot attacks, and (2) 
+showing practical that can be abused in a web context. 
+
+
+In this paper we show that a PDF document can embed new class 
+of 
+attacks,  where polyglots...
+As to the generality of the work: 
+
+Apart from generalizing the concept of polyglot attacks, our paper shows how the flexibility of 
+the PDF format makes it ideal for hiding a malicious PDF in another format.
+
+ in relation to PDFs, lies in showing how the flexibility of the format 
+makes it ideal for hiding a malicious PDF 
 in another format. In relation to Flash, it is not attempting to show that Flash is vulnerable, 
 but rather to show how PDF can serve as a delivery mechanism for malicious Flash. Future work 
 mentions scriptable media formats, e.g., Advanced Streaming Format (ASF), as another problem area.
 However, space constraints prohibited us from further exploring these formats within the scope 
 of this paper.
 
-As to the generality of the work: In comparison to Barth et al., who only consider formats
-that are combined with malicious HTML, we show that the issue extends far beyond HTML, and
-that other formats can be abused in a web context, thereby making the results more
-general.
+
 
 Regarding more advanced defenses, we will be happy to include in the paper a discussion of
 most promising directions in this space. For example, note that when content is loaded in
@@ -137,7 +150,11 @@ An example content smuggling scenario is described, as are the consequences (e.g
 
 This paper brings up an interesting area of focus, and explains it well. The paper was enjoyable to read and for someone who has not read considerably into the recent web literature, this was a very good overview of attacks that these polyglots can cause. 
 
-However, the novelty of these attacks is somewhat limited. It is hardly surprising that PDFs can be designed in a malicious fashion - Acrobat is well known for vulnerability to not only being taken over through buffer overflows, but for executing malicious PDFs as well. This was discussed in some length at BlackHat last year, where an example of a PDF hiding malicious JavaScript was shown by Jason Jones ("State of Web Exploit Kits").
+However, the novelty of these attacks is somewhat limited. It is hardly surprising that PDFs 
+can be designed in a malicious fashion - Acrobat is well known for vulnerability to not only 
+being taken over through buffer overflows, but for executing malicious PDFs as well. This was 
+discussed in some length at BlackHat last year, where an example of a PDF hiding malicious 
+JavaScript was shown by Jason Jones ("State of Web Exploit Kits").
 
 ### Jonas ###
 # The novelty of this paper, in relation to PDFs, lies not in showing how a PDF can be malicious, 
@@ -176,7 +193,10 @@ Where I think the paper was particularly lacking was on the mitigation side. For
 
 Smaller issues: 
 
-- The related work reads like a laundry list of papers, and could stand to be more coherent in its treatment of other work, thus better positioning what the novel contribution of this paper is. The authors claim a generalization of the polyglot idea, but there were not enough cases to show a large generalization beyond what Barth et al. had already shown. 
+- The related work reads like a laundry list of papers, and could stand to be more coherent in its treatment 
+of other work, thus better positioning what the novel contribution of this paper is. The authors claim a 
+generalization of the polyglot idea, but there were not enough cases to show a large generalization beyond 
+what Barth et al. had already shown. 
 
 ### Jonas ###
 # To Andrei: Don't know how to tackle the "laundry list" part. Remove some related work?
