@@ -47,7 +47,7 @@ decision to finally remove them, but it is not known to us to what extent.
 As suggested, we plan to make the treatment of the related work more coherent. Also, as suggested, 
 the visualization will be updated for a more professional appearance, and the listings moved to 
 their appropriate positions. Finally, all typos have been corrected, and we are working on 
-clarifying the complex sections, starting from your suggestions.
+clarifying the sections perceived as unclear, starting from your suggestions.
 
 
 
