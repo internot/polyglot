@@ -16,10 +16,11 @@ clarify the general vs. particular aspects of mitigation.
 Novelty:
 
 The novelty of this paper is twofold: generalizing polyglot attacks and showing a practical 
-example of a vulnerable format. We show how the flexibility of the PDF format accommodates 
-hiding a malicious PDF document in a benign format. We also discuss PDF as a delivery mechanism 
-for an embedded malicious Flash. The resulting polyglot has the flexibility of PDF and the 
-capabilities of PDF and Flash combined.
+example of a vulnerable format. As mentioned, malicious PDFs or Flash is no surprise. However, we 
+show how the flexibility of the PDF format accommodates hiding such	a malicious PDF document in a 
+benign format. We also discuss PDF as a delivery mechanism for an embedded malicious Flash. The 
+result has the flexibility of PDF to be crossbred with other formats, and the capabilities of PDF 
+and Flash combined.
 
 As for other vulnerable formats, future work mentions scriptable media formats, e.g., Advanced 
 Streaming Format (ASF), as another problem area. However, space constraints prohibits us from 
@@ -34,11 +35,13 @@ knowledge as to what type it will interpret the requested content as. A natural 
 technique can be to send the expected type along with the request. The web server then
 can compare the types and react accordingly. Further, it can be implemented in the web
 server itself (as opposed to the web application), since the web server makes the final
-decision on the supplied content-type. This can help mitigate both syntax injection and
-content smuggling.
+decision on the supplied content-type. This co-operation between client and server can help 
+mitigate both syntax injection and content smuggling. A proof-of-concept implementation would 
+require minimal adjustments on both client- and server-side and an evaluation could be done easily.
 
-Evaluation of mobile browsers would indeed make an interesting addition, and certainly one we 
-would like to delve into further.
+The evaluation may well be too focused on PDF-based polyglot attacks, and would benefit from more 
+general tests. Evaluation of mobile browsers would indeed make an interesting addition, and 
+certainly one we would like to delve into further.
 
 Concerning XML External Entities (XXE) in Adobe Reader, the problem of XXE was previously known 
 (since ca. 2005), but considered to be of low priority. Our reports may have influenced Adobe's 
@@ -172,25 +175,37 @@ Similarly, it should come as a surprise to nobody to read that Flash is also a v
 # how PDF can serve as a delivery mechanism for malicious Flash.
 #############
 
-It would have been interesting to delve into more surprising formats. The paper from Barth et al. looks at malicious PostScript, and PDF, while not being quite as bad, has certainly suffered from its share of problems. 
+It would have been interesting to delve into more surprising formats. The paper from Barth et al. 
+looks at malicious PostScript, and PDF, while not being quite as bad, has certainly suffered from 
+its share of problems. 
 
 ### Jonas ###
 # Future work mentions scriptable media formats, such as Windows Media Format, as another problem area.
 # However, space constraints prohibited us from further exploring these formats within the scope of this paper.
 #############
 
-The evaluation for this paper felt somewhat pro forma. I would have rather seen a more extensive set of tests against the individual browsers, and perhaps to have considered mobile web browsers as well. 
+The evaluation for this paper felt somewhat pro forma. I would have rather seen a more extensive 
+set of tests against the individual browsers, 
+
+### Jonas ###
+# THe evaluation is indeed focused on PDF-based polyglots, thereby not making it general 
+#############
+
+and perhaps to have considered mobile web browsers 
+as well. 
 
 ### Jonas ###
 # Mobile browsers would indeed make an interesting addition.
 #############
 
-Where I think the paper was particularly lacking was on the mitigation side. For a venue such as this, I would have liked to have seen an implementation of one of the mitigation solutions and a full evaluation of security and performance. This could be done either on the browser or server side. Without that, this paper has more of an informational feel to it.
+Where I think the paper was particularly lacking was on the mitigation side. For a venue such as 
+this, I would have liked to have seen an implementation of one of the mitigation solutions and a 
+full evaluation of security and performance. This could be done either on the browser or server 
+side. Without that, this paper has more of an informational feel to it.
 
 ### Jonas ###
-# To Andrei: Again this could be improved upon with the new mitigation technique. It would even be simple to
-# implement and evaluate. What to do?
-#
+# This mitigation technique 
+# Implementing this mitigation technique would require adjustments on both
 #
 #############
 
