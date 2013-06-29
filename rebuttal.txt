@@ -1,22 +1,22 @@
-We would like to thank the reviewers for their valuable feedback. 
+We would like to thank the reviewers for the valuable feedback. 
 
 Generality:
 
-Our paper builds on the work of Barth et al., who show how a carefully crafted file of a benign 
-format can manipulate the browser's content-sniffing algorithm into rendering the file as 
-malicious HTML. Taking into account previous instances of similar attacks, we show that the issue 
-extends beyond content-sniffing, and how other formats can be abused in a web context, thereby 
-generalizing the polyglot attack pattern.
+Barth et al. show how a carefully crafted file of a benign format can manipulate the
+browser's content-sniffing algorithm into rendering the file as malicious HTML. With this
+and other similar attacks as a starting point, we show that the issue extends beyond
+content sniffing and demonstrate how other formats can be abused in a web context, thereby
+generalizing polyglot-based attacks.
 
-As proposed, we plan to make the claims of generality more precise, with our high-level
-presentation of polyglots and their abuse possibilities as general, and the focus on new
-PDF-based attacks as particular. Similarly, we agree it is a good idea to clarify the
-general vs. particular aspects of mitigation.
+Following the suggestion, we plan to make the claims of generality more precise, with our
+high-level presentation of polyglots and their abuse possibilities as general, and the
+focus on new PDF-based attacks as particular. Similarly, we agree it is a good idea to
+clarify the general vs. particular aspects of mitigation.
 
 Novelty:
 
-The novelty of this paper is twofold; generalizing polyglot attacks, and showing a practical 
-example of a vulnerable format. We show how the flexibility of the PDF format makes it ideal for 
+The novelty of this paper is twofold: generalizing polyglot attacks and showing a practical 
+example of a vulnerable format. We show how the flexibility of the PDF format accommodates 
 hiding a malicious PDF document in a benign format. We also discuss PDF as a delivery mechanism 
 for an embedded malicious Flash. The resulting polyglot has the flexibility of PDF and the 
 capabilities of PDF and Flash combined.
@@ -38,16 +38,15 @@ decision on the supplied content-type. This can help mitigate both syntax inject
 content smuggling.
 
 Evaluation of mobile browsers would indeed make an interesting addition, and certainly one we 
-would like to delve further into.
+would like to delve into further.
 
 Concerning XML External Entities (XXE) in Adobe Reader, the problem of XXE was previously known 
 (since ca. 2005), but considered to be of low priority. Our reports may have influenced Adobe's 
 decision to finally remove them, but it is not known to us to what extent.
 
-As suggested, we plan to make the treatment of the related work more coherent. Also, as suggested, 
-the visualization will be updated for a more professional appearance, and the listings moved to 
-their appropriate positions. Finally, all typos have been corrected, and we are working on 
-clarifying the complex sections, starting from your suggestions.
+As suggested, we plan to make the treatment of the related work more coherent. Also, we
+are happy to follow the suggestion to update the visualization with a more professional
+appearance and to move the listings to their appropriate positions.
 
 
 
