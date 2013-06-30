@@ -1,11 +1,11 @@
-We would like to thank the reviewers for the valuable feedback. 
+Thank you to the reviewers for the valuable feedback. 
 
 Generality:
 
 Barth et al. show how a carefully crafted file of a benign format can manipulate the
 browser's content-sniffing algorithm into rendering the file as malicious HTML. With this
-and other similar attacks as a starting point, we show that the issue extends beyond
-content sniffing and demonstrate how other formats can be abused in a web context, thereby
+and similar attacks as a starting point, we show that the issue extends beyond content
+sniffing and demonstrate how other formats can be abused in a web context, thereby
 generalizing polyglot-based attacks.
 
 Following the suggestion, we plan to make the claims of generality more precise, with our
@@ -15,41 +15,41 @@ clarify the general vs. particular aspects of mitigation.
 
 Novelty:
 
-The novelty of this paper is twofold: generalizing polyglot attacks and showing a practical 
-example of a vulnerable format. As mentioned, malicious PDFs or Flash is no surprise. However, we 
-show how the flexibility of the PDF format accommodates hiding such	a malicious PDF document in a 
-benign format. We also discuss PDF as a delivery mechanism for an embedded malicious Flash. The 
-result has the flexibility of PDF to be crossbred with other formats, and the capabilities of PDF 
-and Flash combined.
+The novelty of this paper is twofold: generalizing polyglot attacks and showing a
+practical example of a vulnerable format. As mentioned, malicious PDFs or Flash is no
+surprise. However, we show how the flexibility of the PDF format accommodates hiding such
+a malicious PDF document in a benign format. We also discuss PDF as a delivery mechanism
+for an embedded malicious Flash. The result has the flexibility of PDF to be crossbred
+with other formats, and the capabilities of PDF and Flash combined.
 
-As for other vulnerable formats, future work mentions scriptable media formats, e.g., Advanced 
-Streaming Format (ASF), as another problem area. However, space constraints prohibits us from 
-further exploring these formats within the scope of this paper.
+As for other vulnerable formats, future work mentions scriptable media formats, e.g.,
+Advanced Streaming Format (ASF), as another problem area. However, space constraints
+prohibits us from further exploring these formats within the scope of this paper.
 
 Advanced mitigation:
 
-Regarding more advanced defenses, we will be happy to include in the paper a discussion of
-most promising directions in this space. For example, note that when content is loaded in
-a specific context, as it is in the case of the paper, the browser already has exact
-knowledge as to what type it will interpret the requested content as. A natural defense
-technique can be to send the expected type along with the request. The web server then
-can compare the types and react accordingly. Further, it can be implemented in the web
-server itself (as opposed to the web application), since the web server makes the final
-decision on the supplied content-type. This co-operation between client and server can help 
-mitigate both syntax injection and content smuggling. A proof-of-concept implementation would 
-require minimal adjustments on both client- and server-side and an evaluation could be done easily.
+We are convinced the mitigation techniques we suggest are both most needed and
+realistically deployable. Regarding more advanced defenses, we will be happy to include in
+the paper a discussion of most promising directions. For example, note that when content
+is loaded in a specific context, as it is in the case of the paper, the browser already
+has exact knowledge as to what type it will interpret the requested content as. A natural
+defense technique can be to send the expected type along with the request. The web server
+then can compare the types and react accordingly. Further, it can be implemented in the
+web server itself (as opposed to the web application), since the web server makes the
+final decision on the supplied content-type. This cooperation between client and server
+can help mitigate both syntax injection and content smuggling.
 
-The evaluation may well be too focused on PDF-based polyglot attacks, and would benefit from more 
-general tests. Evaluation of mobile browsers would indeed make an interesting addition, and 
-certainly one we would like to delve into further.
+Evaluation of mobile browsers would indeed make an interesting addition, and certainly one
+we would like to delve into further.
 
 Concerning XML External Entities (XXE) in Adobe Reader, the problem of XXE was previously known 
 (since ca. 2005), but considered to be of low priority. Our reports may have influenced Adobe's 
 decision to finally remove them, but it is not known to us to what extent.
 
-As suggested, we plan to make the treatment of the related work more coherent. Also, we
-are happy to follow the suggestion to update the visualization with a more professional
-appearance and to move the listings to their appropriate positions.
+We plan to make the treatment of the related work more coherent. Also, we are happy to
+follow the suggestion to update the visualization with a more professional appearance, to
+move the listings to their appropriate positions and generally clarify the exposition
+where appropriate.
 
 
 
