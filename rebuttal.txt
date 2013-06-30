@@ -39,8 +39,7 @@ web server itself (as opposed to the web application), since the web server make
 final decision on the supplied content-type. This cooperation between client and server
 can help mitigate both syntax injection and content smuggling.
 
-Evaluation of mobile browsers would indeed make an interesting addition, and certainly one
-we would like to delve into further.
+Evaluation of mobile browsers would indeed make an interesting topic for future work.
 
 Concerning XML External Entities (XXE) in Adobe Reader, the problem of XXE was previously known 
 (since ca. 2005), but considered to be of low priority. Our reports may have influenced Adobe's 
