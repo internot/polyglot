@@ -1,0 +1,65 @@
+TODO 1:
+
+Make the claims of generality more precise. 
+(our high-level presentation of polyglots and their abuse possibilities as general, and the
+focus on new PDF-based attacks as particular)
+
+TODO 2:
+
+Clarify the general vs. particular aspects of mitigation.
+
+TODO 3:
+
+Discussion of most promising directions. 
+(when content is loaded in a specific context the browser already
+knows what type it expects and sends the expected type along with the request)
+
+TODO 4:
+
+Make the treatment of the related work more coherent.
+
+TODO 5:
+
+Update the visualization with a more professional appearance.
+
+TODO 6:
+
+Move the listings to their appropriate positions.
+
+TODO 7:
+
+Generally clarify the exposition where appropriate.
+(Go over Section 2 again)
+
+TODO 8?:
+
+Evaluation of mobile browsers would indeed make an interesting addition, and certainly one
+we would like to delve into further.
+
+
+
+
+
+
+
+"will activate the malicious polyglot".  This isn't clear; what does it mean to activate a polyglot?  Given specific names might be one way to solve the problem. In a sense, you have program M that is malicious wrapped in program N that is not.  It seems like the vulnerable website seems N||M, and interprets this as type N, while the victim sees M, the malware.
+
+### Jonas ###
+# To Andrei: Not corrected yet, thinking about it.
+#############
+
+
+
+The evaluation for this paper felt somewhat pro forma. I would have rather seen a more extensive 
+set of tests against the individual browsers, 
+and perhaps to have considered mobile web browsers 
+as well. 
+
+### Jonas ###
+# Mobile browsers would indeed make an interesting addition.
+#############
+
+
+
+
+
