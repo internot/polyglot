@@ -155,7 +155,7 @@ information that users might have in the context of the trusted origin
 such as cookies, personal information, and session tokens.
 
 XSS attacks are relatively well understood by researchers and
-developers~\cite{XSSED}. Known defense include various
+developers~\cite{XSSED}. Known defenses include various
 flavors of \emph{sanitization} on server side and the
 \emph{content security policy}~\cite{CSP1.0} (CSP) on client side. Sanitization
 is often performed by the server to filter possibly malicious input data
@@ -178,7 +178,7 @@ expected and provided content.
 Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
 An attacker can use a polyglot to infiltrate a vulnerable origin.
-Once infiltrated, the polyglot is embedded in the attackers web site using a plug-in.
+Once infiltrated, the polyglot is embedded in the attacker's web site using a plug-in.
 According to the SOP, content loaded in a plug-in is considered to belong to the 
 origin from which the content was requested, thus allowing the polyglot to communicate with the vulnerable 
 origin. A victim visiting the attacker's web site, while authenticated in the vulnerable
