@@ -4,11 +4,11 @@ Make the claims of generality more precise.
 (our high-level presentation of polyglots and their abuse possibilities as general, and the
 focus on new PDF-based attacks as particular)
 
-TODO 2:
+DONE 2 (Andrei, have a specific look at this point):
 
 Clarify the general vs. particular aspects of mitigation.
 
-TODO 3:
+DONE 3:
 
 Discussion of most promising directions. 
 (when content is loaded in a specific context the browser already
@@ -22,7 +22,7 @@ TODO 5:
 
 Update the visualization with a more professional appearance.
 
-TODO 6:
+DONE 6:
 
 Move the listings to their appropriate positions.
 
@@ -35,6 +35,10 @@ TODO 8?:
 
 Evaluation of mobile browsers would indeed make an interesting addition, and certainly one
 we would like to delve into further.
+
+TODO 9:
+
+Adjust paper according to publishing format.
 
 
 
