@@ -145,8 +145,8 @@ server from which it originates.
 
 \paragraph{Classical cross-domain attacks}
 There are several classes of cross-domain attacks that circumvent SOP.
-The OWASP top 10 list~\cite{OWASP:top10:2010} places \emph{injection}
-and \emph{cross-site scripting} (XSS) attacks as two top security
+The OWASP top 10 list~\cite{OWASP:top10:2013} places both \emph{injection}
+and \emph{cross-site scripting} (XSS) attacks among the three top security
 risks for web applications.
 %
 A classical XSS attack injects a malicious script in the context of a
@@ -155,7 +155,7 @@ information that users might have in the context of the trusted origin
 such as cookies, personal information, and session tokens.
 
 XSS attacks are relatively well understood by researchers and
-developers~\cite{XSSED}. Known defense include various
+developers~\cite{XSSED}. Known defenses include various
 flavors of \emph{sanitization} on server side and the
 \emph{content security policy}~\cite{CSP1.0} (CSP) on client side. Sanitization
 is often performed by the server to filter possibly malicious input data
@@ -178,7 +178,8 @@ expected and provided content.
 Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
 An attacker can use a polyglot to infiltrate a vulnerable origin.
-Once infiltrated, the polyglot is embedded in the attackers web site using a plug-in.
+Once infiltrated, the polyglot is embedded from within the attacker's web site,
+so that the polyglot is loaded in the browser's plug-in.
 According to the SOP, content loaded in a plug-in is considered to belong to the 
 origin from which the content was requested, thus allowing the polyglot to communicate with the vulnerable 
 origin. A victim visiting the attacker's web site, while authenticated in the vulnerable
@@ -328,7 +329,7 @@ channel that permits cross-origin information leakage. At the same time, the inc
 is prevented from inspecting the source of the script and can only observe the public 
 side-effects that the script produce as it is executed.
 
-Another example of problematic elements include the \emph{object} and
+Other examples of problematic elements include the \emph{object} and
 \emph{embed} tags. These 
 tags allow inclusion of resources that may require a 
 plug-in to run. The plug-in is selected based on the MIME-type of the content, but
@@ -491,7 +492,7 @@ content filters. The vectors are described below with more detailed scenarios.
 \subsubsection{Syntax injection}
 \label{sec:injection}
 In a cross-site scripting attack user input is used to compose an HTML document. 
-Fragments of HTML-syntax in the input alters the semantic of the document to 
+Fragments of HTML syntax in the input alters the semantic of the document to 
 execute attacker supplied 
 script code. Similarly, in a syntax injection attack the vulnerable target will 
 compose an HTML document from attacker controlled input containing syntax of a foreign 
