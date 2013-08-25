@@ -1,7 +1,26 @@
-\documentclass{sig-alternate}
+\documentclass{sig-alternate-2013}
 %\documentclass[10pt, conference, compsocconf]{IEEEtran}
 %\documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{epsfig,endnotes}
+
+
+%%%%%%%%%%%%%%%%
+% ACM Copyright text
+% Check if this is the correct version
+%%%%%%%%%%%%%%%%
+\newfont{\mycrnotice}{ptmr8t at 7pt}
+\newfont{\myconfname}{ptmri8t at 7pt}
+\let\crnotice\mycrnotice%
+\let\confname\myconfname%
+
+\permission{Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for components of this work owned by others than ACM must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee. Request permissions from permissions@acm.org.}
+\conferenceinfo{CCS'13,}{November 4--8, 2013, Berlin, Germany.}
+\copyrightetc{Copyright 2013 ACM \the\acmcopyr}
+\crdata{978-1-4503-2477-9/13/11\ ...\$15.00.\\
+http://--enter the whole DOI string from rightsreview form confirmation}
+
+\clubpenalty=10000 
+\widowpenalty = 10000
 
 %don't want date printed
 \date{}
@@ -18,52 +37,52 @@
 \definecolor{lightred}{rgb}{1,0.8,0.8}
 \newcommand{\todo}[1]{\colorbox{red}{\textcolor{white}{\sffamily\bfseries\scriptsize TODO}} \textcolor{red}{#1} \textcolor{red}{$\blacktriangleleft$}}
 
-\makeatletter
-\def\@maketitle{\newpage
- \null
- \setbox\@acmtitlebox\vbox{%
-\baselineskip 20pt
-%\vskip 2em                   % Vertical space above title.
-%\vskip 0em                   % Vertical space above title.
-   \begin{center}
-    {\ttlfnt \@title\par}       % Title set in 18pt Helvetica (Arial) bold size.
-%    \vskip 1.5em                % Vertical space after title.
-%This should be the subtitle.
-{\subttlfnt \the\subtitletext\par}\vskip 1.25em%\fi
-    {\baselineskip 16pt\aufnt   % each author set in \12 pt Arial, in a
-     \lineskip .5em             % tabular environment
-     \begin{tabular}[t]{c}\@author
-     \end{tabular}\par}
- %   \vskip 1.5em               % Vertical space after author.
-   \end{center}}
- \dimen0=\ht\@acmtitlebox
-% \advance\dimen0 by -12.75pc\relax % comment by Marco Daniel
- \unvbox\@acmtitlebox
- \ifdim\dimen0<0.0pt\relax\vskip-\dimen0\fi}
-\makeatother
+%\makeatletter
+%\def\@maketitle{\newpage
+% \null
+% \setbox\@acmtitlebox\vbox{%
+%\baselineskip 20pt
+%%\vskip 2em                   % Vertical space above title.
+%%\vskip 0em                   % Vertical space above title.
+%   \begin{center}
+%    {\ttlfnt \@title\par}       % Title set in 18pt Helvetica (Arial) bold size.
+%%    \vskip 1.5em                % Vertical space after title.
+%%This should be the subtitle.
+%{\subttlfnt \the\subtitletext\par}\vskip 1.25em%\fi
+%    {\baselineskip 16pt\aufnt   % each author set in \12 pt Arial, in a
+%     \lineskip .5em             % tabular environment
+%     \begin{tabular}[t]{c}\@author
+%     \end{tabular}\par}
+% %   \vskip 1.5em               % Vertical space after author.
+%   \end{center}}
+% \dimen0=\ht\@acmtitlebox
+%% \advance\dimen0 by -12.75pc\relax % comment by Marco Daniel
+% \unvbox\@acmtitlebox
+% \ifdim\dimen0<0.0pt\relax\vskip-\dimen0\fi}
+%\makeatother
 
 
 \begin{document}
 
-%\author{}
-% \author{\IEEEauthorblockN{Jonas Magazinius} 
-% \IEEEauthorblockA{Department ofComputer Science\\ 
-% Chalmers University of Technology\\ 
-% Gothenburg, Sweden\\
-% jonas.magazinius@chalmers.se} 
-% \and 
-% \IEEEauthorblockN{Billy Rios} 
-% \IEEEauthorblockA{dept. name of organization\\ 
-% name of organization, acronyms acceptable\\ 
-% City, United States of America\\ 
-% Email: name@xyz.com} 
-% \and 
-% \IEEEauthorblockN{Andrei Sabelfeld} 
-% \IEEEauthorblockA{Department of Computer Science\\ 
-% Chalmers University of Technology\\ 
-% Gothenburg, Sweden\\ 
-% andrei@chalmers.se} 
-% }
+\numberofauthors{3}
+\author{\alignauthor
+Jonas Magazinius\\
+\affaddr{Department of Computer Science}\\
+\affaddr{Chalmers University of Technology}\\
+\affaddr{Gothenburg, Sweden}\\
+\email{jonas.magazinius@chalmers.se}
+\alignauthor 
+Billy K. Rios\\
+\affaddr{Cylance, Inc.}\\ 
+\affaddr{Irvine, United States of America}\\ 
+\email{billy.rios@gmail.com} 
+\alignauthor
+Andrei Sabelfeld\\
+\affaddr{Department of Computer Science}\\ 
+\affaddr{Chalmers University of Technology}\\ 
+\affaddr{Gothenburg, Sweden}\\ 
+\email{andrei@chalmers.se} 
+}
 
 \maketitle
 
@@ -108,10 +127,9 @@ recommendations for protective measures on server side, in browsers, and in cont
 interpreters (in particular, PDF readers) show how to mitigate the attacks.
 \end{abstract}
 
+\category{H.4}{Information Systems Applications}{Miscellaneous}
 
-% \begin{IEEEkeywords}
-% Web Security; Polyglot; Injection; Cross-domain.
-% \end{IEEEkeywords}
+\keywords{Web Security, Polyglot, Injection, Cross-domain}
 
 
 
@@ -177,13 +195,13 @@ expected and provided content.
 %
 Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
-An attacker can use a polyglot to infiltrate a vulnerable origin.
+An attacker can use a malicious polyglot to infiltrate a vulnerable origin.
 Once infiltrated, the polyglot is embedded from within the attacker's web site,
-so that the polyglot is loaded in the browser's plug-in.
+such that the browser is coerced to interpret the polyglot in an unexpected context, e.g., a plug-in.
 According to the SOP, content loaded in a plug-in is considered to belong to the 
-origin from which the content was requested, thus allowing the polyglot to communicate with the vulnerable 
-origin. A victim visiting the attacker's web site, while authenticated in the vulnerable
-origin, will activate the malicious polyglot, which can abuse the credentials of the victim 
+origin from which the content was requested. Thus, the polyglot is allowed to communicate with the vulnerable 
+origin. A victim, authenticated in the vulnerable origin, who visits the attacker's web site
+will trigger the malicious polyglot. This allows the polyglot to abuse the credentials of the victim 
 in its communication with the vulnerable service. The scenario is explained in detail in Section~\ref{sec:vectors},
 where we present novel attack vectors that are based on (i)
 \emph{syntax injection} that 
@@ -304,7 +322,7 @@ show how previous work on the subject relate to these vectors.
 \label{sec:cross-origin}
 
 By crossing origins we mean being able to request and access content
-which is normally restricted under the same-origin policy. 
+across domains, which is normally restricted under the same-origin policy. 
 Recall that SOP only allows two documents accessing each others'
 content and resources if they share the origin.
 %\todo{More on SOP}
@@ -324,7 +342,7 @@ Scripts loaded across origins become part of the document and inherit the
 origin of the including document, which allows the script to communicate with the 
 server from which the \emph{document} originates. Such scripts are also able to interact 
 with the document, e.g. by adding nodes, which in turn require new content to be 
-requested. Since these requests are not restricted by SOP, this creates a side 
+requested. Since these requests are not restricted by the SOP, this creates a side 
 channel that permits cross-origin information leakage. At the same time, the including document
 is prevented from inspecting the source of the script and can only observe the public 
 side-effects that the script produce as it is executed.
@@ -369,48 +387,49 @@ a broader definition of a programming language, not limited to code meant for
 compilation to machine code or scripting languages, but extended to any format
 that requires interpretation before rendering.
 
-A polyglot is composed from various constructs that are either common between
-languages; or constructs that are language specific but carrying different
+A polyglot is composed by combining syntax from two different formats A and B. 
+It leverages various syntactic language constructs that are either common between
+the formats; or constructs that are language specific but carrying different
 meaning in each language. To maintain validity across languages, one must ensure
-that language specific constructs are not interpreted by other languages. This
-is often accomplished by hiding the parts of the code specific to one language,
-in parts interpreted as comments or plain text of another.
+that constructs specific to A are not interpreted in the format of B, and vice versa. This
+is often accomplished by hiding the language specific constructs,
+in segments interpreted as comments or plain text of the other format.
 
 Certain languages are particularly suitable for creating polyglots. These
 languages either have a lot of constructs in common with other languages, such
-as the C language, or are defined such that the parser ignores that which it cannot
+as the C language, or are error tolerant in that the parser ignores that which it cannot
 interpret, such as HTML. The latter allows for ample opportunity to hide
-any code specific to another language, as long as there is no overlap with the
-syntax of the first language.
+any code specific to format A, as long as there is no overlap with the
+syntax of format B.
 
 
 %\paragraph{Malicious polyglots}
 
 % What is a malicious polyglot? - One part benign one part malicious
 
-A malicious polyglot is composed of two formats where one is benign in nature and the other
-contains a malicious payload. 
+A malicious polyglot of two formats, \emph{A} and \emph{B}, where \emph{A} is benign in 
+nature and \emph{B} contains a malicious payload, is composed as \emph{A||B}. 
 % Characteristics of a malicious polyglot
-The benign format is a widely accepted format with the capability 
-of hiding arbitrary data, e.g. an image with comment fields. The malicious 
-format has additional capabilities, such as scripting.
+he benign format, \emph{A}, is a widely accepted format with limited capabilities,
+but with the opportunity of hiding arbitrary data, e.g. an image with comment fields. The malicious 
+format, \emph{B}, has additional capabilities, e.g., execute scripts or send requests.
 % Under what circumstances can a polyglot be malicious
 This kind of polyglot can be used for malicious purposes when there is a difference between
-the expected run-time context and the actual context it is executed in. 
-In the expected context the content is interpreted as the 
-benign format. In the actual context, however, the content is coerced to be 
-interpreted as the malicious format containing the payload.
+the assumed run-time context, and the actual context it is executed in. 
+In the assumed context \emph{A||B}  is interpreted as the 
+benign format, \emph{A}. In the actual context, however, \emph{A||B} is coerced to be 
+interpreted as the malicious format, \emph{B}, containing the payload.
 
-Even if a verification process exists, it verifies that the content is valid 
-in the expected context. Due to the nature of the polyglot, the content is 
-verified as valid and benign, but subsequently the malicious
+Even if a verification process exists, it will verify that the content is valid 
+in the assumed context. Due to the nature of the polyglot, the content is 
+verified as valid and benign, but subsequently, in the actual context, the malicious
 content is executed.
 
 Coercing content to be interpreted
 as a different type can be accommodated in the context of the web. 
 If the content is loaded using an \emph{image} tag it will be interpreted 
-as an image, if a \emph{script} tag is used it will be interpreted as a script. Some 
-tags even let the developer decide which type to interpret the content as. 
+as an image, if a \emph{script} tag is used it will be interpreted as a script. Certain
+tags, e.g., the object-tag and embed-tag, even let the developer decide which type to interpret the content as. 
 To prevent abuse, the browsers employ content-type 
 sniffing for certain content-types, a practice which has historically led to 
 security issues. 
@@ -440,8 +459,8 @@ While these articles document known instances of polyglot attacks, the attack
 method has not been generalized until this paper.
 %
 Under our generalization, previous work corresponds to
-instances. For example, we show that GIFAR attacks describe a form of content smuggling, and
-cross-origin CSS attacks describe a form of syntax injection attacks.
+instances. For example, we show that GIFAR attacks describe a form of content smuggling, Section~\ref{sec:smuggling}, and
+cross-origin CSS attacks~\cite{Huang+:CCS10} describe a form of syntax injection attacks, Section~\ref{sec:injection}.
 %
 The added value of our paper is a generalized view and focus on new
 instances of polyglots that involve the PDF format.
@@ -549,8 +568,7 @@ style sheets allow the polyglot to parsed as valid CSS. The capabilities of CSS
 provide trivial cross-origin leakage. The paper proposes a defense technique which has been
 adopted by all major browsers, which implies that the attacks outlined in their paper are now ineffective.
 Instead,
-Section
-\ref{sec:vuln} will show practical attacks based on other formats.
+Section~\ref{sec:vuln} will show practical attacks based on other formats.
 
 
 \paragraph{Scenario}

@@ -26,7 +26,7 @@ DONE 6:
 
 Move the listings to their appropriate positions.
 
-TODO 7:
+DONE 7:
 
 Generally clarify the exposition where appropriate.
 (Go over Section 2 again)
@@ -36,10 +36,16 @@ TODO 8?:
 Evaluation of mobile browsers would indeed make an interesting addition, and certainly one
 we would like to delve into further.
 
-TODO 9:
+TODO 9: 50 % DONE
 
 Adjust paper according to publishing format.
 
+ - \vfill\eject referenserna för jämna kolumner
+ - Kolla vilken copyright som skall användas
+ - Döp om filen till ccs496-magazinius.pdf
+ - ACM kategori och keywords
+ - Bad breaks
+ - Acknowledgements
 
 
 
