@@ -137,7 +137,7 @@ interpreters (in particular, PDF readers) show how to mitigate the attacks.
 
 
 
-
+\vfill\eject
 %1 pages
 \section{Introduction}
 \label{sec:intro}
@@ -503,7 +503,7 @@ content filters. The vectors are described below with more detailed scenarios.
 
 \begin{figure}[t]
   \center
-  \includegraphics[width=0.49\textwidth]{scenario.pdf}
+  \includegraphics[width=0.49\textwidth]{scenario.png}
   \caption{Overview of the scenario}
   \label{fig:scenario}
 \end{figure}
@@ -586,7 +586,7 @@ leverage the credentials of the victim to further exploit the vulnerability.
 
 \begin{figure}[t]
   \center
-  \includegraphics[width=0.49\textwidth]{injection-scenario.pdf}
+  \includegraphics[width=0.49\textwidth]{injection-scenario.png}
   \caption{Syntax injection scenario}
   \label{fig:injection-scenario}
 \end{figure}
@@ -632,7 +632,7 @@ Section
 \ref{sec:vuln} will show practical attacks based on other formats.
 
 \paragraph{Scenario}
-The content smuggling scenario proceeds as illustrated in Figure~\ref{fig:scenario}.
+The content smuggling scenario proceeds as illustrated in Figure~\ref{fig:smuggling-scenario}.
 Similarly to the previous scenarios, the victim is an authenticated user of a targeted vulnerable web site, \emph{vulnerable.com}. 
 To give more context to the scenario, \emph{vulnerable.com} can be a cloud storage service. 
 The target is infiltrated by the attacker (1), who uploads a polyglot to the web site. 
@@ -649,12 +649,12 @@ polyglot is activated and a possible payload is to extract all the files stored 
 %management systems, which by design allow submission of PDFs to be viewed by
 %users.
 
-%\begin{figure}[t]
-%  \center
-%  \includegraphics[width=0.49\textwidth]{smuggling-scenario.png}
-%  \caption{Content smuggling scenario}
-%  \label{fig:smuggling-scenario}
-%\end{figure}
+\begin{figure}[t]
+  \center
+  \includegraphics[width=0.49\textwidth]{smuggling-scenario.png}
+  \caption{Content smuggling scenario}
+  \label{fig:smuggling-scenario}
+\end{figure}
 
 
 
@@ -766,31 +766,7 @@ attacks show that the vulnerabilities we focus on are exploitable in practice.
 
 %\subsection{Concept}
 
-
-\subsection{Portable Document Format}
-\label{sec:format}
-% Why PDF format?
-
-The \emph{Portable Document Format} (PDF) is a widely used document format 
-capable of displaying text, rendering graphics, scripting, animation and other 
-dynamic content. It is a container format in the sense that it allows 
-embedding of files and resources.
-
-According to the PDF specification~\cite{PDF:ISO08} a PDF file is composed of
-a header, several objects, a cross-reference section and a trailer. Listing~\ref{lst:sample-pdf} 
-shows a sample of how a PDF file is structured and its elements. Supposedly, it is also a minimal PDF file according to the specification.
-
-
-
-
-% header
-\subsubsection{Header}
-The header consists of the string "\%PDF-" followed by a version number. 
-The version is denoted by a 
-major and a minor version number of the form "\emph{M.m}". Because the version can 
-be specified elsewhere, the version number is not required to be part of the 
-header.
-
+\vfill\eject
 
 \begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
 %PDF-1.4
@@ -819,8 +795,7 @@ endobj
    /Resources << /ProcSet 6 0 R >>
 >>
 endobj
-5 0 obj
-<< /Length 35 >>
+5 0 obj << /Length 35 >>
 stream
    ...Page-marking operators...
 endstream
@@ -845,6 +820,30 @@ startxref
 408
 %%EOF
 \end{lstlisting}
+
+
+
+
+\subsection{Portable Document Format}
+\label{sec:format}
+% Why PDF format?
+
+The \emph{Portable Document Format} (PDF) is a widely used document format 
+capable of displaying text, rendering graphics, scripting, animation and other 
+dynamic content. It is a container format in the sense that it allows 
+embedding of files and resources.
+
+According to the PDF specification~\cite{PDF:ISO08} a PDF file is composed of
+a header, several objects, a cross-reference section and a trailer. Listing~\ref{lst:sample-pdf} 
+shows a sample of how a PDF file is structured and its elements. Supposedly, it is also a minimal PDF file according to the specification.
+
+% header
+\subsubsection{Header}
+The header consists of the string "\%PDF-" followed by a version number. 
+The version is denoted by a 
+major and a minor version number of the form "\emph{M.m}". Because the version can 
+be specified elsewhere, the version number is not required to be part of the 
+header.
 
 
 % objects
@@ -1196,6 +1195,7 @@ cross-origin resource sharing. Using CORS, a web server can relax the SOP to all
 An attacker can set an allow-all cross-origin policy, such as in Listing~\ref{lst:crossdomain}, 
 that open up for two way communication.
 
+
 \begin{lstlisting}[label=lst:xml-pdf, caption=PDF using XML for communication]
 %PDF-
 1 0 obj<<>>stream
@@ -1212,7 +1212,6 @@ trailer<</Root
    >>
 >>
 \end{lstlisting}
-
 
 \begin{lstlisting}[label=lst:flash-pdf, caption=Flash code for communication]
 package {
@@ -1233,13 +1232,10 @@ package {
           r = new URLRequest(u);
           l = new URLLoader(r);
         });
-    }
-  }
-}
+}}}
 \end{lstlisting}
 
 \begin{lstlisting}[label=lst:crossdomain, caption=Allow-all crossdomain.xml]
-<?xml version="1.0"?>
 <cross-domain-policy>
   <allow-access-from domain="*" />
 </cross-domain-policy>
@@ -1320,12 +1316,6 @@ corresponding tag can be used to embed a PDF document, and for the column
 The browsers, Firefox, Safari and Opera, are all susceptible to the attacks outlined as 
 per Section~\ref{sec:vuln}, without any restrictions or modifications.
 
-\paragraph{Internet Explorer}
-Microsoft's browser, Internet Explorer, is susceptible to the attacks. However, 
-it seems to only support embedding of PDF documents using the \emph{embed} tag. 
-This is not a major obstacle in exploiting the vulnerability, as the \emph{embed} and 
-\emph{object} tags are interchangeable in this respect.
-
 \paragraph{Google Chrome}
 Google's browser, Chrome, has built-in support for displaying PDF documents. 
 The built-in PDF reader is used by default by the browser, unless it has been 
@@ -1335,7 +1325,13 @@ to open the document in Adobe Reader. As previously noted in Section~\ref{sec:re
 is not vulnerable to attacks. Hence, Chrome is only susceptible when the Adobe 
 Reader plug-in is used to render the document.
 
-\begin{table}[h!]
+\paragraph{Internet Explorer}
+Microsoft's browser, Internet Explorer, is susceptible to the attacks. However, 
+it seems to only support embedding of PDF documents using the \emph{embed} tag. 
+This is not a major obstacle in exploiting the vulnerability, as the \emph{embed} and 
+\emph{object} tags are interchangeable in this respect.
+
+\begin{table}[t]
 \begin{tabular}{l|c|c|c}
 & object & embed & Adobe is default \\ \hline
 Firefox & Yes & Yes & Yes \\ \hline
