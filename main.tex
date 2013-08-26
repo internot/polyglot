@@ -284,7 +284,7 @@ interpreters (such as PDF readers) show how to mitigate the attacks.
 % \item Mitigation for the server, client, and PDF readers.
 % \end{itemize}
 
-
+\vfill\eject
 \paragraph{Overview}
 The paper is organized as follows. 
 %
@@ -503,7 +503,7 @@ content filters. The vectors are described below with more detailed scenarios.
 
 \begin{figure}[t]
   \center
-  \includegraphics[width=0.49\textwidth]{scenario.png}
+  \includegraphics[width=0.49\textwidth]{scenario.pdf}
   \caption{Overview of the scenario}
   \label{fig:scenario}
 \end{figure}
@@ -586,7 +586,7 @@ leverage the credentials of the victim to further exploit the vulnerability.
 
 \begin{figure}[t]
   \center
-  \includegraphics[width=0.49\textwidth]{injection-scenario.png}
+  \includegraphics[width=0.49\textwidth]{injection-scenario.pdf}
   \caption{Syntax injection scenario}
   \label{fig:injection-scenario}
 \end{figure}
@@ -632,7 +632,7 @@ Section
 \ref{sec:vuln} will show practical attacks based on other formats.
 
 \paragraph{Scenario}
-The content smuggling scenario proceeds as illustrated in Figure~\ref{fig:smuggling-scenario}.
+The content smuggling scenario proceeds as illustrated in Figure~\ref{fig:scenario}.
 Similarly to the previous scenarios, the victim is an authenticated user of a targeted vulnerable web site, \emph{vulnerable.com}. 
 To give more context to the scenario, \emph{vulnerable.com} can be a cloud storage service. 
 The target is infiltrated by the attacker (1), who uploads a polyglot to the web site. 
@@ -649,12 +649,12 @@ polyglot is activated and a possible payload is to extract all the files stored 
 %management systems, which by design allow submission of PDFs to be viewed by
 %users.
 
-\begin{figure}[t]
-  \center
-  \includegraphics[width=0.49\textwidth]{smuggling-scenario.png}
-  \caption{Content smuggling scenario}
-  \label{fig:smuggling-scenario}
-\end{figure}
+%\begin{figure}[t]
+%  \center
+%  \includegraphics[width=0.49\textwidth]{smuggling-scenario.png}
+%  \caption{Content smuggling scenario}
+%  \label{fig:smuggling-scenario}
+%\end{figure}
 
 
 
@@ -791,6 +791,62 @@ major and a minor version number of the form "\emph{M.m}". Because the version c
 be specified elsewhere, the version number is not required to be part of the 
 header.
 
+
+\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog
+   /Outlines 2 0 R
+   /Pages 3 0 R
+>>
+endobj
+2 0 obj
+<< /Type Outlines
+   /Count 0
+>>
+endobj
+3 0 obj
+<< /Type /Pages
+   /Kids [4 0 R]
+   /Count 1
+>>
+endobj
+4 0 obj
+<< /Type /Page
+   /Parent 3 0 R
+   /MediaBox [0 0 612 792]
+   /Contents 5 0 R
+   /Resources << /ProcSet 6 0 R >>
+>>
+endobj
+5 0 obj
+<< /Length 35 >>
+stream
+   ...Page-marking operators...
+endstream
+endobj
+6 0 obj
+   [/PDF]
+endobj
+xref
+0 7
+0000000000 65535 f
+0000000009 00000 n
+0000000074 00000 n
+0000000120 00000 n
+0000000179 00000 n
+0000000300 00000 n
+0000000384 00000 n
+trailer
+<< /Size 7
+   /Root 1 0 R
+>>
+startxref
+408
+%%EOF
+\end{lstlisting}
+
+
 % objects
 \subsubsection{Objects}
 Objects can be direct or indirect, the difference being that an indirect object 
@@ -863,59 +919,6 @@ the beginning of the file to the first cross-reference section. As with the
 cross-reference section, it can be omitted. The string "\%\%EOF" marks the 
 end-of-file, but can be omitted.
 
-\begin{lstlisting}[label=lst:sample-pdf, caption=Sample PDF file]
-%PDF-1.4
-1 0 obj
-<< /Type /Catalog
-   /Outlines 2 0 R
-   /Pages 3 0 R
->>
-endobj
-2 0 obj
-<< /Type Outlines
-   /Count 0
->>
-endobj
-3 0 obj
-<< /Type /Pages
-   /Kids [4 0 R]
-   /Count 1
->>
-endobj
-4 0 obj
-<< /Type /Page
-   /Parent 3 0 R
-   /MediaBox [0 0 612 792]
-   /Contents 5 0 R
-   /Resources << /ProcSet 6 0 R >>
->>
-endobj
-5 0 obj
-<< /Length 35 >>
-stream
-   ...Page-marking operators...
-endstream
-endobj
-6 0 obj
-   [/PDF]
-endobj
-xref
-0 7
-0000000000 65535 f
-0000000009 00000 n
-0000000074 00000 n
-0000000120 00000 n
-0000000179 00000 n
-0000000300 00000 n
-0000000384 00000 n
-trailer
-<< /Size 7
-   /Root 1 0 R
->>
-startxref
-408
-%%EOF
-\end{lstlisting}
 
 \subsection{PDF-based polyglots}
 \label{sec:pdf-based-polyglots}
@@ -1100,7 +1103,7 @@ compressed by default to save space, thereby obfuscating the PDF source code. Ho
 that decompress the Flash files, which restores the plain PDF code.
 
 \paragraph{PDF as the malicious format}
-As detailed in the content smuggling scenario in Section~\ref{sec:smuggling}, the 
+In the content smuggling scenario in Section~\ref{sec:smuggling}, the 
 attacker uploads the PDF polyglot to a vulnerable content hosting service. 
 A server-side verification process will base its verification on the benign formats 
 it expects to receive. The polyglot is designed to verify correctly as the benign format,
@@ -1163,13 +1166,35 @@ restriction on the content that can be requested using this method. Considering
 that HTML pages are rarely well-formed this method may be too restricted in practice.
 
 Listing~\ref{lst:xml-pdf} contains an example PDF document that uses XML external 
-entities. Note that the one-way method \emph{getURL} is used to communicate the 
+entities. The one-way method \emph{getURL} is used to communicate the 
 information back to the attacker. Given the compact size of the example, it is useful for the syntax 
 injection scenario in Section~\ref{sec:injection}, which require injection of 
 small syntax fragments.
 
 As of version 10.1.5, in accordance with our recommendations,  XML external entities 
 has been removed. Thereby the risks of leakage of sensitive information is significantly reduced.
+
+
+\paragraph{Embedded Flash}
+By embedding a Flash file in the PDF document the capabilities of the format can be 
+extended even further. The Flash runtime supports bidirectional communication in 
+accordance with SOP.
+%
+The embedded Flash inherits the origin of the PDF document, thus it can 
+request and read any document from the originating server. Unlike the XML
+method, there are no restrictions on what content can be requested, thus making 
+it the most versatile of the available communication methods. The only drawback 
+using this approach is the significant increase in terms of file size. Even the compact 
+Flash code in Listing~\ref{lst:flash-pdf} will result in a 6 kB Flash file. 
+This suggests that this method might be better suited for the content smuggling 
+scenario in Section~\ref{sec:smuggling}, rather than the syntax injection scenario.
+
+Cross-origin communication in Flash adheres to the same-origin policy. However, this is not a restriction, since
+ Flash also supports cross-origin communication via  
+cross-origin resource sharing. Using CORS, a web server can relax the SOP to allow access to specified content.
+%As mentioned, the embedded Flash file inherits the origin of the document.
+An attacker can set an allow-all cross-origin policy, such as in Listing~\ref{lst:crossdomain}, 
+that open up for two way communication.
 
 \begin{lstlisting}[label=lst:xml-pdf, caption=PDF using XML for communication]
 %PDF-
@@ -1188,19 +1213,6 @@ trailer<</Root
 >>
 \end{lstlisting}
 
-\paragraph{Embedded Flash}
-By embedding a Flash file in the PDF document the capabilities of the format can be 
-extended even further. The Flash runtime supports bidirectional communication in 
-accordance with SOP.
-%
-The embedded Flash inherits the origin of the PDF document, thus it can 
-request and read any document from the originating server. Unlike the XML
-method, there are no restrictions on what content can be requested, thus making 
-it the most versatile of the available communication methods. The only drawback 
-using this approach is the significant increase in terms of file size. Even the compact 
-Flash code in Listing~\ref{lst:flash-pdf} will result in a 6 kB Flash file. 
-This suggests that this method might be better suited for the content smuggling 
-scenario in Section~\ref{sec:smuggling}, rather than the syntax injection scenario.
 
 \begin{lstlisting}[label=lst:flash-pdf, caption=Flash code for communication]
 package {
@@ -1225,13 +1237,6 @@ package {
   }
 }
 \end{lstlisting}
-
-Cross-origin communication in Flash adheres to the same-origin policy. However, this is not a restriction, since
- Flash also supports cross-origin communication via  
-cross-origin resource sharing. Using CORS, a web server can relax the SOP to allow access to specified content.
-%As mentioned, the embedded Flash file inherits the origin of the document.
-An attacker can set an allow-all cross-origin policy, such as in Listing~\ref{lst:crossdomain}, 
-that open up for two way communication.
 
 \begin{lstlisting}[label=lst:crossdomain, caption=Allow-all crossdomain.xml]
 <?xml version="1.0"?>
@@ -1560,11 +1565,12 @@ HTML tokens, e.g. JSON.
 
 \paragraph{Content smuggling}
 \label{sec:smuggling-mitigation}
-The current best-practice recommendation from Google~\cite{Google:ContentHosting} 
-on hosting user-supplied content, is to serve the content from a sandboxed origin that is 
+The current best-practice recommendation
+on hosting user-supplied content 
+is to serve the content from a sandboxed origin that is 
 completely separate, as per SOP, and isolated from the sensitive services. 
-These best-practices successfully prevents content smuggling 
-attacks, as the restrictions of the SOP prevents the content from accessing any sensitive 
+These best-practices, provided by Google~\cite{Google:ContentHosting}, successfully prevents content smuggling 
+attacks as the restrictions of the SOP prevents the content from accessing any sensitive 
 resources in the origin of the web service.
 
 These recommendations come with a caveat to be taken into consideration. Some user supplied 
