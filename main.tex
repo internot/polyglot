@@ -93,7 +93,7 @@ Andrei Sabelfeld\\
 exchanged between components in versatile formats. A new breed of attacks is on
 the rise that exploit the mismatch between the expected and provided content.
 % 
-This paper identifies the root cause of a large class of attacks: \emph{polyglots}. 
+This paper focuses on the root cause of a large class of attacks: \emph{polyglots}. 
 A polyglot is a program that is valid in multiple programming languages. Polyglots allow
 multiple interpretation of the content, providing a new space of attack vectors.
 %
@@ -182,7 +182,7 @@ requirement on the structure of the document and the origins of the
 scripts that are included by web pages.
 
 \paragraph{Crossing origins by crossing formats}
-This paper identifies a new breed of attacks and its root cause:
+This paper focuses on a new breed of attacks and its root cause:
 \emph{polyglots}. 
 %
 A polyglot is a program that is valid in multiple programming languages.
@@ -231,7 +231,7 @@ Cross-origin CSS attacks inject fragments of CSS code into an existing
 web page to extract information from the existing web page.
 
 \paragraph{Generalizing polyglot attacks} 
-The paper is the first to perform a generalization and systematic study of polyglot
+The paper is the first to present a generalized description of polyglot
 attacks.
 We identify the necessary ingredients for polyglot attacks.
 We characterize of what constitutes a dangerous format in the web setting and
@@ -307,14 +307,14 @@ Section~\ref{sec:related} discusses the related work.
 Section~\ref{sec:conc} concludes and outlines future work.
 
 %3 pages
-\section{Crossing origins by crossing formats}
+\section{Crossing origins and formats}
 \label{sec:cross}
 % Describe how the attacks lead to same-origin policy bypass.
 
 This section describes how formats can be crossed and how that can be abused 
-to cross origins by circumventing the same-origin policy. We begin by 
-describing cross-origin information leaks, next we
-generalize the problem of crossing formats to \emph{polyglots} and describe the  
+to cross origins by circumventing the same-origin policy. We
+describe cross-origin information leaks,
+generalize the problem of crossing formats to \emph{polyglots}, and present the  
 characteristics of a malicious polyglot. From that we derive two attack vectors and 
 show how previous work on the subject relate to these vectors.
 
@@ -370,7 +370,7 @@ communicate freely with the origin it was loaded from. However,  a number of plu
 an API for interaction between the plug-in and the document.
 The browsers are forced to rely on the plug-ins to employ correct security 
 measures. Section~\ref{sec:eval} shows that even state-of-the-art plug-ins fail to 
-properly do so, emphasizing the importance of increasing awareness on the issue. 
+properly do so, emphasizing the importance of the issue. 
 %Next we show how crossing formats
 %to cross-origin information leaks.
 
@@ -427,12 +427,12 @@ content is executed.
 
 Coercing content to be interpreted
 as a different type can be accommodated in the context of the web. 
-If the content is loaded using an \emph{image} tag it will be interpreted 
+If the content is loaded using an \emph{img} tag it will be interpreted 
 as an image, if a \emph{script} tag is used it will be interpreted as a script. Certain
-tags, e.g., the object-tag and embed-tag, even let the developer decide which type to interpret the content as. 
+tags, e.g., the \emph{object} tag and \emph{embed} tag, even let the developer decide which type to interpret the content as. 
 To prevent abuse, the browsers employ content-type 
 sniffing for certain content-types, a practice which has historically led to 
-security issues. 
+security issues, as illustrated below.
 %
 
 Barth et al.~\cite{Barth+:SP09} define \emph{chameleon} documents 
@@ -441,9 +441,9 @@ targets the content-sniffing algorithm used in the browser and the document
 is crafted in such a way that the browser 
 will detect the content type as HTML. The paper proceeds to 
 describe how an attacker can create a 
-\emph{chameleon} document, that is valid PostScript, but will be identified as HTML.
+chameleon document, that is valid PostScript, but will be identified as HTML.
 This issue allows exploitation when there is a mismatch between a web site's 
-content validation filter and the browsers content-sniffing algorithm.
+content validation filter and the browser's content-sniffing algorithm.
 
 In literature we find, apart from chameleons, other names for similar,
 related concepts. Brandis~\cite{Brandis:GIFAR} refer to \emph{GIFAR} 
@@ -462,7 +462,7 @@ Under our generalization, previous work corresponds to
 instances. For example, we show that GIFAR attacks describe a form of content smuggling, Section~\ref{sec:smuggling}, and
 cross-origin CSS attacks~\cite{Huang+:CCS10} describe a form of syntax injection attacks, Section~\ref{sec:injection}.
 %
-The added value of our paper is a generalized view and focus on new
+The added value of our paper is a generalized view on polyglot attacks and focus on new
 instances of polyglots that involve the PDF format.
 
 Two attacker-centric components require special attention; the infiltration of 
@@ -496,7 +496,7 @@ as described in Section~\ref{sec:cross-origin}. The impact depends on the
 payload and the capabilities of the malicious format.
 
 
-This paper identifies two vectors for infiltrating an origin, either via syntax 
+This paper describes two vectors for infiltrating an origin, either via syntax 
 injection, or content smuggling. In the case of syntax injection, existing content is manipulated
 to become a polyglot, whereas with content smuggling, a polyglot is used to evade 
 content filters. The vectors are described below with more detailed scenarios.
@@ -1066,7 +1066,7 @@ line feed characters. In the spirit of making minimal changes to the input,
 certain web sites only escape these characters. This is sufficient to prevent cross-site 
 scripting attacks, but fail to protect against PDF-based polyglot attacks.
 
-Not only in-line JavaScript fall short in this regard. JavaScript object notation 
+Note that not only in-line JavaScript falls short in this regard. JavaScript object notation 
 (JSON) is used in modern web sites as a data transport. This is particularly 
 common in web sites that provide an API to interact with the offered services.
 JSON encoded information suffer the same problem as in-line JavaScript, thereby
@@ -1318,8 +1318,8 @@ per Section~\ref{sec:vuln}, without any restrictions or modifications.
 \paragraph{Internet Explorer}
 Microsoft's browser, Internet Explorer, is susceptible to the attacks. However, 
 it seems to only support embedding of PDF documents using the \emph{embed} tag. 
-This is not a major obstacle in exploiting the vulnerability, as the embed and 
-object tags are interchangeable in this respect.
+This is not a major obstacle in exploiting the vulnerability, as the \emph{embed} and 
+\emph{object} tags are interchangeable in this respect.
 
 \paragraph{Google Chrome}
 Google's browser, Chrome, has built-in support for displaying PDF documents. 
@@ -1473,8 +1473,8 @@ We provide one general mitigation approach that covers a significant segment of
 the potential attack vectors, and provide specific mitigation suggestions for affected 
 components.
 
-Note that although some of the mitigation suggestions discussed below are already in place
-(notably as implemented by the Chrome builtin PDF reader), the state of the art
+Although some of the mitigation suggestions below are already in place
+(e.g., the Chrome builtin PDF reader), the state of the art
 is far from being satisfactory. As our paper demonstrates, the
 polyglot attacks are a real threat. It is the paper's main value to
 bring attention to polyglot attacks and the importance of
@@ -1497,7 +1497,7 @@ is free to ignore the provided type and can even be instructed to do so.
 Often the browser knows precisely the context in which the content will be 
 rendered and the types suitable for these contexts. 
 %
-As an example, when content is loaded in an object-tag with a type attribute, as 
+As an example, when content is loaded in an \emph{object} tag with a type attribute, as 
 is the case throughout the paper, the browser already
 has exact knowledge as to which types the requested content can be interpreted as in this context. A natural
 defense technique is to send the expected types along with the request. The web server
@@ -1515,7 +1515,8 @@ The expected type is useful also to a web application that performs content
 filtering on the fly. At the point when the content is being requested, it only 
 requires verification against the expected type.
 
-There are limitations to this technique; If a context has multiple possible types, e.g., an image-tag, 
+There are limitations to this technique; If a context has multiple
+possible types, e.g., an \emph{img} tag, 
 a polyglot between two of the types can evade detection. The specific cases where this situation 
 occurs in an exploitable way are rare, and further work can help in determining and mitigating such 
 vulnerabilities. 
@@ -1540,7 +1541,7 @@ recommendations apply to services that serve user-supplied files.
 %syntax. Generally, hard to ensure that tokens for all potential 
 %file formats are properly encoded without breaking anything.
 
-Preventing syntax injection attacks on the server-side poses severe challenges.
+Preventing syntax injection on the server-side poses severe challenges.
 Even server-side filtering of HTML syntax to prevent cross-side scripting
 attacks has proved difficult due to the many contexts in which JavaScript can be 
 introduced. Filtering all potentially harmful tokens from all formats in which a 
@@ -1641,6 +1642,10 @@ by restricting the possibilities for bidirectional communication.
 %1 page 
 \section{Related work}
 \label{sec:related}
+Recall that the added value of our paper is a generalized account of polyglot attacks and focus on new
+instances of polyglots that involve the PDF format. We briefly report
+on related instances of polyglot attacks.
+
 Backes et al.~\cite{Backes+:SP07} explore the power of the PostScript
 language. PostScript allows executable content and access to sensitive
 information from the environment such as the user id. This work
@@ -1664,13 +1669,13 @@ Nagra~\cite{Nagra:09} demonstrates GIF/JavaScript polyglots by the
 same file being interpreted as a script and as an image and
 informally discuses possible security implications.
 
-Barth et al.~\cite{Barth+:SP09} focus on security implications of
+Barth et al.~\cite{Barth+:SP09} investigate the security implications of
 content sniffing by browsers. They present content-sniffing XSS
 attacks by crossbreeding HTML with other formats like PostScript. They
-show attacks on real systems like HotCRP, where an uploaded conference
-paper in the PostScript format is interpreted as malicious HTML by the
-browser. They also propose a content-sniffing algorithm that does not
-suffer that helps defending against these class of attacks while
+show attacks on real systems like HotCRP, where an uploaded document
+in the PostScript format is interpreted as malicious HTML by the
+browser. They also propose a content-sniffing algorithm
+that helps defending against this class of attacks while
 maintaining compatibility.
 
 Sundareswaran and

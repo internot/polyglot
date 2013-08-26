@@ -1,4 +1,4 @@
-TODO 1:
+DONE 1:
 
 Make the claims of generality more precise. 
 (our high-level presentation of polyglots and their abuse possibilities as general, and the
